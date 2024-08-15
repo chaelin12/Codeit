@@ -1,4 +1,5 @@
 const dotenv = require('dotenv').config();
+const mongoose = require('mongoose');
 
 const { MongoClient } = require('mongodb');
 const mysql = require('mysql2');
@@ -13,12 +14,14 @@ const setup = async () => {
 
     try {
         const mongoDbUrl = process.env.MONGO_DB_URL;
+        const mongoDbName = process.env.MONGO_DB;
         const mongoConn = await MongoClient.connect(mongoDbUrl,
             {
                 useNewUrlParser: true,
-                useUnifiedTopology: true
+                useUnifiedTopology: true,
+                dbName:mongoDbName,
             });
-        mongodb = mongoConn.db(process.env.MONGO_DB);
+        mongodb = mongoose.connection;
         console.log("몽고DB 접속 성공");
 
         mysqldb = mysql.createConnection({
