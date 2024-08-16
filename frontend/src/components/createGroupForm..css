@@ -1,0 +1,103 @@
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #999; /* 기본적으로 placeholder 색상으로 시작 */
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #333;
+}
+
+input.filled,
+textarea.filled {
+  color: #000; /* 텍스트가 입력된 후 색상 변경 */
+}
+
+input[type="file"] {
+  margin-bottom: 20px;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch label {
+  margin-left: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch span {
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-switch span::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch input[type="checkbox"]:checked + span {
+  background-color: #333;
+}
+
+.toggle-switch input[type="checkbox"]:checked + span::before {
+  transform: translateX(26px);
+}
+
+.toggle-switch input[type="checkbox"]:checked ~ label {
+  color: #333;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
+}
