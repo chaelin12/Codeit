@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "../components/Button";
 import "./AccessPrivate.css";
 
 function AccessPrivate() {
@@ -36,9 +37,7 @@ function AccessPrivate() {
           placeholder="비밀번호를 입력해 주세요"
         />
       </div>
-      <button className="submit-button" type="submit">
-        제출하기
-      </button>
+      <Button type="submit">제출하기</Button>
     </div>
   );
 }

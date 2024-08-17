@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "../components/Button";
 import "./CreateGroup.css";
 
 function CreateGroup() {
@@ -97,10 +98,7 @@ function CreateGroup() {
           placeholder="비밀번호를 입력해 주세요"
         />
       </div>
-
-      <button className="submit-button" type="submit">
-        만들기
-      </button>
+      <Button type="submit">만들기</Button>
     </div>
   );
 }
