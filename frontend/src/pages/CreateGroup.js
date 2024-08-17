@@ -11,11 +11,28 @@ function CreateGroup() {
     password: "",
   });
 
+  const [errors, setErrors] = useState({
+    name: "",
+  });
+
   const { name, image, introduce, isPublic, password } = input;
+
+  const validateName = (value) => {
+    const validNamePattern = /^[a-zA-Z0-9!@#$%^_가-힣ㄱ-하-ㅣ ]*$/;
+    return validNamePattern.test(value);
+  };
 
   const onChange = (e) => {
     const { id, value, type, files } = e.target;
     const inputValue = type === "file" ? files[0] : value;
+
+    if (id === "name") {
+      const isValid = validateName(inputValue);
+      setErrors({
+        ...errors,
+        name: isValid ? "" : "특수문자에는 !@#$%^_만 사용하실 수 있습니다.",
+      });
+    }
 
     setInput({
       ...input,
@@ -43,7 +60,9 @@ function CreateGroup() {
           value={name}
           onChange={onChange}
           placeholder="그룹명을 입력하세요"
+          className={errors.name ? "error-border" : ""}
         />
+        {errors.name && <p className="error-message">{errors.name}</p>}
       </div>
       <div className="form-group">
         <label>대표 이미지</label>
