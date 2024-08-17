@@ -1,5 +1,5 @@
 .create-group-container {
-  max-width: 300px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -11,61 +11,74 @@
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-  display: block;
+  display: flex;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"],
 .form-group textarea {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  font-size: 12px;
+  height: 45px;
 }
 
 .image-upload-container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
 }
 
 .image-placeholder {
-  flex: 1;
+  flex-grow: 1;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
   outline: none;
   margin-right: 10px;
   box-sizing: border-box;
+  font-size: 14px;
+  color: #666;
+  text-align: left;
+  max-width: 290px;
 }
 
 .file-upload-button {
+  flex-shrink: 0;
+  font-size: 12px;
+  max-width: 100px;
   padding: 8px 12px;
   background-color: white;
   border: 1px solid black;
   border-radius: 4px;
-  cursor: pointer;
-  font-weight: 300;
-  display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 45px;
   box-sizing: border-box;
-  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .toggle-container {
   display: flex;
-  align-items: center; /* 수직으로 중앙 정렬 */
+  align-items: center;
 }
 
 .toggle-container p {
   margin: 0;
-  margin-right: 10px; /* "공개"와 토글 사이의 간격 */
+  margin-right: 12px;
+  font-size: 14px;
 }
 
 .toggle-switch {
@@ -106,6 +119,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 .submit-button:hover {
