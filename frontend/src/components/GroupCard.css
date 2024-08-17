@@ -1,0 +1,26 @@
+.group-card {
+  border: 1px solid #eee;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.group-info {
+  margin-bottom: 10px;
+}
+
+.group-date {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.group-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.group-stats {
+  display: flex;
+  justify-content: space-between;
+  color: #aaa;
+}

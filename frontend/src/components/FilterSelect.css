@@ -1,0 +1,11 @@
+.filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#filter-select {
+  padding: 10px;
+  border: 1px solid #282828;
+  border-radius: 4px;
+}

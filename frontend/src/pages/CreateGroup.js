@@ -30,7 +30,7 @@ function CreateGroup() {
       const isValid = validateName(inputValue);
       setErrors({
         ...errors,
-        name: isValid ? "" : "특수문자에는 !@#$%^_만 사용하실 수 있습니다.",
+        name: isValid ? "" : "특수문자는 !@#$%^_만 사용하실 수 있습니다.",
       });
     }
 

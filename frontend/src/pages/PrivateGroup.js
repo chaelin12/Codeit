@@ -1,7 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
+import ButtonGroup from "../components/ButtonGroup";
+import FilterSelect from "../components/FilterSelect";
+import GroupCard from "../components/GroupCard";
+import LoadMoreButton from "../components/LoadMoreButton";
+import SearchBar from "../components/SearchBar";
+import "./PrivateGroup.css"; // 이 페이지에 대한 스타일링을 적용
 
 function PrivateGroup() {
-  return <h1>비공개 그룹 조회 화면</h1>;
+  // 상태 관리
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("공감순");
+  const [groups, setGroups] = useState([
+    // 예시 그룹 데이터
+    {
+      id: 1,
+      date: "D+265",
+      isPrivate: true,
+      title: "달봉이네 가족",
+      memories: 8,
+      likes: "1.5K",
+    },
+    {
+      id: 2,
+      date: "D+265",
+      isPrivate: true,
+      title: "해봉이네 가족",
+      memories: 10,
+      likes: "2K",
+    },
+    // 추가 그룹 데이터
+  ]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    // 실제로는 여기에서 검색 쿼리를 통해 필터링 로직이 추가되어야 합니다.
+  };
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+    // 필터에 따라 그룹 목록을 정렬하는 로직을 여기에 추가
+  };
+
+  const handleLoadMore = () => {
+    // "더보기" 버튼 클릭 시 더 많은 그룹 데이터를 불러오는 로직 추가
+  };
+
+  return (
+    <div className="private-group-container">
+      <div className="top-bar">
+        <ButtonGroup
+          onPublicClick={() => console.log("공개 그룹 보기")}
+          onPrivateClick={() => console.log("비공개 그룹 보기")}
+        />
+        <SearchBar onSearch={handleSearch} />
+        <FilterSelect onFilterChange={handleFilterChange} />
+      </div>
+      {/* 그룹 목록 */}
+      <div className="group-list">
+        {groups.map((group) => (
+          <GroupCard
+            key={group.id}
+            date={group.date}
+            isPrivate={group.isPrivate}
+            title={group.title}
+            memories={group.memories}
+            likes={group.likes}
+          />
+        ))}
+      </div>
+
+      {/* 더보기 버튼 */}
+      <LoadMoreButton onClick={handleLoadMore} />
+    </div>
+  );
 }
 
 export default PrivateGroup;
