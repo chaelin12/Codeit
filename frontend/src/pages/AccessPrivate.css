@@ -1,0 +1,51 @@
+.access-privategroup-container {
+  max-width: 400px;
+  height: 313px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.input-password label {
+  display: flex;
+  font-weight: bold;
+  margin-top: 50px;
+  margin-bottom: 8px;
+}
+
+.input-password input {
+  width: 100%;
+  height: 45px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  font-size: 12px;
+  height: 45px;
+}
+
+.submit-button {
+  width: 100%;
+  height: 50px;
+  margin-top: 50px;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.submit-button:hover {
+  background-color: #555;
+}

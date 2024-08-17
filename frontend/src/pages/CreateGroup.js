@@ -92,7 +92,7 @@ function CreateGroup() {
           id="password"
           value={password}
           onChange={onChange}
-          placeholder="비밀번호를 입력하세요"
+          placeholder="비밀번호를 입력해 주세요"
         />
       </div>
 
