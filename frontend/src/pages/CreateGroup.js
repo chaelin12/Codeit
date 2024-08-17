@@ -46,22 +46,24 @@ function CreateGroup() {
       </div>
       <div className="form-group">
         <label>대표 이미지</label>
-        <input
-          type="text"
-          placeholder="파일을 선택해 주세요"
-          readOnly
-          value={image ? image.name : ""}
-          className="image-placeholder"
-        />
-        <label htmlFor="image-upload" className="file-upload-button">
-          파일 선택
-        </label>
-        <input
-          type="file"
-          id="image-upload"
-          onChange={onChange}
-          style={{ display: "none" }}
-        />
+        <div className="form-group-image">
+          <input
+            type="text"
+            placeholder="파일을 선택해 주세요"
+            readOnly
+            value={image ? image.name : ""}
+            className="image-placeholder"
+          />
+          <label htmlFor="image-upload" className="file-upload-button">
+            파일 선택
+          </label>
+          <input
+            type="file"
+            id="image-upload"
+            onChange={onChange}
+            style={{ display: "none" }}
+          />
+        </div>
       </div>
       <div className="form-group">
         <label>그룹 소개</label>

@@ -20,7 +20,7 @@ function AccessPrivate() {
 
   return (
     <div className="access-privategroup-container">
-      <div className="title">
+      <div className="title2">
         <h1>비공개 그룹</h1>
       </div>
       <div className="sub-title">
@@ -36,7 +36,6 @@ function AccessPrivate() {
           placeholder="비밀번호를 입력해 주세요"
         />
       </div>
-
       <button className="submit-button" type="submit">
         제출하기
       </button>

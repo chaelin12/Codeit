@@ -5,13 +5,13 @@
   font-family: Arial, sans-serif;
 }
 
-.title {
+.title1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 60px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .form-group label {
@@ -33,31 +33,35 @@
   height: 45px;
 }
 
+.form-group textarea {
+  height: 120px !important;
+  resize: none;
+}
+
 .image-upload-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
+}
+
+.form-group-image {
+  display: flex;
+  gap: 10px;
 }
 
 .image-placeholder {
   flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  text-align: left;
   outline: none;
   margin-right: 10px;
-  box-sizing: border-box;
-  font-size: 14px;
   color: #666;
-  text-align: left;
   max-width: 290px;
 }
 
 .file-upload-button {
   flex-shrink: 0;
   font-size: 12px;
-  max-width: 100px;
+  width: 100px;
   padding: 8px 12px;
   background-color: white;
   border: 1px solid black;
@@ -67,7 +71,6 @@
   cursor: pointer;
   height: 45px;
   box-sizing: border-box;
-  margin-left: auto;
 }
 
 .toggle-container {
@@ -120,6 +123,7 @@
   cursor: pointer;
   font-size: 16px;
   box-sizing: border-box;
+  margin-top: 20px;
 }
 
 .submit-button:hover {
