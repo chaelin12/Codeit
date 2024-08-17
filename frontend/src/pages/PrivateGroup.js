@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import ButtonGroup from "../components/ButtonGroup";
+import CreateGroupButton from "../components/CreateGroupButton";
 import FilterSelect from "../components/FilterSelect";
 import GroupCard from "../components/GroupCard";
 import LoadMoreButton from "../components/LoadMoreButton";
 import SearchBar from "../components/SearchBar";
-import "./PrivateGroup.css"; // 이 페이지에 대한 스타일링을 적용
+import "./PrivateGroup.css";
 
 function PrivateGroup() {
   // 상태 관리
@@ -45,8 +46,16 @@ function PrivateGroup() {
     // "더보기" 버튼 클릭 시 더 많은 그룹 데이터를 불러오는 로직 추가
   };
 
+  const handleCreateGroup = () => {
+    console.log("그룹 만들기 버튼 클릭됨");
+    // 그룹 만들기 로직을 여기에 추가
+  };
+
   return (
     <div className="private-group-container">
+      <div className="create-group-button-container">
+        <CreateGroupButton onClick={handleCreateGroup} />
+      </div>
       <div className="top-bar">
         <ButtonGroup
           onPublicClick={() => console.log("공개 그룹 보기")}
