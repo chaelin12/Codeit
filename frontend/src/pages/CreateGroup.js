@@ -49,7 +49,7 @@ function CreateGroup() {
 
   return (
     <div className="create-group-container">
-      <div className="title">
+      <div className="title1">
         <h1>그룹 만들기</h1>
       </div>
       <div className="form-group">

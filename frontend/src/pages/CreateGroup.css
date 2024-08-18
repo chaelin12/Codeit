@@ -2,12 +2,12 @@
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
 }
 
 .title1 {
   text-align: center;
-  margin-bottom: 60px;
+  font-weight: 700;
+  font-family: "SpoqaHanSansNeo", sans-serif;
 }
 
 .form-group {
@@ -27,7 +27,6 @@
   padding: 12px;
   border: 2px solid #ccc;
   border-radius: 6px;
-  font-family: Arial, sans-serif;
   box-sizing: border-box;
   font-size: 12px;
   height: 45px;
