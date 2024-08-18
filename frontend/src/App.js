@@ -7,7 +7,7 @@ import PrivateGroup from "./pages/PrivateGroup";
 import PublicGroup from "./pages/PublicGroup";
 
 import "./App.css";
-import logo from "./assets/logo.png";
+import logo from "./assets/pictures/logo.png";
 
 function App() {
   return (
