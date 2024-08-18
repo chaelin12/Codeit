@@ -16,8 +16,11 @@ app.get("/", (req, res) => {
   res.render("index.html");
 });
 //라우팅 포함하는 코드
-app.use('/', require('./routes/groups.js')); 
-app.use('/', require('./routes/posts.js'));
+const groupsRouter = require('./routes/groups.js');
+//const postsRouter = require('./routes/posts.js');
+
+app.use('/', groupsRouter);
+//app.use('/', postsRouter);
 
 app.listen(process.env.WEB_PORT, async () => {
   await setup();
