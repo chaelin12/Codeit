@@ -13,7 +13,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  margin: auto;
+  margin: 0 auto; /* 가운데 정렬 */
+  box-sizing: border-box;
 }
 
 .search-bar {
@@ -29,9 +30,12 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+  max-width: 1560px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 가운데 정렬 */
+  box-sizing: border-box;
 }
 
 .button-group .button.active {
   background-color: #282828;
-  color: FFFFFF;
+  color: #ffffff;
 }

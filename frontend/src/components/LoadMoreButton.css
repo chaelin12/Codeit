@@ -1,14 +1,41 @@
-.load-more-container {
+/*.load-more-container {
   display: flex;
   justify-content: center;
   margin: 20px 0;
-  position: relative; /* 기본 위치 지정 */
-  bottom: 0; /* 컨테이너가 하단에 위치하도록 설정 */
-  width: 100%; /* 전체 너비 차지 */
+  position: relative;
+  bottom: 0; 
 }
 
 #load-more-btn {
-  max-width: 100%; /* 버튼이 부모의 최대 너비를 넘지 않도록 설정 */
+  padding: 10px 20px;
+  border: 1px solid #282828;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-sizing: border-box; 
+}
+
+#load-more-btn:hover {
+  background-color: #f0f0f0;
+}*/
+
+/* LoadMoreButton.css */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 50px; /* 하단에 적당한 여백 추가 */
+  width: 100%; /* 컨테이너가 화면 전체 너비를 가짐 */
+  position: fixed; /* 페이지 하단에 고정 */
+  bottom: 0; /* 하단에 고정 */
+  left: 50%;
+  transform: translateX(-50%); /* 수평으로 가운데 정렬 */
+  box-sizing: border-box;
+}
+
+#load-more-btn {
+  width: 1560px; /* 버튼 너비 설정 */
   padding: 10px 20px;
   border: 1px solid #282828;
   border-radius: 4px;
