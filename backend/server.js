@@ -1,7 +1,6 @@
 const dotenv = require("dotenv").config();
 const setup = require("./db_setup");
 const express = require("express");
-const session = requires('express-session');
 const app = express();
 
 app.use(express.static("public")); //static 미들웨어 설정
@@ -26,12 +25,15 @@ app.use(
 app.get("/", (req, res) => {
   res.render("index.html");
 });
+
 //라우팅 포함하는 코드
 const groupsRouter = require('./routes/groups.js');
 //const postsRouter = require('./routes/posts.js');
+//const postsRouter = require('./routes/comments.js');
 
 app.use('/api/groups', groupsRouter);
 //app.use('/api/posts', postsRouter);
+//app.use('/api/comments', commentsRouter);
 
 app.listen(process.env.WEB_PORT, async () => {
   await setup();

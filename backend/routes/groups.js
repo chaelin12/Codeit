@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const path = require('path');
 const Group = require('../schemas/group');
-const session = requires('express-session')
+const session = require('express-session')
 
 const storage=multer.diskStorage({
     destination: (req, file, done) => {
