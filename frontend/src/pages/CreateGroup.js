@@ -39,31 +39,33 @@ function CreateGroup() {
     e.preventDefault();
 
     try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("image", image);
+      formData.append("introduce", introduce);
+      formData.append("isPublic", isPublic);
+      formData.append("password", password);
+
       // 백엔드로 그룹 생성 요청 보내기
-      const response = await axios.post("/api/groups", {
-        name,
-        image,
-        introduce,
-        isPublic,
-        password,
+      const response = await axios.post("/api/groups", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       // 백엔드 응답 상태에 따라 모달 표시
       if (response.status === 201) {
-        // 그룹 생성 성공
         setModalInfo({
           title: "그룹 만들기 성공",
           message: "그룹이 성공적으로 등록되었습니다.",
         });
       } else {
-        // 세션 만료 등 실패 처리
         setModalInfo({
           title: "그룹 만들기 실패",
           message: "그룹 등록에 실패했습니다.",
         });
       }
     } catch (error) {
-      // 서버 오류 또는 네트워크 문제로 인한 실패 처리
       setModalInfo({
         title: "그룹 만들기 실패",
         message: "그룹 등록에 실패했습니다.",
@@ -103,12 +105,12 @@ function CreateGroup() {
               value={image ? image.name : ""}
               className="image-placeholder"
             />
-            <label htmlFor="image-upload" className="file-upload-button">
+            <label htmlFor="image" className="file-upload-button">
               파일 선택
             </label>
             <input
               type="file"
-              id="image-upload"
+              id="image"
               onChange={onChange}
               style={{ display: "none" }}
             />
