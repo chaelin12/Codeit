@@ -53,11 +53,29 @@ module.exports = router;
 router.route('/:id')
     //그룹 수정
     .put(async(req,res)=>{
-    
+        try{
+            const result = await Group.update({
+                _id:req.params.id,//업데이트 대상 검색
+            },{
+                name: req.body.name,
+                password: req.body.password,
+                imageUrl: req.body.imageUrl,
+                isPublic: req.body.isPublic, 
+                introduction: req.body.introduction,
+            });
+            res.json(result);
+        }catch(err){
+            console.error(err);
+        }
     })
     //그룹 삭제
-    .delete(async(req,res)=>{
-
+    .delete(async(req,res)=>{ 
+        try {
+            const result = await Group.deleteOne({ _id: req.params.id });
+            res.json(result);
+          } catch (err) {
+            console.error(err);
+          }
     })
     //그룹 상세 정보 확인
     .get(async(req,res)=>{
