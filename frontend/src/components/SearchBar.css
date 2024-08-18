@@ -1,25 +1,8 @@
-/*.search-container {
-  width: 100%;
-  margin-left: 20px;
-  margin-right: 40px;
-  margin-bottom: 20px;
-  color: #f4f4f4;
-}
-
-#search-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  color: #b8b8b8;
-  border-radius: 4px;
-}*/
-/* SearchBar.css */
 .search-container {
   width: 100%;
   margin-left: 20px;
   margin-right: 40px;
   margin-bottom: 20px;
-  color: #333; /* 글자 색깔 설정 */
 }
 
 #search-input {

@@ -2,16 +2,20 @@
   display: flex;
   justify-content: center;
   margin: 20px 0;
+  position: relative; /* 기본 위치 지정 */
+  bottom: 0; /* 컨테이너가 하단에 위치하도록 설정 */
+  width: 100%; /* 전체 너비 차지 */
 }
 
 #load-more-btn {
-  width: 1560px;
+  max-width: 100%; /* 버튼이 부모의 최대 너비를 넘지 않도록 설정 */
   padding: 10px 20px;
   border: 1px solid #282828;
   border-radius: 4px;
   background-color: #fff;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }
 
 #load-more-btn:hover {
