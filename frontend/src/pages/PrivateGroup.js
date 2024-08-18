@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ButtonGroup from "../components/ButtonGroup";
 import CreateGroupButton from "../components/CreateGroupButton";
 import FilterSelect from "../components/FilterSelect";
@@ -8,6 +9,7 @@ import SearchBar from "../components/SearchBar";
 import "./PrivateGroup.css";
 
 function PrivateGroup() {
+  const navigate = useNavigate();
   // 상태 관리
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
@@ -47,7 +49,7 @@ function PrivateGroup() {
   };
 
   const handleCreateGroup = () => {
-    console.log("그룹 만들기 버튼 클릭됨");
+    navigate("/creategroup");
     // 그룹 만들기 로직을 여기에 추가
   };
 
