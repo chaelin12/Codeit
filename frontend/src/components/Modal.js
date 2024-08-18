@@ -1,7 +1,8 @@
 import React from "react";
+import Button from "../components/FormButton";
 import "./Modal.css";
 
-function Modal({ isOpen, onClose, title, message }) {
+function Modal({ isOpen, onClose, title, message, onCreateGroup }) {
   if (!isOpen) return null;
 
   return (
@@ -9,9 +10,7 @@ function Modal({ isOpen, onClose, title, message }) {
       <div className="modal-container">
         <h2 className="modal-title">{title}</h2>
         <p className="modal-message">{message}</p>
-        <button className="modal-button" onClick={onClose}>
-          확인
-        </button>
+        <Button onClick={onCreateGroup}>확인</Button>
       </div>
     </div>
   );

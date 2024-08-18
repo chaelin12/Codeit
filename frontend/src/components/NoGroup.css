@@ -1,0 +1,41 @@
+.no-group-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh; /* 화면 중앙에 위치 */
+  text-align: center;
+}
+
+.no-group-image {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+}
+
+.no-group-text {
+  font-size: 18px;
+  color: #707070;
+  margin-bottom: 8px;
+}
+
+.no-group-subtext {
+  font-size: 14px;
+  color: #b0b0b0;
+  margin-bottom: 30px;
+}
+
+.create-group-button {
+  background-color: #333333;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-group-button:hover {
+  background-color: #555555;
+}

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonGroup from "../components/ButtonGroup";
 import CreateGroupButton from "../components/CreateGroupButton";
 import FilterSelect from "../components/FilterSelect";
 import GroupCard from "../components/GroupCard";
 import LoadMoreButton from "../components/LoadMoreButton";
+import NoGroup from "../components/NoGroup";
 import SearchBar from "../components/SearchBar";
 import "./PublicGroup.css";
 
@@ -14,26 +16,21 @@ function PrivateGroup() {
   // 상태 관리
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
-  const [groups, setGroups] = useState([
-    // 예시 그룹 데이터
-    {
-      id: 1,
-      date: "D+265",
-      isPrivate: true,
-      title: "달봉이네 가족",
-      memories: 8,
-      likes: "1.5K",
-    },
-    {
-      id: 2,
-      date: "D+265",
-      isPrivate: true,
-      title: "해봉이네 가족",
-      memories: 10,
-      likes: "2K",
-    },
-    // 추가 그룹 데이터
-  ]);
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    // 백엔드에서 그룹 데이터를 가져오는 로직을 여기에 추가
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get("/api/groups"); // 예시 API 요청
+        setGroups(response.data);
+      } catch (error) {
+        console.error("그룹 데이터를 불러오지 못했습니다.", error);
+      }
+    };
+
+    fetchGroups();
+  }, []);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -77,22 +74,24 @@ function PrivateGroup() {
         <SearchBar onSearch={handleSearch} />
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
-      {/* 그룹 목록 */}
-      <div className="group-list">
-        {groups.map((group) => (
-          <GroupCard
-            key={group.id}
-            date={group.date}
-            isPrivate={group.isPrivate}
-            title={group.title}
-            memories={group.memories}
-            likes={group.likes}
-          />
-        ))}
-      </div>
-
-      {/* 더보기 버튼 */}
-      <LoadMoreButton onClick={handleLoadMore} />
+      {/* 그룹이 없을 때 NoGroup 컴포넌트 표시 */}
+      {groups.length === 0 ? (
+        <NoGroup onCreateGroup={handleCreateGroup} />
+      ) : (
+        <div className="group-list">
+          {groups.map((group) => (
+            <GroupCard
+              key={group.id}
+              date={group.date}
+              isPrivate={group.isPrivate}
+              title={group.title}
+              memories={group.memories}
+              likes={group.likes}
+            />
+          ))}
+          <LoadMoreButton onClick={handleLoadMore} />
+        </div>
+      )}
     </div>
   );
 }
