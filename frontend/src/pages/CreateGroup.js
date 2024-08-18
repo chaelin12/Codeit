@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 import Modal from "../components/Modal";
 import "./CreateGroup.css";
@@ -22,6 +23,8 @@ function CreateGroup() {
 
   const { name, image, introduce, isPublic, password } = input;
 
+  const navigate = useNavigate();
+
   const validateName = (value) => {
     const validNamePattern = /^[a-zA-Z0-9!@#$%^_가-힣ㄱ-하-ㅣ ]*$/;
     return validNamePattern.test(value);
@@ -30,6 +33,8 @@ function CreateGroup() {
   const onChange = (e) => {
     const { id, value, type, files } = e.target;
     const inputValue = type === "file" ? files[0] : value;
+
+    console.log({ id, inputValue });
 
     if (id === "name") {
       const isValid = validateName(inputValue);
@@ -76,23 +81,29 @@ function CreateGroup() {
           title: "그룹 만들기 성공",
           message: "그룹이 성공적으로 등록되었습니다.",
         });
+        setRedirectPath("/");
       } else {
         setModalInfo({
           title: "그룹 만들기 실패",
           message: "그룹 등록에 실패했습니다.",
         });
+        setRedirectPath("/createGroup");
       }
     } catch (error) {
       setModalInfo({
         title: "그룹 만들기 실패",
         message: "그룹 등록에 실패했습니다.",
       });
+      setRedirectPath("/createGroup");
     } finally {
       setIsModalOpen(true);
     }
   };
 
+  const [redirectPath, setRedirectPath] = useState("/");
+
   const handleCloseModal = () => {
+    navigate(redirectPath); // 모달이 닫힐 때 지정된 경로로 리다이렉트
     setIsModalOpen(false);
   };
 

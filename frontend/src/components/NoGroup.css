@@ -1,3 +1,4 @@
+/* NoGroup 컴포넌트의 다른 스타일 */
 .no-group-container {
   display: flex;
   flex-direction: column;
@@ -8,9 +9,8 @@
 }
 
 .no-group-image {
-  width: 120px;
-  height: 120px;
-  margin-bottom: 20px;
+  width: 50px;
+  height: 50px;
 }
 
 .no-group-text {
@@ -25,17 +25,19 @@
   margin-bottom: 30px;
 }
 
-.create-group-button {
-  background-color: #333333;
-  color: white;
-  padding: 10px 20px;
+.form-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #282828;
+  color: #fafafa;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 16px;
+  box-sizing: border-box;
+  margin-top: 20px;
 }
 
-.create-group-button:hover {
-  background-color: #555555;
+.form-button:hover {
+  background-color: #555;
 }
