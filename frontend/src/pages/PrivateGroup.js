@@ -10,6 +10,7 @@ import "./PrivateGroup.css";
 
 function PrivateGroup() {
   const navigate = useNavigate();
+  const [activeButton, setActiveButton] = useState("private");
   // 상태 관리
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
@@ -53,6 +54,16 @@ function PrivateGroup() {
     // 그룹 만들기 로직을 여기에 추가
   };
 
+  const handlePublicClick = () => {
+    setActiveButton("public");
+    navigate("/"); // 공개 그룹 페이지로 이동
+  };
+
+  const handlePrivateClick = () => {
+    setActiveButton("private");
+    console.log("비공개 그룹 보기");
+  };
+
   return (
     <div className="private-group-container">
       <div className="create-group-button-container">
@@ -60,8 +71,9 @@ function PrivateGroup() {
       </div>
       <div className="top-bar">
         <ButtonGroup
-          onPublicClick={() => console.log("공개 그룹 보기")}
-          onPrivateClick={() => console.log("비공개 그룹 보기")}
+          activeButton={activeButton}
+          onPublicClick={handlePublicClick}
+          onPrivateClick={handlePrivateClick}
         />
         <SearchBar onSearch={handleSearch} />
         <FilterSelect onFilterChange={handleFilterChange} />

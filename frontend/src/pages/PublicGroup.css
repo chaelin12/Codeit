@@ -1,0 +1,37 @@
+.private-group-container {
+  padding: 20px;
+}
+
+.create-group-button-container {
+  position: absolute;
+  top: 20px; /* 화면의 맨 상단에 위치시킴 */
+  right: 40px; /* 우측 끝에 배치 */
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin: auto;
+}
+
+.search-bar {
+  flex-grow: 1; /* 검색 바가 가능한 넓게 확장되도록 설정 */
+  margin: 20px;
+}
+
+.filter-select {
+  margin-left: auto; /* 오른쪽 끝에 위치하도록 설정 */
+}
+
+.group-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.button-group .button.active {
+  background-color: #282828;
+  color: FFFFFF;
+}
