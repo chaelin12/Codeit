@@ -12,9 +12,9 @@ const storage=multer.diskStorage({
     done(null, '/frontend/public/image')
     }, filename: (req, file, done) => {
       done(null, file.originalname)
-    }, limit : 5*1024*1024
+    }
   });
-
+  const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 파일 크기 제한
 router.route('/')
     //그룹 목록 조회
     .get(async (req,res)=>{
@@ -27,9 +27,10 @@ router.route('/')
         }
     })
     //그룹 등록
-    .post(async (req,res)=>{
+    .post(upload.single('image'),async (req,res)=>{
         if(req.session){
             try{
+                const imageUrl = req.file ? `/images/${req.file.filename}` : '';
                 const group = await Group.create({
                     name: req.body.name,
                     password: req.body.password,
