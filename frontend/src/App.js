@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 import AccessPrivate from "./pages/AccessPrivate";
+import CreateGroup from "./pages/CreateGroup";
 import PrivateGroup from "./pages/PrivateGroup";
 import PublicGroup from "./pages/PublicGroup";
 
