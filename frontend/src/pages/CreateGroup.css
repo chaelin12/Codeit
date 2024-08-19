@@ -15,7 +15,7 @@
 
 .form-group label {
   display: flex;
-  font-weight: bold;
+  font-weight: 500;
   margin-bottom: 10px;
 }
 
@@ -27,6 +27,7 @@
   border: 2px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
+  font-weight: 400;
   font-size: 12px;
   height: 45px;
   transition: border-color 0.2s;

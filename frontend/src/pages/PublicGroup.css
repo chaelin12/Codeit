@@ -3,6 +3,7 @@
 }
 
 .create-group-button-container {
+  font-weight: 700;
   position: absolute;
   top: 20px; /* 화면의 맨 상단에 위치시킴 */
   right: 40px; /* 우측 끝에 배치 */

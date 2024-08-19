@@ -17,27 +17,12 @@
   font-size: 18px;
   color: #8d8d8d;
   margin-bottom: 8px;
+  font-weight: 700;
 }
 
 .no-group-subtext {
   font-size: 14px;
   color: #b8b8b8;
   margin-bottom: 30px;
-}
-
-.form-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #282828;
-  color: #fafafa;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  box-sizing: border-box;
-  margin-top: 20px;
-}
-
-.form-button:hover {
-  background-color: #555;
+  font-weight: 400;
 }
