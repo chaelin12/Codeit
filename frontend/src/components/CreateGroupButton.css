@@ -7,6 +7,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px; /* 버튼 글자 크기 */
+  font-weight: 700;
 }
 
 .create-group-button:hover {

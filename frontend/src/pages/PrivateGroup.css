@@ -1,11 +1,13 @@
 .private-group-container {
+  max-width: 1200px; /* Limit the container width */
+  margin: 0 auto; /* Center the container horizontally */
   padding: 20px;
 }
 
 .create-group-button-container {
-  position: absolute;
-  top: 20px; /* 화면의 맨 상단에 위치시킴 */
-  right: 40px; /* 우측 끝에 배치 */
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 }
 
 .top-bar {
@@ -13,20 +15,30 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  margin: auto;
+}
+
+.button-group {
+  margin-right: 20px;
 }
 
 .search-bar {
-  flex-grow: 1; /* 검색 바가 가능한 넓게 확장되도록 설정 */
-  margin: 20px;
+  flex-grow: 1;
+  margin: 0 20px;
 }
 
 .filter-select {
-  margin-left: auto; /* 오른쪽 끝에 위치하도록 설정 */
+  margin-left: 20px;
 }
 
 .group-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns for better alignment */
+  gap: 20px; /* Increased gap for better spacing */
+  margin-bottom: 40px; /* Space between list and load more button */
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
