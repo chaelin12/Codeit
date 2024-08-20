@@ -24,24 +24,24 @@
 .load-more-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 50px; /* 하단에 적당한 여백 추가 */
-  width: 100%; /* 컨테이너가 화면 전체 너비를 가짐 */
-  position: fixed; /* 페이지 하단에 고정 */
-  bottom: 0; /* 하단에 고정 */
+  width: 100%;
+  position: fixed;
+  bottom: 20px; /* 페이지 하단에서 조금 띄워 놓음 */
   left: 50%;
-  transform: translateX(-50%); /* 수평으로 가운데 정렬 */
+  transform: translateX(-50%);
+  padding: 10px 20px;
   box-sizing: border-box;
 }
 
 #load-more-btn {
-  width: 1560px; /* 버튼 너비 설정 */
+  max-width: 1200px;
   padding: 10px 20px;
   border: 1px solid #282828;
   border-radius: 4px;
   background-color: #fff;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  text-align: center;
   box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }
 
