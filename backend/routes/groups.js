@@ -15,13 +15,24 @@ const storage=multer.diskStorage({
     }
   });
   const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 파일 크기 제한
-router.route('/')
+
+  router.route('/')
     //그룹 목록 조회
     .get(async (req,res)=>{
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = 10; // 페이지 당 항목 수
+        const skip = (page - 1) * pageSize;
         try{
-            const groups = await Group.find();
-            console.log(groups);
-            res.json(groups);
+            const totalGroupCount = await Group.countDocuments();
+            const totalPages = Math.ceil(totalGroupCount / pageSize);
+            const data = await Group.find().skip(skip).limit(pageSize);
+
+            res.json({
+                currentPage: page,
+                totalPages: totalPages,
+                totalItemCount: totalItemCount,
+                data: data
+        });
         }catch(err){
             res.status(400).json({err: '잘못된 요청입니다.'});
         }
