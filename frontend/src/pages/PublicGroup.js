@@ -28,8 +28,8 @@ function PublicGroup() {
         console.log("API 응답 데이터:", response.data);
 
         // 응답 데이터가 배열인지 확인
-        if (Array.isArray(response.data)) {
-          setGroups(response.data);
+        if (response.data && Array.isArray(response.data.data)) {
+          setGroups(response.data.data);
         } else {
           console.error("API 응답이 배열이 아닙니다:", response.data);
           setGroups([]); // 데이터가 배열이 아닌 경우 빈 배열로 설정
