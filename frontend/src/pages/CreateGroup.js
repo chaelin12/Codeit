@@ -8,7 +8,7 @@ import "./CreateGroup.css";
 function CreateGroup() {
   const [input, setInput] = useState({
     name: "",
-    image: null,
+    image: null, // 이미지 파일
     introduction: "",
     isPublic: false,
     password: "",
@@ -20,9 +20,9 @@ function CreateGroup() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
+  const [redirectPath, setRedirectPath] = useState("/");
 
   const { name, image, introduction, isPublic, password } = input;
-
   const navigate = useNavigate();
 
   const validateName = (value) => {
@@ -47,6 +47,7 @@ function CreateGroup() {
       [id]: inputValue,
     });
 
+    // 입력값을 콘솔에 출력
     console.log(`Field ID: ${id}, Value:`, inputValue);
   };
 
@@ -55,12 +56,19 @@ function CreateGroup() {
       ...input,
       isPublic: !isPublic,
     });
+
+    // 공개 여부를 콘솔에 출력
+    console.log(`isPublic: ${!isPublic}`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 제출된 모든 값을 콘솔에 출력
+    console.log("Submitting form with data:", input);
+
     try {
+      // 1. 이미지를 먼저 업로드하고 서버로부터 이미지 URL을 반환받음
       let imageUrl = "";
       if (image) {
         const imageFormData = new FormData();
@@ -76,9 +84,11 @@ function CreateGroup() {
           }
         );
 
-        imageUrl = imageUploadResponse.data.url; // 서버에서 반환한 이미지 URL
+        imageUrl = imageUploadResponse.data.imageUrl; // 서버에서 반환한 이미지 URL 사용
+        console.log("Uploaded Image URL:", imageUrl);
       }
 
+      // 2. 그룹 생성 요청
       const formData = {
         name,
         imageUrl,
@@ -87,13 +97,10 @@ function CreateGroup() {
         password,
       };
 
+      console.log("Final form data to be sent:", formData);
+
       const response = await axios.post("/api/groups", formData);
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-
-      // 백엔드 응답 상태에 따라 모달 표시
       if (response.status === 201) {
         setModalInfo({
           title: "그룹 만들기 성공",
@@ -120,10 +127,8 @@ function CreateGroup() {
     }
   };
 
-  const [redirectPath, setRedirectPath] = useState("/");
-
   const handleCloseModal = () => {
-    navigate(redirectPath); // 모달이 닫힐 때 지정된 경로로 리다이렉트
+    navigate(redirectPath);
     setIsModalOpen(false);
   };
 
