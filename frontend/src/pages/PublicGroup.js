@@ -60,6 +60,7 @@ function PrivateGroup() {
     setActiveButton("private");
     navigate("/privateGroup"); // 비공개 그룹 페이지로 이동
   };
+
   return (
     <div className="private-group-container">
       <div className="create-group-button-container">
@@ -82,11 +83,11 @@ function PrivateGroup() {
           {groups.map((group) => (
             <GroupCard
               key={group.id}
-              date={group.date}
-              isPrivate={group.isPrivate}
-              title={group.title}
-              memories={group.memories}
-              likes={group.likes}
+              date={group.createdAt}
+              isPrivate={!group.isPublic}
+              title={group.name}
+              memories={group.postCount}
+              likes={group.likeCount}
             />
           ))}
           <LoadMoreButton onClick={handleLoadMore} />

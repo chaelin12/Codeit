@@ -34,8 +34,6 @@ function CreateGroup() {
     const { id, value, type, files } = e.target;
     const inputValue = type === "file" ? files[0] : value;
 
-    console.log({ id, inputValue });
-
     if (id === "name") {
       const isValid = validateName(inputValue);
       setErrors({
@@ -48,6 +46,8 @@ function CreateGroup() {
       ...input,
       [id]: inputValue,
     });
+
+    console.log(`Field ID: ${id}, Value:`, inputValue);
   };
 
   const handleToggle = () => {
@@ -61,23 +61,37 @@ function CreateGroup() {
     e.preventDefault();
 
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("image", image);
-      formData.append("introduction", introduction);
-      formData.append("isPublic", isPublic);
-      formData.append("password", password);
+      let imageUrl = "";
+      if (image) {
+        const imageFormData = new FormData();
+        imageFormData.append("image", image);
+
+        const imageUploadResponse = await axios.post(
+          "/api/image",
+          imageFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        imageUrl = imageUploadResponse.data.url; // 서버에서 반환한 이미지 URL
+      }
+
+      const formData = {
+        name,
+        imageUrl,
+        introduction,
+        isPublic,
+        password,
+      };
+
+      const response = await axios.post("/api/groups", formData);
 
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
-
-      // 백엔드로 그룹 생성 요청 보내기
-      const response = await axios.post("/api/groups", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
 
       // 백엔드 응답 상태에 따라 모달 표시
       if (response.status === 201) {
