@@ -2,25 +2,10 @@ const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
 const crypto = require('crypto');
-const multer = require('multer');
-const path = require('path');
 const Group = require('../schemas/group');
 const session = require('express-session')
 
-const storage=multer.diskStorage({
-    destination: (req, file, done) => {
-    done(null, '../frontend/public/images')
-    }, filename: (req, file, done) => {
-      done(null, file.originalname)
-    }
-  });
-  const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 파일 크기 제한
-////////파일 첨부 처리
-let imageUrl = '';
-router.post('/api/image',upload.single('image') , (req, res) => {
-  console.log('서버에 파일 첨부하기', req.file.path);
-  imageUrl =  req.file.originalname;
-});
+
 router.route('/')
     //그룹 목록 조회
     .get(async (req,res)=>{
@@ -70,7 +55,7 @@ router.route('/')
         }
     })
     //그룹 등록
-    .post(upload.single('image'),async (req,res)=>{
+    .post(async (req,res)=>{
         if(req.session){
             try{
                 const generateSalt = (length = 16) => {
