@@ -74,6 +74,7 @@ function CreateGroup() {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(response);
 
       // 백엔드 응답 상태에 따라 모달 표시
       if (response.status === 201) {
