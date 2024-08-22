@@ -33,7 +33,3 @@ function App() {
 }
 
 export default App;
-
-//         <Link to="/groupdetail">GroupDetail</Link>
-// <Route path="/groupdetail" element={<GroupDetail />} />
-// import GroupDetail from "./pages/GroupDetail";
