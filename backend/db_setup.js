@@ -20,13 +20,10 @@ const setup = async () => {
         }
 
         // MongoDB 연결
-        const mongoConn=await mongoose.connect(mongoDbUrl, {
+        mongoose.connect(mongoDbUrl, {
             dbName: mongoDbName,
-        });
-
-        mongodb = mongoose.connection;
-        console.log("몽고DB 접속 성공");
-
+        })
+        console.log("몽고디비 연결 성공");
         // MySQL 연결 설정
         const mysqlConfig = {
             host: process.env.MYSQL_HOST,

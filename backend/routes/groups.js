@@ -9,20 +9,26 @@ const session = require('express-session')
 
 const storage=multer.diskStorage({
     destination: (req, file, done) => {
-    done(null, '/frontend/public/image')
+    done(null, '../frontend/public/images')
     }, filename: (req, file, done) => {
       done(null, file.originalname)
     }
   });
   const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 파일 크기 제한
-
+////////파일 첨부 처리
+let imagepath = '';
+router.post('/api/image',upload.single('image') , (req, res) => {
+  console.log('서버에 파일 첨부하기', req.file.path);
+  imagepath =  req.file.originalname;
+});
   router.route('/')
     //그룹 목록 조회
     .get(async (req,res)=>{
-        const page = parseInt(req.query.page) || 1;
+        const page = parseInt(req.query.page, 10) || 1;
         const pageSize = 10; // 페이지 당 항목 수
         const skip = (page - 1) * pageSize;
-        try{
+
+        try {
             const totalGroupCount = await Group.countDocuments();
             const totalPages = Math.ceil(totalGroupCount / pageSize);
             const data = await Group.find().skip(skip).limit(pageSize);
@@ -30,11 +36,12 @@ const storage=multer.diskStorage({
             res.json({
                 currentPage: page,
                 totalPages: totalPages,
-                totalItemCount: totalItemCount,
+                totalItemCount: totalGroupCount,
                 data: data
-        });
-        }catch(err){
-            res.status(400).json({err: '잘못된 요청입니다.'});
+            });
+        } catch (err) {
+            console.error('Error fetching groups:', err); // 서버 로그에 에러를 기록합니다
+            res.status(500).json({ error: '서버 오류' });
         }
     })
     //그룹 등록
@@ -56,9 +63,9 @@ const storage=multer.diskStorage({
             }
         }
         //그룹 등록 세션이 만료됐을 때
-        // else{
-        //     res.
-        // }
+         else{
+             res.status(400).json({err: '잘못된 요청입니다.'});
+         }
     });
 
 module.exports = router;

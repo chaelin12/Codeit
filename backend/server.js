@@ -1,14 +1,18 @@
 const dotenv = require("dotenv").config();
 const setup = require("./db_setup");
+const path = require('path');
 const express = require("express");
 const app = express();
-
-app.use(express.static("public")); //static 미들웨어 설정
+const cors=require('cors');
+// CORS 설정
+const corsOptions = {
+  origin: 'http://localhost:3000',
+}
+app.use(cors(corsOptions));
 
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 ///////////// session 설정
 const session = require("express-session");
@@ -20,12 +24,13 @@ app.use(
     cookie: { maxAge: 1000 * 60 * 15 } // 세션 유효 기간 (15분)
   })
 );
-
-//라우팅 
-app.get("/", (req, res) => {
-  res.render("index.html");
+//파일 업로드 위치 설정
+app.use('../frontend/public', express.static('images/'));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+// 모든 요청에 대해 index.html 제공
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
-
 //라우팅 포함하는 코드
 const groupsRouter = require('./routes/groups.js');
 //const postsRouter = require('./routes/posts.js');
@@ -37,7 +42,7 @@ app.use('/api/groups', groupsRouter);
 
 app.listen(process.env.WEB_PORT, async () => {
   await setup();
-  console.log("8080 서버가 준비되었습니다...");
+  console.log("3000 서버가 준비되었습니다...");
 });
 
 
