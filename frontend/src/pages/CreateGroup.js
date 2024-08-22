@@ -9,7 +9,7 @@ function CreateGroup() {
   const [input, setInput] = useState({
     name: "",
     image: null,
-    introduce: "",
+    introduction: "",
     isPublic: false,
     password: "",
   });
@@ -21,7 +21,7 @@ function CreateGroup() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
 
-  const { name, image, introduce, isPublic, password } = input;
+  const { name, image, introduction, isPublic, password } = input;
 
   const navigate = useNavigate();
 
@@ -64,9 +64,13 @@ function CreateGroup() {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("image", image);
-      formData.append("introduce", introduce);
+      formData.append("introduction", introduction);
       formData.append("isPublic", isPublic);
       formData.append("password", password);
+
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
 
       // 백엔드로 그룹 생성 요청 보내기
       const response = await axios.post("/api/groups", formData, {
@@ -90,9 +94,11 @@ function CreateGroup() {
         setRedirectPath("/createGroup");
       }
     } catch (error) {
+      console.error("Error:", error.response || error.message);
+
       setModalInfo({
         title: "그룹 만들기 실패",
-        message: "그룹 등록에 실패했습니다.",
+        message: error.response?.data?.message || "그룹 등록에 실패했습니다.",
       });
       setRedirectPath("/createGroup");
     } finally {
@@ -149,8 +155,8 @@ function CreateGroup() {
         <div className="form-group">
           <label>그룹 소개</label>
           <textarea
-            id="introduce"
-            value={introduce}
+            id="introduction"
+            value={introduction}
             onChange={onChange}
             placeholder="그룹을 소개해 주세요"
             rows="5"
