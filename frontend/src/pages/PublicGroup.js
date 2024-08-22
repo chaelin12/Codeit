@@ -10,7 +10,7 @@ import NoGroup from "../components/NoGroup";
 import SearchBar from "../components/SearchBar";
 import "./PublicGroup.css";
 
-function PrivateGroup() {
+function PublicGroup() {
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("public");
   // 상태 관리
@@ -22,15 +22,21 @@ function PrivateGroup() {
     // 백엔드에서 그룹 데이터를 가져오는 로직을 여기에 추가
     const fetchGroups = async () => {
       try {
-        const response = await axios.get("/api/groups"); // 예시 API 요청
-        console.log(response.data);
-        if (Array.isArray(response.data.data)) {
-          setGroups(response.data.data);
+        // 필요한 최소한의 헤더만 설정합니다.
+        const response = await axios.get("/api/groups");
+
+        console.log("API 응답 데이터:", response.data);
+
+        // 응답 데이터가 배열인지 확인
+        if (Array.isArray(response.data)) {
+          setGroups(response.data);
         } else {
-          console.error("응답 데이터가 배열이 아닙니다.");
+          console.error("API 응답이 배열이 아닙니다:", response.data);
+          setGroups([]); // 데이터가 배열이 아닌 경우 빈 배열로 설정
         }
       } catch (error) {
-        console.error("그룹 데이터를 불러오지 못했습니다.", error);
+        console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
+        setGroups([]); // 오류 발생 시 빈 배열로 초기화
       }
     };
 
@@ -106,4 +112,4 @@ function PrivateGroup() {
   );
 }
 
-export default PrivateGroup;
+export default PublicGroup;
