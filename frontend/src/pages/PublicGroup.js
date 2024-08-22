@@ -23,7 +23,12 @@ function PrivateGroup() {
     const fetchGroups = async () => {
       try {
         const response = await axios.get("/api/groups"); // 예시 API 요청
-        setGroups(response.data);
+        console.log(response.data);
+        if (Array.isArray(response.data.data)) {
+          setGroups(response.data.data);
+        } else {
+          console.error("응답 데이터가 배열이 아닙니다.");
+        }
       } catch (error) {
         console.error("그룹 데이터를 불러오지 못했습니다.", error);
       }
@@ -80,16 +85,20 @@ function PrivateGroup() {
         <NoGroup onCreateGroup={handleCreateGroup} />
       ) : (
         <div className="group-list">
-          {groups.map((group) => (
-            <GroupCard
-              key={group.id}
-              date={group.createdAt}
-              isPrivate={!group.isPublic}
-              title={group.name}
-              memories={group.postCount}
-              likes={group.likeCount}
-            />
-          ))}
+          {Array.isArray(groups) ? (
+            groups.map((group) => (
+              <GroupCard
+                key={group.id}
+                date={group.createdAt}
+                isPrivate={!group.isPublic}
+                title={group.name}
+                memories={group.postCount}
+                likes={group.likeCount}
+              />
+            ))
+          ) : (
+            <p>그룹 데이터를 불러오는 데 문제가 발생했습니다.</p>
+          )}
           <LoadMoreButton onClick={handleLoadMore} />
         </div>
       )}
