@@ -29,6 +29,8 @@ function PublicGroup() {
           ? response.data.data
           : [];
 
+        // const publicGroups = fetchedGroups.filter(group => group.isPublic);
+
         setGroups(fetchedGroups);
       } catch (error) {
         console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
@@ -86,19 +88,22 @@ function PublicGroup() {
         <NoGroup onCreateGroup={handleCreateGroup} />
       ) : (
         <div className="group-list">
-          {groups.map((group) => (
-            <GroupCard
-              id={group.id}
-              name={group.name}
-              imageUrl={group.image}
-              isPublic={!group.isPublic}
-              likeCount={group.likeCount}
-              badgeCount={group.badgeCount}
-              postCount={group.postCount}
-              createdAt={group.createdAt}
-              introduction={group.introduction}
-            />
-          ))}
+          {groups.map(
+            (group) =>
+              group.isPublic && ( // 공개 그룹만 렌더링
+                <GroupCard
+                  key={group.id}
+                  name={group.name}
+                  imageUrl={group.image}
+                  isPublic={group.isPublic} // 올바른 값 전달
+                  likeCount={group.likeCount}
+                  badgeCount={group.badgeCount}
+                  postCount={group.postCount}
+                  createdAt={group.createdAt}
+                  introduction={group.introduction}
+                />
+              )
+          )}
           <LoadMoreButton onClick={handleLoadMore} />
         </div>
       )}

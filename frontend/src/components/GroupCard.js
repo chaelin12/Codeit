@@ -70,7 +70,7 @@ function GroupCard({
           <div className="group-date">
             <span className="date">{calculateDaysPassed(createdAt)}</span>
             <span className="separator"> | </span>
-            <span className="public">{isPublic ? "비공개" : "공개"}</span>
+            <span className="public">공개</span>
           </div>
           <div className="group-title">{name}</div>
           <div className="group-introduction">{introduction}</div>
