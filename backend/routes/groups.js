@@ -2,6 +2,7 @@ const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
 const Group = require('../schemas/group');
+const Post = require('../schemas/post');
 
 
 router.route('/')
@@ -58,10 +59,7 @@ router.route('/')
                     introduction: group.introduction
                 }))
             };
-
-            // 로그 출력
             console.log(response);
-
             // 응답 보내기
             res.json(response);
 
@@ -88,7 +86,7 @@ router.route('/')
                     isPublic: req.body.isPublic, 
                     introduction: req.body.introduction,
                 })
-                const sql = `INSERT INTO usersalt(id, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO groupsalt(id, salt) VALUES (?, ?)`;
                 //id는 자동생성 값이므로 group.id로 사용해야함 req.body X
                 mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
                   if (err) {
@@ -130,7 +128,7 @@ router.route('/:id')
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
         //비밀번호 검증
-        const sql = `SELECT salt FROM usersalt WHERE id=?`;
+        const sql = `SELECT salt FROM groupsalt WHERE id=?`;
         mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -174,8 +172,8 @@ router.route('/:id')
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
          //비밀번호 검증
-         const sql = `SELECT salt FROM UserSalt WHERE userid=?`;
-         mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
+         const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
+         mysqldb.query(sql, [group.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
          }
@@ -216,7 +214,7 @@ router.route('/:id')
 router.post('/:id/verify-password', async(req,res)=>{
     const group = await Group.findById(req.params.id);
          //비밀번호 검증
-         const sql = `SELECT salt FROM usersalt WHERE id=?`;
+         const sql = `SELECT salt FROM groupsalt WHERE id=?`;
          mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -271,24 +269,44 @@ router.route('/:id/posts')
                   };
                 const salt = generateSalt();
                 req.body.password=sha(req.body.password+salt);
-                const group = await Group.create({
-                    name: req.body.name,
-                    password: req.body.password,
+                const post = await Post.create({
+                    nickname: req.body.name,
+                    title : req.body.title,
+                    content : req.body.content,
+                    postPassword: req.body.postPassword,
                     imageUrl: req.body.imageUrl,
-                    isPublic: req.body.isPublic, 
-                    introduction: req.body.introduction,
+                    tags: req.body.tags,
+                    location: req.body.location,
+                    moment: req.body.moment,
+                    isPublic: req.body.isPublic
                 })
-                const sql = `INSERT INTO usersalt(id, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO postsalt(id, salt) VALUES (?, ?)`;
                 //id는 자동생성 값이므로 group.id로 사용해야함 req.body X
-                mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
+                mysqldb.query(sql, [post.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
                   } else {
                     console.log("salt 저장 성공");
                   }
                 });
-                console.log(res);
-                res.status(201).json(group);
+                // 응답으로 보낼 데이터 형식 조정
+                const response = {
+                    id: post.id,
+                    groupId: post.groupId,
+                    nickname: post.nickname,
+                    title: post.title,
+                    content: post.content,
+                    imageUrl: post.imageUrl,
+                    tags: post.tags,
+                    location: post.location,
+                    moment: post.moment,
+                    isPublic: post.isPublic,
+                    likeCount: post.likeCount,
+                    commentCount: post.commentCount,
+                    createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
+                };
+                console.log(response);
+                res.status(201).json(response);
             }catch(err){
                 console.error(err);
             }
@@ -298,10 +316,10 @@ router.route('/:id/posts')
                 res.status(400).json({err: '잘못된 요청입니다.'});
             }
     })
-    //게시글 목록 조회
+    /* //게시글 목록 조회
     .get(async (req,res)=>{
         const group = await Group.findById(req.params.id);
-    });
+    }); */
 
 
 
