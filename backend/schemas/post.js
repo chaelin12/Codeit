@@ -2,7 +2,7 @@ const mongoose=require('mongoose');
 const { Schema } =mongoose;
 
 const postSchema = new Schema({
-    id: { type: Number, required: true },
+    id: { type: Number, unique: true },
     groupId: { type: Number, required: true },
     nickname: { type: String, required: true },
     title: { type: String, required: true },
@@ -13,7 +13,6 @@ const postSchema = new Schema({
     moment: { type: Date, required: true },
     isPublic: { type: Boolean, required: true },
     likeCount: { type: Number, default: 0 },
-    comment : String,
     commentCount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
 });

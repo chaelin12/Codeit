@@ -40,13 +40,31 @@ router.route('/')
                 .sort(sortOption)
                 .skip(skip)
                 .limit(pageSize);
-    
-            res.json({
+
+            // 응답으로 보낼 데이터 형식 조정
+            const response = {
                 currentPage: page,
                 totalPages: Math.ceil(totalGroupCount / pageSize),
                 totalGroupCount: totalGroupCount,
-                data: groups
-            });
+                data: groups.map(group => ({
+                    id: group.id,
+                    name: group.name,
+                    imageUrl: group.imageUrl,
+                    isPublic: group.isPublic,
+                    likeCount: group.likeCount,
+                    badges: group.badges,
+                    postCount: group.postCount,
+                    createdAt: group.createdAt.toISOString(),
+                    introduction: group.introduction
+                }))
+            };
+
+            // 로그 출력
+            console.log(response);
+
+            // 응답 보내기
+            res.json(response);
+
         } catch (err) {
             console.error('Error fetching groups:', err);
             res.status(500).json({ error: '서버 오류' });
@@ -71,6 +89,7 @@ router.route('/')
                     introduction: req.body.introduction,
                 })
                 const sql = `INSERT INTO usersalt(id, salt) VALUES (?, ?)`;
+                //id는 자동생성 값이므로 group.id로 사용해야함 req.body X
                 mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
@@ -78,8 +97,20 @@ router.route('/')
                     console.log("salt 저장 성공");
                   }
                 });
-                console.log(group);
-                res.status(201).json(group);
+                // 응답으로 보낼 데이터 형식 조정
+                const response = {
+                    id: group.id,
+                    name: group.name,
+                    imageUrl: group.imageUrl,
+                    isPublic: group.isPublic,
+                    likeCount: group.likeCount,
+                    badges: group.badges,
+                    postCount: group.postCount,
+                    createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
+                    introduction: group.introduction
+                };
+                console.log(response);
+                res.status(201).json(response);
             }catch(err){
                 console.error(err);
             }
@@ -167,7 +198,7 @@ router.route('/:id')
         try{
             const group = await Group.findById(req.params.id);
             res.status(200).json({
-                id: group._id,
+                id: group.id,
                 name: group.name,
                 imageUrl: group.imageUrl,
                 isPublic: group.isPublic,
@@ -185,7 +216,7 @@ router.route('/:id')
 router.post('/:id/verify-password', async(req,res)=>{
     const group = await Group.findById(req.params.id);
          //비밀번호 검증
-         const sql = `SELECT salt FROM UserSalt WHERE userid=?`;
+         const sql = `SELECT salt FROM usersalt WHERE id=?`;
          mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -225,3 +256,54 @@ router.get('/:id/is-public', async(req,res)=>{
         isPublic: group.isPublic
     });
 });
+
+//게시글
+router.route('/:id/posts')
+    //게시글 등록
+    .post(async (req,res)=>{
+        const group = await Group.findById(req.params.id);
+        if(req.session){
+            const { mysqldb } = await setup();
+            try{
+                const generateSalt = (length = 16) => {
+                    const crypto = require('crypto');
+                    return crypto.randomBytes(length).toString('hex');
+                  };
+                const salt = generateSalt();
+                req.body.password=sha(req.body.password+salt);
+                const group = await Group.create({
+                    name: req.body.name,
+                    password: req.body.password,
+                    imageUrl: req.body.imageUrl,
+                    isPublic: req.body.isPublic, 
+                    introduction: req.body.introduction,
+                })
+                const sql = `INSERT INTO usersalt(id, salt) VALUES (?, ?)`;
+                //id는 자동생성 값이므로 group.id로 사용해야함 req.body X
+                mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("salt 저장 성공");
+                  }
+                });
+                console.log(res);
+                res.status(201).json(group);
+            }catch(err){
+                console.error(err);
+            }
+        }
+        //그룹 등록 세션이 만료됐을 때
+            else{
+                res.status(400).json({err: '잘못된 요청입니다.'});
+            }
+    })
+    //게시글 목록 조회
+    .get(async (req,res)=>{
+        const group = await Group.findById(req.params.id);
+    });
+
+
+
+//게시글 목록 조회
+module.exports = router;
