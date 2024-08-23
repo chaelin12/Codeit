@@ -303,7 +303,7 @@ router.route('/:id/posts')
                     isPublic: post.isPublic,
                     likeCount: post.likeCount,
                     commentCount: post.commentCount,
-                    createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
+                    createdAt: post.createdAt.toISOString(), // ISO 형식으로 변환
                 };
                 console.log(response);
                 res.status(201).json(response);
@@ -316,12 +316,69 @@ router.route('/:id/posts')
                 res.status(400).json({err: '잘못된 요청입니다.'});
             }
     })
-    /* //게시글 목록 조회
+    //게시글 목록 조회
     .get(async (req,res)=>{
-        const group = await Group.findById(req.params.id);
-    }); */
+        const page = parseInt(req.query.page, 10) || 1;
+        const pageSize = parseInt(req.query.pageSize, 10) || 10;
+        const skip = (page - 1) * pageSize;
+        const sortBy = req.query.sortBy || 'latest';
+        const keyword = req.query.keyword || '';
+        const isPublic = req.query.isPublic; // 공개/비공개 여부를 쿼리 파라미터로 받음
+    
+        let sortOption = { createdAt: -1 };
+    
+        if (sortBy === 'mostCommented') {
+            sortOption = { commentCount: -1 };
+        } else if (sortBy === 'mostLiked') {
+            sortOption = { likeCount: -1 };
+        } 
+    
+        try {
+            let filter = {};
+            if (keyword) {
+                filter.name = { $regex: keyword, $options: 'i' };
+            }
+    
+            if (isPublic !== undefined) {
+                filter.isPublic = isPublic === 'true'; // 'true'는 boolean true로 변환
+            }
+    
+            const totalPostCount = await Post.countDocuments(filter);
+    
+            const posts = await Post.find(filter)
+                .sort(sortOption)
+                .skip(skip)
+                .limit(pageSize);
+
+            // 응답으로 보낼 데이터 형식 조정
+            const response = {
+                currentPage: page,
+                totalPages: Math.ceil(totalPostCount / pageSize),
+                totalPostCount: totalPostCount,
+                data: posts.map(post => ({
+                    id: post.id,
+                    nickname: post.nickname,
+                    title: post.title,
+                    imageUrl: post.imageUrl,
+                    tags: post.tags,
+                    location: post.location,
+                    moment: post.moment,
+                    isPublic: post.isPublic,
+                    likeCount: post.likeCount,
+                    commentCount: post.commentCount,
+                    createdAt: post.createdAt.toISOString() // ISO 형식으로 변환
+                }))
+            };
+            console.log(response);
+            // 응답 보내기
+            res.json(response);
+
+        } catch (err) {
+            res.status(400).json({ error: '잘못된 요청입니다' });
+        }
+    })
 
 
 
-//게시글 목록 조회
+
 module.exports = router;
