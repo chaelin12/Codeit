@@ -97,8 +97,6 @@ function CreateGroup() {
         password,
       };
 
-      console.log("Final form data to be sent:", formData);
-
       const response = await axios.post("/api/groups", formData);
 
       if (response.status === 201) {
