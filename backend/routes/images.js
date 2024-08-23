@@ -7,7 +7,7 @@ const router = express.Router();
 // 설정: 업로드할 파일의 저장 위치와 파일명 설정
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../frontend/public/images')); // 서버의 경로
+    cb(null, path.join(__dirname, '../public/images')); // 서버의 경로
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname); // 파일명 설정
@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 파일 크기 제한
 
 // 파일 업로드 라우트
-router.post('/api/image', upload.single('image'), (req, res) => {
+router.post('/', upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });

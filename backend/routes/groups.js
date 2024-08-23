@@ -1,9 +1,7 @@
 const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
-const crypto = require('crypto');
 const Group = require('../schemas/group');
-const session = require('express-session')
 
 
 router.route('/')
@@ -57,7 +55,9 @@ router.route('/')
     //그룹 등록
     .post(async (req,res)=>{
         if(req.session){
+            const { mysqldb } = await setup();
             try{
+                console.log(req.params.id);
                 const generateSalt = (length = 16) => {
                     const crypto = require('crypto');
                     return crypto.randomBytes(length).toString('hex');
@@ -71,7 +71,7 @@ router.route('/')
                     isPublic: req.body.isPublic, 
                     introduction: req.body.introduction,
                 })
-                const sql = `INSERT INTO usersalt(userid, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO usersalt(id, salt) VALUES (?, ?)`;
                 mysqldb.query(sql, [req.params.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);

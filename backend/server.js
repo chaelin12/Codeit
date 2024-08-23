@@ -31,10 +31,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 //라우팅 포함하는 코드
+const imagesRouter = require('./routes/images.js');
 const groupsRouter = require('./routes/groups.js');
 //const postsRouter = require('./routes/posts.js');
 //const postsRouter = require('./routes/comments.js');
 
+app.use('/api/image', imagesRouter);
 app.use('/api/groups', groupsRouter);
 //app.use('/api/posts', postsRouter);
 //app.use('/api/comments', commentsRouter);

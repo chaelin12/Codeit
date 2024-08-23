@@ -2,12 +2,11 @@ const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 const mysql = require('mysql2');
 
-let mongodb;
 let mysqldb;
 
 const setup = async () => {
-    if (mongodb && mysqldb) {
-        return { mongodb, mysqldb };
+    if (mongoose.connection.readyState === 1 && mysqldb) {
+        return { mysqldb };
     }
 
     try {
@@ -20,10 +19,11 @@ const setup = async () => {
         }
 
         // MongoDB 연결
-        mongoose.connect(mongoDbUrl, {
+        await mongoose.connect(mongoDbUrl, {
             dbName: mongoDbName,
-        })
+        });
         console.log("몽고디비 연결 성공");
+
         // MySQL 연결 설정
         const mysqlConfig = {
             host: process.env.MYSQL_HOST,
@@ -38,16 +38,19 @@ const setup = async () => {
 
         mysqldb = mysql.createConnection(mysqlConfig);
 
-        mysqldb.connect((err) => {
-            if (err) {
-                console.error("MySQL 접속 실패:", err);
-                throw err;
-            } else {
-                console.log("MySQL 접속 성공");
-            }
+        await new Promise((resolve, reject) => {
+            mysqldb.connect((err) => {
+                if (err) {
+                    console.error("MySQL 접속 실패:", err);
+                    reject(err);
+                } else {
+                    console.log("MySQL 접속 성공");
+                    resolve();
+                }
+            });
         });
 
-        return { mongodb, mysqldb };
+        return { mysqldb };
     } catch (err) {
         console.error("DB 접속 실패", err);
         throw err;
