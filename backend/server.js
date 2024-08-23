@@ -23,8 +23,8 @@ app.use(
     cookie: { maxAge: 1000 * 60 * 15 } // 세션 유효 기간 (15분)
   })
 );
-//파일 업로드 위치 설정
-app.use('../frontend/public', express.static('images/'));
+// 정적 파일 제공 설정
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 // 모든 요청에 대해 index.html 제공
 app.get('/', (req, res) => {
