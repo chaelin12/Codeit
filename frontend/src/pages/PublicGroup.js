@@ -88,14 +88,14 @@ function PublicGroup() {
         <div className="group-list">
           {groups.map((group) => (
             <GroupCard
-              key={group.id}
-              title={group.name}
+              id={group.id}
+              name={group.name}
               imageUrl={group.image}
-              isPrivate={!group.isPublic}
-              likes={group.likeCount}
-              badge={group.badgeCount}
-              memories={group.postCount}
-              date={group.createdAt}
+              isPublic={!group.isPublic}
+              likeCount={group.likeCount}
+              badgeCount={group.badgeCount}
+              postCount={group.postCount}
+              createdAt={group.createdAt}
               introduction={group.introduction}
             />
           ))}
