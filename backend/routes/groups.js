@@ -57,7 +57,6 @@ router.route('/')
         if(req.session){
             const { mysqldb } = await setup();
             try{
-                console.log(req.params.id);
                 const generateSalt = (length = 16) => {
                     const crypto = require('crypto');
                     return crypto.randomBytes(length).toString('hex');
@@ -72,7 +71,7 @@ router.route('/')
                     introduction: req.body.introduction,
                 })
                 const sql = `INSERT INTO usersalt(id, salt) VALUES (?, ?)`;
-                mysqldb.query(sql, [req.params.id, salt], (err, rows, fields) => {
+                mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
                   } else {
@@ -100,7 +99,7 @@ router.route('/:id')
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
         //비밀번호 검증
-        const sql = `SELECT salt FROM UserSalt WHERE userid=?`;
+        const sql = `SELECT salt FROM usersalt WHERE id=?`;
         mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
