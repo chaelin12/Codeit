@@ -94,10 +94,10 @@ function PublicGroup() {
                 <GroupCard
                   key={group.id}
                   name={group.name}
-                  imageUrl={group.image}
+                  imageUrl={group.imageUrl}
                   isPublic={group.isPublic} // 올바른 값 전달
                   likeCount={group.likeCount}
-                  badgeCount={group.badgeCount}
+                  badgeCount={group.badges}
                   postCount={group.postCount}
                   createdAt={group.createdAt}
                   introduction={group.introduction}
