@@ -24,7 +24,6 @@ function PublicGroup() {
       try {
         // 필요한 최소한의 헤더만 설정합니다.
         const response = await axios.get("/api/groups");
-
         console.log("API 응답 데이터:", response.data);
 
         // 응답 데이터가 배열인지 확인
@@ -91,20 +90,16 @@ function PublicGroup() {
         <NoGroup onCreateGroup={handleCreateGroup} />
       ) : (
         <div className="group-list">
-          {Array.isArray(groups) ? (
-            groups.map((group) => (
-              <GroupCard
-                key={group.id}
-                date={group.createdAt}
-                isPrivate={!group.isPublic}
-                title={group.name}
-                memories={group.postCount}
-                likes={group.likeCount}
-              />
-            ))
-          ) : (
-            <p>그룹 데이터를 불러오는 데 문제가 발생했습니다.</p>
-          )}
+          {groups.map((group) => (
+            <GroupCard
+              key={group.id}
+              date={group.createdAt}
+              isPrivate={!group.isPublic}
+              title={group.name}
+              memories={group.postCount}
+              likes={group.likeCount}
+            />
+          ))}
           <LoadMoreButton onClick={handleLoadMore} />
         </div>
       )}
