@@ -24,21 +24,17 @@ function PublicGroup() {
       try {
         // 필요한 최소한의 헤더만 설정합니다.
         const response = await axios.get("/api/groups");
-        console.log("API 응답 데이터:", response.data);
 
-        // 응답 데이터가 배열인지 확인
-        if (response.data && Array.isArray(response.data.data)) {
-          setGroups(response.data.data);
-        } else {
-          console.error("API 응답이 배열이 아닙니다:", response.data);
-          setGroups([]); // 데이터가 배열이 아닌 경우 빈 배열로 설정
-        }
+        const fetchedGroups = Array.isArray(response.data.data)
+          ? response.data.data
+          : [];
+
+        setGroups(fetchedGroups);
       } catch (error) {
         console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
         setGroups([]); // 오류 발생 시 빈 배열로 초기화
       }
     };
-
     fetchGroups();
   }, []);
 
