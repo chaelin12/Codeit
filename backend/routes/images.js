@@ -25,7 +25,7 @@ router.post('/', upload.single('image'), (req, res) => {
     console.log('서버에 파일 첨부하기', req.file.path);
 
     // 업로드된 파일의 URL 또는 경로를 응답으로 반환
-    const imageUrl = `/public/images/${req.file.originalname}`;
+    const imageUrl = `/images/${req.file.originalname}`;
     res.status(200).json({ imageUrl });
   } catch (err) {
     console.error('파일 업로드 중 오류 발생:', err);
