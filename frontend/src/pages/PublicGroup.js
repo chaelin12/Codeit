@@ -89,11 +89,14 @@ function PublicGroup() {
           {groups.map((group) => (
             <GroupCard
               key={group.id}
-              date={group.createdAt}
-              isPrivate={!group.isPublic}
               title={group.name}
-              memories={group.postCount}
+              imageUrl={group.image}
+              isPrivate={!group.isPublic}
               likes={group.likeCount}
+              badge={group.badgeCount}
+              memories={group.postCount}
+              date={group.createdAt}
+              introduction={group.introduction}
             />
           ))}
           <LoadMoreButton onClick={handleLoadMore} />

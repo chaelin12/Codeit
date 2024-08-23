@@ -1,26 +1,73 @@
 .group-card {
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
   padding: 20px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.group-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.group-card-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
 }
 
 .group-info {
-  margin-bottom: 10px;
+  flex-grow: 1;
+  text-align: left; /* 왼쪽 정렬 */
 }
 
 .group-date {
-  color: #aaa;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.date {
+  color: #282828; /* D+날짜 검정색 */
+}
+
+.separator {
+  color: #b8b8b8;
+}
+
+.private {
+  color: #8d8d8d; /* 공개/비공개 회색 */
 }
 
 .group-title {
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.group-introduction {
+  font-size: 14px;
+  color: #282828; /* 소개 텍스트 색상 */
+  margin-top: 5px; /* 간격 추가 */
 }
 
 .group-stats {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  color: #aaa;
+  color: #888;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.group-badge {
+  background-color: #ffcd3c;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
 }
