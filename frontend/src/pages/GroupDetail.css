@@ -1,0 +1,63 @@
+.group-detail-page {
+  padding: 20px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.group-image img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.group-info {
+  flex: 1;
+}
+
+.group-info h1 {
+  font-size: 2em;
+  margin: 0;
+}
+
+.group-status {
+  font-size: 1em;
+  color: gray;
+}
+
+.group-badges {
+  margin: 10px 0;
+}
+
+.badge {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-right: 5px;
+}
+
+.group-stats {
+  margin-top: 10px;
+  font-size: 1.1em;
+}
+
+.group-actions {
+  margin-top: 20px;
+}
+
+.group-actions button {
+  margin-right: 10px;
+}
+
+.like-button {
+  background-color: #f28b82;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}

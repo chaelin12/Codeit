@@ -92,7 +92,7 @@ function PublicGroup() {
             (group) =>
               group.isPublic && ( // 공개 그룹만 렌더링
                 <GroupCard
-                  key={group.id}
+                  id={group.id}
                   name={group.name}
                   imageUrl={group.imageUrl}
                   isPublic={group.isPublic} // 올바른 값 전달

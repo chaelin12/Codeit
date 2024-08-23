@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./GroupCard.css";
 
 function GroupCard({
+  id,
   name,
   imageUrl,
   likeCount,
@@ -9,8 +11,10 @@ function GroupCard({
   postCount,
   createdAt,
   introduction,
+  onClick,
 }) {
   const [daysPassed, setDaysPassed] = useState(0);
+  const navigate = useNavigate();
 
   const calculateDaysPassed = () => {
     if (!createdAt) {
@@ -40,8 +44,13 @@ function GroupCard({
     return () => clearInterval(intervalId);
   }, [createdAt]);
 
+  const handleGroupCardClick = () => {
+    // 그룹 ID를 포함하여 GroupDetail 페이지로 이동
+    navigate(`/GroupDetail`);
+  };
+
   return (
-    <div className="group-card">
+    <div className="group-card" onClick={onClick}>
       <div className="group-card-header">
         {imageUrl && (
           <img src={imageUrl} alt="group" className="group-card-image" />
@@ -52,7 +61,10 @@ function GroupCard({
             <span className="separator"> | </span>
             <span className="public">공개</span>
           </div>
-          <div className="group-title">{name}</div>
+          <div className="group-title" onClick={() => handleGroupCardClick(id)}>
+            {name}
+          </div>
+
           <div className="group-introduction">{introduction}</div>
         </div>
       </div>
