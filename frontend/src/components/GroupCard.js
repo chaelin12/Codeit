@@ -12,47 +12,32 @@ function GroupCard({
 }) {
   const [daysPassed, setDaysPassed] = useState(0);
 
-  // 계산 함수 정의
   const calculateDaysPassed = () => {
     if (!createdAt) {
       console.error("createdAt is not provided or is invalid.");
       return;
     }
 
-    // Date 객체로 변환
     const start = new Date(createdAt);
-
-    // 유효한 날짜인지 확인
     if (isNaN(start.getTime())) {
       console.error("Invalid createdAt date:", createdAt);
       return;
     }
 
-    // 현재 날짜와의 차이를 계산
     const now = new Date();
     const difference = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-
-    // 상태 업데이트
     setDaysPassed(difference);
   };
 
   useEffect(() => {
-    calculateDaysPassed(); // 컴포넌트 마운트 시 초기 계산
+    calculateDaysPassed(); // 초기 계산
 
-    // 다음 24시까지 남은 시간 계산
-    const now = new Date();
-    const nextMidnight = new Date();
-    nextMidnight.setHours(24, 0, 0, 0);
-    const timeUntilNextMidnight = nextMidnight - now;
-
-    // 다음 24시에 맞춰 날짜 차이 재계산
-    const intervalId = setTimeout(() => {
-      calculateDaysPassed(); // 초기 계산
-      setInterval(calculateDaysPassed, 1000 * 60 * 60 * 24); // 매일 계산
-    }, timeUntilNextMidnight);
+    const intervalId = setInterval(() => {
+      calculateDaysPassed();
+    }, 1000); // 1초마다 호출
 
     // 컴포넌트 언마운트 시 interval 정리
-    return () => clearTimeout(intervalId);
+    return () => clearInterval(intervalId);
   }, [createdAt]);
 
   return (
