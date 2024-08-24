@@ -46,7 +46,7 @@ function GroupCard({
 
   const handleGroupCardClick = () => {
     // 그룹 ID를 포함하여 GroupDetail 페이지로 이동
-    navigate(`/GroupDetail`);
+    navigate(`/GroupDetail/${id}`);
   };
 
   return (

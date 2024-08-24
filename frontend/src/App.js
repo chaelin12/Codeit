@@ -30,7 +30,7 @@ function App() {
         <Route path="/creategroup" element={<CreateGroup />} />
         <Route path="/privateGroup" element={<PrivateGroup />} />
         <Route path="/accessPrivate" element={<AccessPrivate />} />
-        <Route path="/groupdetail/:id" element={<GroupDetail />} />
+        <Route path="/groupdetail/:groupId" element={<GroupDetail />} />
         <Route path="/uploadPost" element={<UploadPost />} />
       </Routes>
     </div>

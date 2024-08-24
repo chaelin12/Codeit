@@ -10,14 +10,20 @@ function GroupDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log("groupId:", groupId);
     const fetchGroups = async () => {
       try {
-        // 올바른 경로로 API 요청을 보냅니다.
+        // 템플릿 리터럴을 사용하여 올바른 경로로 API 요청을 보냅니다.
         const response = await axios.get(`/api/groups/${groupId}`);
-        setGroupDetail(response.data); // 서버에서 가져온 그룹 정보를 상태에 저장
+        console.log("Group Detail Response:", response.data); // 응답 데이터 확인
+        setGroupDetail(response.data);
         setLoading(false);
       } catch (error) {
-        setError(error.message);
+        console.error("Error fetching group details:", error.message);
+        if (error.response) {
+          console.error("Server Response Error Data:", error.response.data); // 서버 응답의 에러 내용 확인
+        }
+        setError(error.response?.data?.message || error.message);
         setLoading(false);
       }
     };
