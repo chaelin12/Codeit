@@ -17,5 +17,21 @@ const postSchema = new Schema({
     commentCount: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
 });
-
+// 그룹 저장 전에 자동으로 ID를 증가시키는 미들웨어
+postSchema.pre('save', async function (next) {
+    const doc = this;
+  
+    // ID 증가 로직
+    if (doc.isNew) {
+      try {
+        const highestGroup = await mongoose.model('Post').findOne({}, 'id').sort({ id: -1 }).exec();
+        doc.id = highestPost ? highestPost.id + 1 : 1;
+        next();
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      next();
+    }
+  });
 module.exports = mongoose.model('Post', postSchema);

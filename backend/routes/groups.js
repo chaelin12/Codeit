@@ -61,7 +61,7 @@ router.route('/')
             };
             console.log(response);
             // 응답 보내기
-            res.json(response);
+            res.status(200).json(response);
 
         } catch (err) {
             console.error('Error fetching groups:', err);
@@ -129,13 +129,13 @@ router.route('/:id')
         }
         //비밀번호 검증
         const sql = `SELECT salt FROM groupsalt WHERE id=?`;
-        mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
+        mysqldb.query(sql, [group.id], async (err, rows, fields) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
         }
         try {
             const salt = rows[0].salt;
-            const hashPw = sha(password + salt);
+            const hashPw = sha(req.body.verifyPassword + salt);
             if (group.password == hashPw) {
                 try{
                     const generateSalt = (length = 16) => {
@@ -143,11 +143,12 @@ router.route('/:id')
                         return crypto.randomBytes(length).toString('hex');
                       };
                     const salt = generateSalt();
-                    const result = await Group.update({
+                    req.body.password = sha(req.body.password+salt);
+                    const result = await Group.updateOne({
                         _id:req.params.id,//업데이트 대상 검색
                     },{
                         name: req.body.name,
-                        password: sha(req.body.password+salt),
+                        password: req.body.password,
                         imageUrl: req.body.imageUrl,
                         isPublic: req.body.isPublic, 
                         introduction: req.body.introduction,
@@ -159,10 +160,10 @@ router.route('/:id')
         }else{
             res.status(403).json({message : "비밀번호가 틀렸습니다"})
         }
-    }catch(err){
-            res.status(400).json({message : "잘못된 요청입니다"});
-        }
-    })
+        }catch(err){
+                res.status(400).json({message : "잘못된 요청입니다"});
+            }
+        })
     })
     
     //그룹 삭제
@@ -179,7 +180,7 @@ router.route('/:id')
          }
          try {
              const salt = rows[0].salt;
-             const hashPw = sha(password + salt);
+             const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
                 await Group.deleteOne({ _id: req.params.id });
                 res.status(200).json({message : "그룹 삭제 성공"});
@@ -215,13 +216,13 @@ router.post('/:id/verify-password', async(req,res)=>{
     const group = await Group.findById(req.params.id);
          //비밀번호 검증
          const sql = `SELECT salt FROM groupsalt WHERE id=?`;
-         mysqldb.query(sql, [req.params.id], async (err, rows, fields) => {
+         mysqldb.query(sql, [group.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
          }
          try {
              const salt = rows[0].salt;
-             const hashPw = sha(password + salt);
+             const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
                 res.status(200).json({message : "비밀번호가 확인되었습니다"});
             }else{
@@ -235,7 +236,7 @@ router.post('/:id/verify-password', async(req,res)=>{
 //그룹 공감하기
 router.post('/:id/like', async(req,res)=>{
     try{
-        const result = await Group.update({
+        await Group.updateOne({
             _id:req.params.id,//업데이트 대상 검색
         },{
             likeCount : (likeCount+1),
@@ -248,9 +249,9 @@ router.post('/:id/like', async(req,res)=>{
 });
 //그룹 공개 여부 확인
 router.get('/:id/is-public', async(req,res)=>{
-    const result = await Group.findById(req.params.id, 'isPublic');
+    const group = await Group.findById(req.params.id, 'isPublic');
     res.status(200).json({
-        id: req.params.id,
+        id: group.id,
         isPublic: group.isPublic
     });
 });
@@ -259,7 +260,6 @@ router.get('/:id/is-public', async(req,res)=>{
 router.route('/:id/posts')
     //게시글 등록
     .post(async (req,res)=>{
-        const group = await Group.findById(req.params.id);
         if(req.session){
             const { mysqldb } = await setup();
             try{
@@ -268,8 +268,9 @@ router.route('/:id/posts')
                     return crypto.randomBytes(length).toString('hex');
                   };
                 const salt = generateSalt();
-                req.body.password=sha(req.body.password+salt);
+                req.body.postPassword=sha(req.body.postPassword+salt);
                 const post = await Post.create({
+                    groupId: req.params.id,
                     nickname: req.body.name,
                     title : req.body.title,
                     content : req.body.content,
@@ -279,9 +280,9 @@ router.route('/:id/posts')
                     location: req.body.location,
                     moment: req.body.moment,
                     isPublic: req.body.isPublic
-                })
+                });
                 const sql = `INSERT INTO postsalt(id, salt) VALUES (?, ?)`;
-                //id는 자동생성 값이므로 group.id로 사용해야함 req.body X
+                //id는 자동생성 값이므로 post.id로 사용해야함 req.body X
                 mysqldb.query(sql, [post.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
@@ -303,7 +304,7 @@ router.route('/:id/posts')
                     isPublic: post.isPublic,
                     likeCount: post.likeCount,
                     commentCount: post.commentCount,
-                    createdAt: post.createdAt.toISOString(), // ISO 형식으로 변환
+                    createdAt: post.createdAt.toISOString() // ISO 형식으로 변환
                 };
                 console.log(response);
                 res.status(201).json(response);
@@ -324,7 +325,8 @@ router.route('/:id/posts')
         const sortBy = req.query.sortBy || 'latest';
         const keyword = req.query.keyword || '';
         const isPublic = req.query.isPublic; // 공개/비공개 여부를 쿼리 파라미터로 받음
-    
+        const groupId = req.query.groupId;
+
         let sortOption = { createdAt: -1 };
     
         if (sortBy === 'mostCommented') {
@@ -342,7 +344,9 @@ router.route('/:id/posts')
             if (isPublic !== undefined) {
                 filter.isPublic = isPublic === 'true'; // 'true'는 boolean true로 변환
             }
-    
+            if (groupId) {
+                filter.groupId = groupId; // 그룹 ID 필터 추가
+            }
             const totalPostCount = await Post.countDocuments(filter);
     
             const posts = await Post.find(filter)
@@ -371,7 +375,7 @@ router.route('/:id/posts')
             };
             console.log(response);
             // 응답 보내기
-            res.json(response);
+            res.status(200).json(response);
 
         } catch (err) {
             res.status(400).json({ error: '잘못된 요청입니다' });
