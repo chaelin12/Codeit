@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import calender from "../assets/pictures/calender.png";
 import Button from "../components/FormButton";
 import Modal from "../components/Modal";
 import "./UploadPost.css";
@@ -195,8 +196,9 @@ function UploadPost() {
               value={input.moment}
               onChange={onChange}
               placeholder="YYYY-MM-DD"
-              className={!isDateSelected ? "placeholder" : ""}
+              className={`memory-date-input ${isDateSelected ? "active" : ""}`}
             />
+            <img src={calender} alt="calender icon" className="calender-icon" />
           </div>
           <div className="form-group">
             <label>추억 공개 선택</label>

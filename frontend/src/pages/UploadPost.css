@@ -40,7 +40,7 @@
 .form-group textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
 }
@@ -53,23 +53,23 @@
 .image-placeholder {
   flex-grow: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #b8b8b8;
   border-radius: 5px;
   font-size: 16px;
   margin-right: 10px;
   height: 45px;
   display: flex;
   align-items: center;
-  color: #aaa;
+  color: #ddd;
 }
 
 .file-upload-button {
   flex-shrink: 0;
   font-size: 12px;
   width: 100px;
-  padding: 8px 12px;
-  background-color: white;
-  border: 1px solid black;
+  padding: 15px 25px;
+  background-color: #fafafa;
+  border: 1px solid #282828;
   border-radius: 4px;
   align-items: center;
   justify-content: center;
@@ -81,6 +81,48 @@
 .form-group {
   font-size: 16px;
 }
+.date-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.memory-date-input {
+  width: 100%;
+  padding-right: 40px; /* 아이콘을 위한 오른쪽 패딩 */
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #000;
+  box-sizing: border-box; /* 패딩과 테두리를 포함한 크기를 설정 */
+}
+
+.memory-date-input::placeholder {
+  color: #ccc; /* 플레이스홀더 텍스트 색상 */
+  font-weight: normal; /* 플레이스홀더의 글자 두께를 일반으로 설정 */
+}
+
+.memory-date-input:focus {
+  border-color: #000; /* 포커스 시 테두리 색상 */
+  outline: none;
+}
+
+.calendar-icon {
+  position: absolute;
+  top: 50%; /* 입력칸 안에서 수직 중앙에 위치 */
+  right: 10px; /* 입력칸 안에서 오른쪽 끝에 위치 */
+  transform: translateY(-50%); /* 수직 중앙 정렬 */
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0.8; /* 약간의 투명도 */
+}
+.calender-icon:hover {
+  opacity: 1; /* 호버 시 불투명하게 */
+}
+
 .toggle-container {
   display: flex;
   align-items: center;
