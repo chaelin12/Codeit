@@ -2,6 +2,7 @@
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
+  text-align: left;
 }
 
 .title1 {
@@ -15,7 +16,7 @@
 
 .form-group label {
   display: flex;
-  font-weight: 500;
+  font-weight: 400;
   margin-bottom: 10px;
 }
 
@@ -24,28 +25,39 @@
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
   font-weight: 400;
   font-size: 12px;
   height: 45px;
   transition: border-color 0.2s;
+  line-height: 21px;
 }
 
 .form-group textarea {
   height: 120px !important;
+  align-items: center;
   resize: none;
+}
+
+/* 플레이스홀더 스타일 통일 */
+textarea::placeholder,
+input::placeholder {
+  color: #aaa;
+  font-size: 12px;
 }
 
 .image-upload-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
 .form-group-image {
   display: flex;
+  align-items: center;
   gap: 10px;
 }
 
@@ -59,6 +71,7 @@
 }
 
 .file-upload-button {
+  display: flex;
   flex-shrink: 0;
   font-size: 12px;
   width: 100px;
@@ -68,6 +81,7 @@
   border-radius: 4px;
   align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
   height: 45px;
   box-sizing: border-box;

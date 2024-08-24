@@ -19,6 +19,7 @@ function UploadPost() {
     isPublic: true,
   });
 
+  const [isDateSelected, setIsDateSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
   const [redirectPath, setRedirectPath] = useState("/");
@@ -27,6 +28,10 @@ function UploadPost() {
   const onChange = (e) => {
     const { id, value, type, files } = e.target;
     const inputValue = type === "file" ? files[0] : value;
+
+    if (id === "moment") {
+      setIsDateSelected(value !== ""); // 날짜가 선택되었는지 확인
+    }
 
     setInput({ ...input, [id]: inputValue });
   };
@@ -169,7 +174,7 @@ function UploadPost() {
               id="tags"
               value={input.tags}
               onChange={onChange}
-              placeholder="태그를 입력하세요 (쉼표로 구분)"
+              placeholder="태그 입력 후 Enter"
             />
           </div>
           <div className="form-group">
@@ -189,6 +194,8 @@ function UploadPost() {
               id="moment"
               value={input.moment}
               onChange={onChange}
+              placeholder="YYYY-MM-DD"
+              className={!isDateSelected ? "placeholder" : ""}
             />
           </div>
           <div className="form-group">
