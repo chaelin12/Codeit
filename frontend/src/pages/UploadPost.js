@@ -190,16 +190,35 @@ function UploadPost() {
           </div>
           <div className="form-group">
             <label>추억의 순간</label>
-            <input
-              type="date"
-              id="moment"
-              value={input.moment}
-              onChange={onChange}
-              placeholder="YYYY-MM-DD"
-              className={`memory-date-input ${isDateSelected ? "active" : ""}`}
-            />
-            <img src={calender} alt="calender icon" className="calender-icon" />
+            <div className="date-input-wrapper">
+              <input
+                type="date"
+                id="moment"
+                value={input.moment}
+                onChange={onChange}
+                onFocus={(e) => {
+                  e.target.type = "date"; // 타입을 date로 설정하여 날짜 선택기 표시
+                  e.target.showPicker();
+                }}
+                onBlur={(e) => {
+                  if (!input.moment) {
+                    e.target.type = "text"; // 값이 없을 때 텍스트 필드로 전환
+                  }
+                }}
+                placeholder="YYYY-MM-DD"
+                className={`memory-date-input ${
+                  isDateSelected ? "active" : ""
+                }`}
+              />
+              <img
+                src={calender}
+                alt="calendar icon"
+                className="calendar-icon"
+                onClick={() => document.getElementById("moment").showPicker()}
+              />
+            </div>
           </div>
+
           <div className="form-group">
             <label>추억 공개 선택</label>
             <div className="toggle-container">
