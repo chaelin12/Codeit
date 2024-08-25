@@ -29,8 +29,6 @@ function PublicGroup() {
           ? response.data.data
           : [];
 
-        // const publicGroups = fetchedGroups.filter(group => group.isPublic);
-
         setGroups(fetchedGroups);
       } catch (error) {
         console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
@@ -66,7 +64,7 @@ function PublicGroup() {
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    navigate("/privateGroup"); // 비공개 그룹 페이지로 이동
+    navigate("/GroupDetail"); // 비공개 그룹 페이지로 이동
   };
 
   return (
