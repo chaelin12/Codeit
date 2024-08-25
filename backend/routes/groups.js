@@ -122,7 +122,7 @@ module.exports = router;
 router.route('/:id')
     //그룹 수정
     .put(async (req,res)=>{
-        const group = await Group.findOne(req.params.groupId);
+        const group = await Group.findOne(req.params.id);
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -167,7 +167,7 @@ router.route('/:id')
     
     //그룹 삭제
     .delete(async(req,res)=>{ 
-        const group = await Group.findOne(req.params.groupId);
+        const group = await Group.findOne(req.params.id);
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -194,7 +194,7 @@ router.route('/:id')
     //그룹 상세 정보 확인
     .get(async(req,res)=>{
         try{
-            const group = await Group.findOne(req.params.groupId);
+            const group = await Group.findOne({ id: req.params.id });
             res.status(200).json({
                 id: group.id,
                 name: group.name,
@@ -212,7 +212,7 @@ router.route('/:id')
     });
 //그룹 조회 권한 확인
 router.post('/:id/verify-password', async(req,res)=>{
-    const group = await Group.findOne(req.params.groupId);
+    const group = await Group.findOne({ id: req.params.id });
          //비밀번호 검증
          const sql = `SELECT salt FROM groupsalt WHERE id=?`;
          mysqldb.query(sql, [group.id], async (err, rows, fields) => {
@@ -236,7 +236,7 @@ router.post('/:id/verify-password', async(req,res)=>{
 router.post('/:id/like', async(req,res)=>{
     try{
         await Group.updateOne({
-           id:req.params.groupId,//업데이트 대상 검색
+           id:req.params.id,//업데이트 대상 검색
         },{
             likeCount : (likeCount+1),
         });
@@ -248,7 +248,7 @@ router.post('/:id/like', async(req,res)=>{
 });
 //그룹 공개 여부 확인
 router.get('/:id/is-public', async(req,res)=>{
-    const group = await Group.findOne(req.params.groupId, 'isPublic');
+    const group = await Group.findOne(req.params.id, 'isPublic');
     res.status(200).json({
         id: group.id,
         isPublic: group.isPublic
