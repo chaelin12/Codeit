@@ -122,7 +122,7 @@ module.exports = router;
 router.route('/:id')
     //그룹 수정
     .put(async (req,res)=>{
-        const group = await Group.findOne(req.params.id);
+        const group = await Group.findOne({id:req.params.id});
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -152,7 +152,16 @@ router.route('/:id')
                         isPublic: req.body.isPublic, 
                         introduction: req.body.introduction,
                     });
-                    res.json(result);
+                    res.status(200).json({
+                        id: group.id,
+                        name: group.name,
+                        imageUrl: group.imageUrl,
+                        isPublic: group.isPublic,
+                        likeCount: group.likeCount,
+                        badges: group.badges,
+                        postCount: group.postCount,
+                        createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
+                        introduction: group.introduction});
                 }catch(err){
                     console.error(err);
                 }
@@ -167,7 +176,7 @@ router.route('/:id')
     
     //그룹 삭제
     .delete(async(req,res)=>{ 
-        const group = await Group.findOne(req.params.id);
+        const group = await Group.findOne({id:req.params.id});
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -248,7 +257,7 @@ router.post('/:id/like', async(req,res)=>{
 });
 //그룹 공개 여부 확인
 router.get('/:id/is-public', async(req,res)=>{
-    const group = await Group.findOne(req.params.id, 'isPublic');
+    const group = await Group.findOne({id:req.params.id}, 'isPublic');
     res.status(200).json({
         id: group.id,
         isPublic: group.isPublic

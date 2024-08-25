@@ -6,7 +6,7 @@ const Post = require('../schemas/post');
 router.route('/:id')
     //게시글 수정
     .put(async (req,res)=>{
-        const post = await Post.findOne(req.params.id);
+        const post = await Post.findOne({id:req.params.id});
         if (!post) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -70,7 +70,7 @@ router.route('/:id')
     })
     //게시글 삭제
     .delete(async (req,res)=>{
-        const post = await Post.findOne(req.params.id);
+        const post = await Post.findOne({id:req.params.id});
         if (!post) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -97,7 +97,7 @@ router.route('/:id')
     //게시글 상세 정보 조회
     .get(async (req,res)=>{
         try{
-        const post = await Post.findOne(req.params.id);
+        const post = await Post.findOne({id:req.params.id});
         res.status(200).json({
             id: post.id,
             groupId: post.groupId,
@@ -120,7 +120,7 @@ router.route('/:id')
     });
 //게시글 조회 권한 확인
 router.post('/:id/verify-password',async(req,res)=>{
-    const post = await Post.findOne(req.params.id);
+    const post = await Post.findOne({id:req.params.id});
          //비밀번호 검증
          const sql = `SELECT salt FROM postsalt WHERE id=?`;
          mysqldb.query(sql, [post.id], async (err, rows, fields) => {
@@ -156,7 +156,7 @@ router.post('/:id/like',async (req,res)=>{
 //게시글 공개 여부 확인
 router.get('/:id/is-public',async (req,res)=>{
     //파라미터를 :id로 받아옴
-    const post = await Post.findOne(req.params.id, 'isPublic');
+    const post = await Post.findOne({id:req.params.id}, 'isPublic');
     res.status(200).json({
         id: post.id,
         isPublic: post.isPublic
