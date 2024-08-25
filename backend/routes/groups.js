@@ -59,7 +59,6 @@ router.route('/')
                     introduction: group.introduction
                 }))
             };
-            console.log(response);
             // 응답 보내기
             res.status(200).json(response);
 
@@ -182,7 +181,7 @@ router.route('/:id')
              const salt = rows[0].salt;
              const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
-                await Group.deleteOne({ id: req.params.postId });
+                await Group.deleteOne({ id: req.params.groupId });
                 res.status(200).json({message : "그룹 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
