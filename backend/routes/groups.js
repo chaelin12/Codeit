@@ -144,7 +144,7 @@ router.route('/:id')
                     const salt = generateSalt();
                     req.body.password = sha(req.body.password+salt);
                     const result = await Group.updateOne({
-                        id:req.params.groupId,//업데이트 대상 검색
+                        id:req.params.id,//업데이트 대상 검색
                     },{
                         name: req.body.name,
                         password: req.body.password,
@@ -181,7 +181,7 @@ router.route('/:id')
              const salt = rows[0].salt;
              const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
-                await Group.deleteOne({ id: req.params.groupId });
+                await Group.deleteOne({ id: req.params.id });
                 res.status(200).json({message : "그룹 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
@@ -305,16 +305,15 @@ router.route('/:id/posts')
                     commentCount: post.commentCount,
                     createdAt: post.createdAt.toISOString() // ISO 형식으로 변환
                 };
-                console.log(response);
                 res.status(201).json(response);
             }catch(err){
                 console.error(err);
             }
         }
-        //그룹 등록 세션이 만료됐을 때
-            else{
-                res.status(400).json({err: '잘못된 요청입니다.'});
-            }
+        //게시글 등록 세션이 만료됐을 때
+        else{
+            res.status(400).json({err: '잘못된 요청입니다.'});
+        }
     })
     //게시글 목록 조회
     .get(async (req,res)=>{
