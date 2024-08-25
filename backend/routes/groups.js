@@ -182,7 +182,7 @@ router.route('/:id')
              const salt = rows[0].salt;
              const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
-                await Group.deleteOne({ _id: req.params.id });
+                await Group.deleteOne({ id: req.params.postId });
                 res.status(200).json({message : "그룹 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
