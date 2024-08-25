@@ -1,5 +1,6 @@
 .group-detail-page {
   padding: 20px;
+  position: relative;
 }
 
 .group-header {
@@ -19,14 +20,21 @@
   flex: 1;
 }
 
+.group-status {
+  font-size: 1em;
+  color: gray;
+  margin-bottom: 10px;
+}
+
 .group-info h1 {
   font-size: 2em;
   margin: 0;
 }
 
-.group-status {
+.group-date {
   font-size: 1em;
   color: gray;
+  margin-bottom: 10px;
 }
 
 .group-badges {
@@ -46,11 +54,28 @@
 }
 
 .group-actions {
-  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
 
-.group-actions button {
-  margin-right: 10px;
+.group-actions div {
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+.group-actions div:last-child {
+  margin-right: 0;
+}
+
+.group-actions div:hover {
+  text-decoration: underline;
+}
+
+.sendempathy {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 
 .like-button {

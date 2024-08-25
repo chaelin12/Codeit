@@ -27,7 +27,6 @@ function GroupDetail() {
         setLoading(false);
       }
     };
-
     fetchGroups();
   }, [groupId]);
 
@@ -82,12 +81,10 @@ function GroupDetail() {
             <span>그룹 공감 {groupDetail.likeCount}</span>
           </div>
           <div className="group-actions">
-            <button onClick={() => console.log("그룹 정보 수정하기")}>
-              그룹 정보 수정하기
-            </button>
-            <button onClick={() => console.log("그룹 삭제하기")}>
-              그룹 삭제하기
-            </button>
+            <div className="groupedit">그룹 정보 수정하기</div>
+            <div className="groupdelete">그룹 삭제하기</div>
+          </div>
+          <div className="sendempathy">
             <button
               className="like-button"
               onClick={() => console.log("공감 보내기")}
