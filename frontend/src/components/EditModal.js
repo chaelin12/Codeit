@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import "./EditModal.css"; // 모달 스타일을 위한 CSS 파일 import
-import Button from "./FormButton";
+import "./EditModal.css"; // Import the modal styling CSS file
 
 const EditModal = ({ isOpen, closeModal, groupDetail, onSave }) => {
   const [groupName, setGroupName] = useState(groupDetail.name);
@@ -10,7 +9,7 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave }) => {
   const [password, setPassword] = useState("");
 
   const handleSave = () => {
-    // 그룹 정보 저장 로직 추가
+    // Logic to save the group information
     onSave({
       name: groupName,
       imageUrl: groupImage,
@@ -39,34 +38,35 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave }) => {
           </button>
         </div>
         <div className="modal-body">
-          <div>
+          <label>
             그룹명
             <input
               type="text"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
             />
-          </div>
-          <div className="form-group form-group-image"></div>
-          <label>대표 이미지</label>
-          <div className="image-upload-container">
-            <input
-              type="text"
-              className="image-placeholder"
-              value={groupImage ? groupImage.split("/").pop() : ""}
-              placeholder="파일을 선택해 주세요"
-              readOnly
-            />
-            <label className="file-upload-button">
-              파일 선택
+          </label>
+          <label>
+            대표 이미지
+            <div className="image-upload-container">
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: "none" }}
+                type="text"
+                className="image-placeholder"
+                value={groupImage ? groupImage.split("/").pop() : ""}
+                placeholder="파일을 선택해 주세요"
+                readOnly
               />
-            </label>
-          </div>
+              <p className="file-upload-button">
+                파일 선택
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: "none" }}
+                />
+              </p>
+            </div>
+          </label>
           <label>
             그룹 소개
             <textarea
@@ -75,28 +75,34 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave }) => {
               placeholder="그룹을 소개해 주세요"
             ></textarea>
           </label>
-          <label className="form-group toggle-container">
-            <p>그룹 공개 선택</p>
-            <div
-              className={`toggle-switch ${isPublic ? "active" : ""}`}
-              onClick={() => setIsPublic(!isPublic)}
-            >
-              <div className="switch-handle"></div>
+          {/* 그룹 공개 선택 영역 */}
+          <div className="public-toggle">
+            <label>그룹 공개 선택</label>
+            <div className="toggle-container">
+              <p>공개</p>
+              <div
+                className={`toggle-switch ${isPublic ? "active" : ""}`}
+                onClick={() => setIsPublic(!isPublic)}
+              >
+                <div className="switch-handle"></div>
+              </div>
             </div>
-            A<label className="switch-handle"></label>
-            수정 권한 인증
+          </div>
+          {/* 수정 권한 인증 영역 */}
+          <div className="auth-input">
+            <label>수정 권한 인증</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력해 주세요"
             />
-          </label>
+          </div>
         </div>
         <div className="modal-footer">
-          <Button className="save-btn" onClick={handleSave}>
+          <button className="save-btn" onClick={handleSave}>
             수정하기
-          </Button>
+          </button>
         </div>
       </div>
     </div>

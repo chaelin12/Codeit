@@ -2,6 +2,7 @@ import axios from "axios";
 import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ButtonGroup from "../components/ButtonGroup";
+import DeleteModal from "../components/DeleteModal";
 import EditModal from "../components/EditModal";
 import FilterSelect from "../components/FilterSelect";
 import LoadMoreButton from "../components/LoadMoreButton";
@@ -9,31 +10,30 @@ import SearchBar from "../components/SearchBar";
 import "./GroupDetail.css";
 
 function GroupDetail() {
-  const { groupId } = useParams(); // URL에서 그룹 ID를 가져옴
+  const { groupId } = useParams();
   const [groupDetail, setGroupDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("public");
-  // 상태 관리
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     console.log("groupId:", groupId);
     const fetchGroups = async () => {
       try {
-        // 템플릿 리터럴을 사용하여 올바른 경로로 API 요청을 보냅니다.
         const response = await axios.get(`/api/groups/${groupId}`);
-        console.log("Group Detail Response:", response.data); // 응답 데이터 확인
+        console.log("Group Detail Response:", response.data);
         setGroupDetail(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching group details:", error.message);
         if (error.response) {
-          console.error("Server Response Error Data:", error.response.data); // 서버 응답의 에러 내용 확인
+          console.error("Server Response Error Data:", error.response.data);
         }
         setError(error.response?.data?.message || error.message);
         setLoading(false);
@@ -42,49 +42,59 @@ function GroupDetail() {
     fetchGroups();
   }, [groupId]);
 
+  const handleDelete = async (password) => {
+    try {
+      await axios.delete(`/api/groups/${groupId}`, {
+        data: { password }, // Send password for verification
+      });
+      console.log("Group deleted successfully");
+      navigate("/groups");
+    } catch (error) {
+      console.error("Error deleting group:", error.message);
+      if (error.response) {
+        console.error("Server Response Error Data:", error.response.data);
+      }
+      setError(error.response?.data?.message || error.message);
+    }
+    closeDeleteModal();
+  };
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const openDeleteModal = () => setIsDeleteModalOpen(true);
+  const closeDeleteModal = () => setIsDeleteModalOpen(false);
+
   const handleSave = (updatedDetails) => {
-    // 업데이트된 그룹 정보 저장 로직 추가
     console.log("Updated Group Details:", updatedDetails);
-    // 실제 API 호출을 통해 서버에 업데이트된 데이터를 보낼 수 있습니다.
     setGroupDetail({ ...groupDetail, ...updatedDetails });
   };
 
-  // 로딩 상태 처리
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // 에러 처리
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  // 데이터가 없을 경우 처리
   if (!groupDetail) {
     return <div>No group details found</div>;
   }
 
-  // 그룹 생성일로부터의 날짜 계산
   const daysPassed = Math.floor(
     (new Date() - new Date(groupDetail.createdAt)) / (1000 * 60 * 60 * 24)
   );
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    // 실제로는 여기에서 검색 쿼리를 통해 필터링 로직이 추가되어야 합니다.
   };
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
-    // 필터에 따라 그룹 목록을 정렬하는 로직을 여기에 추가
   };
 
-  const handleLoadMore = () => {
-    // "더보기" 버튼 클릭 시 더 많은 그룹 데이터를 불러오는 로직 추가
-  };
+  const handleLoadMore = () => {};
 
   const handleUploadPostClick = () => {
     navigate("/UploadPost");
@@ -97,12 +107,11 @@ function GroupDetail() {
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    navigate("/GroupDetail"); // 비공개 그룹 페이지로 이동
+    navigate("/GroupDetail");
   };
 
   return (
     <div className="group-detail-page">
-      {/* 그룹 상세 정보 */}
       <div className="group-header">
         <div className="group-image">
           <img src={groupDetail.imageUrl} alt={groupDetail.name} />
@@ -119,14 +128,10 @@ function GroupDetail() {
             <div className="group-actions">
               <div className="groupedit" onClick={openModal}>
                 그룹 정보 수정하기
-                <EditModal
-                  isOpen={isModalOpen}
-                  closeModal={closeModal}
-                  groupDetail={groupDetail}
-                  onSave={handleSave}
-                />
               </div>
-              <div className="groupdelete">그룹 삭제하기</div>
+              <div className="groupdelete" onClick={openDeleteModal}>
+                그룹 삭제하기
+              </div>
             </div>
           </div>
           <div className="group-name-stats">
@@ -159,6 +164,15 @@ function GroupDetail() {
           </div>
         </div>
       </div>
+      <EditModal
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        groupDetail={groupDetail}
+        onSave={handleSave}
+      />
+      {isDeleteModalOpen && (
+        <DeleteModal onClose={closeDeleteModal} onDelete={handleDelete} />
+      )}
       <div className="section-divider"></div>
       <div className="memory-list-section">
         <div className="memory-title">
