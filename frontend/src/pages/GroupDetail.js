@@ -6,6 +6,7 @@ import DeleteModal from "../components/DeleteModal";
 import EditModal from "../components/EditModal";
 import FilterSelect from "../components/FilterSelect";
 import LoadMoreButton from "../components/LoadMoreButton";
+import PostCard from "../components/PostCard";
 import SearchBar from "../components/SearchBar";
 import "./GroupDetail.css";
 
@@ -21,6 +22,7 @@ function GroupDetail() {
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [Posts, setPosts] = useState([]);
 
   useEffect(() => {
     console.log("groupId:", groupId);
@@ -29,6 +31,10 @@ function GroupDetail() {
         const response = await axios.get(`/api/groups/${groupId}`);
         console.log("Group Detail Response:", response.data);
         setGroupDetail(response.data);
+
+        const PostsResponse = await axios.get(`/api/groups/${groupId}/posts`);
+        setPosts(PostsResponse.data);
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching group details:", error.message);
@@ -197,7 +203,24 @@ function GroupDetail() {
         </div>
 
         <div className="memory-cards">
-          {/* 추억 카드들이 이곳에 표시됩니다 */}
+          {Posts.map(
+            (post) =>
+              post.isPublic && ( // 공개 그룹만 렌더링
+                <PostCard
+                  id={post.id}
+                  nickname={post.nickname}
+                  title={post.title}
+                  content={post.content} // 올바른 값 전달
+                  imageUrl={post.imageUrl}
+                  tags={post.tags}
+                  location={post.location}
+                  moment={post.moment}
+                  isPublic={post.isPublic}
+                  likes={post.likes}
+                  comments={post.comments}
+                />
+              )
+          )}
         </div>
         <LoadMoreButton onClick={handleLoadMore} />
       </div>

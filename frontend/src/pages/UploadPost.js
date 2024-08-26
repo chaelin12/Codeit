@@ -73,20 +73,23 @@ function UploadPost() {
         isPublic: input.isPublic,
       };
 
-      const response = await axios.post("/api/memories", formData);
+      const response = await axios.post(
+        "/api/groups/${groupId}/posts",
+        formData
+      );
 
       if (response.status === 201) {
         setModalInfo({
           title: "추억 올리기 성공",
           message: "추억이 성공적으로 등록되었습니다.",
         });
-        setRedirectPath("/");
+        setRedirectPath("/GroupDetail");
       } else {
         setModalInfo({
           title: "추억 올리기 실패",
           message: "추억 등록에 실패했습니다.",
         });
-        setRedirectPath("/uploadMemory");
+        setRedirectPath("/UploadPost");
       }
     } catch (error) {
       console.error("Error:", error.response || error.message);
@@ -94,7 +97,7 @@ function UploadPost() {
         title: "추억 올리기 실패",
         message: error.response?.data?.message || "추억 등록에 실패했습니다.",
       });
-      setRedirectPath("/uploadMemory");
+      setRedirectPath("/UploadPost");
     } finally {
       setIsModalOpen(true);
     }
