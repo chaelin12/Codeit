@@ -1,6 +1,7 @@
 .group-detail-page {
   padding: 20px;
   position: relative;
+  background-color: #fafafa;
 }
 
 .group-header {
@@ -107,33 +108,74 @@
   color: #282828;
 }
 
+.section-divider {
+  height: 1px;
+  background-color: #ddd;
+  margin: 40px 0; /* Margin to create space around the separator */
+}
+
+.memory-title {
+  display: flex;
+  font-size: 10px;
+  justify-content: center; /* Align title and button horizontally */
+  align-items: center; /* Align items vertically to the center */
+  margin-bottom: 20px;
+}
+
 .create-memory-button-container {
   font-weight: 700;
   position: absolute;
   right: 40px; /* 우측 끝에 배치 */
+  margin-bottom: 10px;
 }
-.memory-title {
-  font-size: 10px;
-}
+
 .top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.memory-create-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 20px;
   margin-bottom: 20px;
-  margin: 0 auto; /* 가운데 정렬 */
-  box-sizing: border-box;
 }
 
-.search-bar {
-  flex-grow: 1; /* 검색 바가 가능한 넓게 확장되도록 설정 */
-  margin: 20px;
-}
-
-.filter-select {
-  margin-left: auto; /* 오른쪽 끝에 위치하도록 설정 */
-}
-
-.button-group .button.active {
+.memory-create-button {
+  margin-right: 10px;
+  font-weight: bold;
   background-color: #282828;
-  color: #ffffff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.section-divider {
+  color: #ddd;
+}
+.memory-list-section {
+  margin-top: 80px; /* Add spacing below the memory creation section */
+}
+
+.memory-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.memory-controls .dropdown {
+  margin-left: 20px;
+}
+
+.memory-create-button-container {
+  text-align: right; /* Align the button to the right */
+}
+
+/* Adjust spacing for the  "공감순" dropdown */
+.memory-controls .dropdown {
+  margin-left: auto;
 }

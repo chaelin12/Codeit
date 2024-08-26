@@ -177,14 +177,14 @@ function GroupDetail() {
       <div className="memory-list-section">
         <div className="memory-title">
           <h1>추억 목록</h1>
-        </div>
-        <div className="create-memory-button-container">
-          <button
-            className="create-group-button"
-            onClick={handleUploadPostClick}
-          >
-            추억 만들기
-          </button>
+          <div className="create-memory-button-container">
+            <button
+              className="create-group-button"
+              onClick={handleUploadPostClick}
+            >
+              추억 올리기
+            </button>
+          </div>
         </div>
         <div className="top-bar">
           <ButtonGroup
@@ -195,6 +195,7 @@ function GroupDetail() {
           <SearchBar onSearch={handleSearch} />
           <FilterSelect onFilterChange={handleFilterChange} />
         </div>
+
         <div className="memory-cards">
           {/* 추억 카드들이 이곳에 표시됩니다 */}
         </div>
