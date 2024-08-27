@@ -1,4 +1,6 @@
-.private-group-container {
+.public-group-container {
+  max-width: 1200px; /* Limit the container width */
+  margin: 0 auto; /* Center the container horizontally */
   padding: 20px;
 }
 

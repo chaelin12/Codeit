@@ -1,19 +1,18 @@
 /* LoadMoreButton.css */
 .load-more-container {
   display: flex;
-  justify-content: center;
-  width: 1200px;
-  position: fixed;
-  bottom: 20px; /* 페이지 하단에서 조금 띄워 놓음 */
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 20px;
+  justify-content: center; /* 버튼을 중앙에 배치 */
+  width: 100%; /* 컨테이너 너비에 맞춤 */
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 10px 0; /* 위아래 여백 */
   box-sizing: border-box;
 }
 
 #load-more-btn {
-  max-width: 100%;
-  padding: 10px 20px;
+  width: 100%; /* 버튼이 컨테이너의 너비에 맞춤 */
+  max-width: 300px; /* 버튼의 최대 너비 설정 (컨테이너가 더 넓으면 버튼도 넓어짐) */
+  padding: 10px; /* 버튼 패딩 */
   border: 1px solid #282828;
   border-radius: 4px;
   background-color: #fff;

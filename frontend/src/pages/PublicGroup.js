@@ -68,7 +68,7 @@ function PublicGroup() {
   };
 
   return (
-    <div className="private-group-container">
+    <div className="public-group-container">
       <div className="create-group-button-container">
         <CreateGroupButton onClick={handleCreateGroup} />
       </div>
@@ -85,25 +85,30 @@ function PublicGroup() {
       {groups.length === 0 ? (
         <NoGroup onCreateGroup={handleCreateGroup} />
       ) : (
-        <div className="group-list">
-          {groups.map(
-            (group) =>
-              group.isPublic && ( // 공개 그룹만 렌더링
-                <GroupCard
-                  id={group.id}
-                  name={group.name}
-                  imageUrl={group.imageUrl}
-                  isPublic={group.isPublic} // 올바른 값 전달
-                  likeCount={group.likeCount}
-                  badgeCount={group.badges}
-                  postCount={group.postCount}
-                  createdAt={group.createdAt}
-                  introduction={group.introduction}
-                />
-              )
-          )}
-          <LoadMoreButton onClick={handleLoadMore} />
-        </div>
+        <>
+          <div className="group-list">
+            {groups.map(
+              (group) =>
+                group.isPublic && ( // 공개 그룹만 렌더링
+                  <GroupCard
+                    key={group.id} // key 속성 추가
+                    id={group.id}
+                    name={group.name}
+                    imageUrl={group.imageUrl}
+                    isPublic={group.isPublic} // 올바른 값 전달
+                    likeCount={group.likeCount}
+                    badgeCount={group.badges}
+                    postCount={group.postCount}
+                    createdAt={group.createdAt}
+                    introduction={group.introduction}
+                  />
+                )
+            )}
+          </div>
+          <div className="load-more-container">
+            <LoadMoreButton onClick={handleLoadMore} />
+          </div>
+        </>
       )}
     </div>
   );

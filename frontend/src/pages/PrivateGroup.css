@@ -36,9 +36,3 @@
   gap: 20px; /* Increased gap for better spacing */
   margin-bottom: 40px; /* Space between list and load more button */
 }
-
-.load-more-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import CalendarIcon from "../assets/pictures/calender.png"; // 이미지 파일 가져오기
 import Button from "../components/FormButton";
 import Modal from "../components/Modal";
 import "./UploadPost.css";
@@ -118,8 +119,8 @@ function UploadPost() {
   };
 
   const handleCloseModal = () => {
-    navigate(redirectPath);
     setIsModalOpen(false);
+    navigate(redirectPath);
   };
 
   return (
@@ -217,7 +218,7 @@ function UploadPost() {
             <label>추억의 순간</label>
             <div className="date-input-wrapper">
               <input
-                type="date"
+                type="text"
                 id="moment"
                 value={input.moment}
                 onChange={onChange}
@@ -234,6 +235,11 @@ function UploadPost() {
                 className={`memory-date-input ${
                   isDateSelected ? "active" : ""
                 }`}
+              />
+              <img
+                src={CalendarIcon} // 수정된 이미지 경로 사용
+                alt="Calendar Icon"
+                className="calendar-icon"
               />
             </div>
           </div>
