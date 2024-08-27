@@ -123,6 +123,9 @@ function UploadPost() {
     navigate(redirectPath);
   };
 
+  const openDatePicker = () => {
+    const dateInput = document.getElementById("moment");
+  };
   return (
     <div className="upload-post-container">
       <div className="title">
@@ -220,26 +223,17 @@ function UploadPost() {
               <input
                 type="text"
                 id="moment"
-                value={input.moment}
+                value={input.moment} // 선택된 날짜
                 onChange={onChange}
-                onFocus={(e) => {
-                  e.target.type = "date"; // 타입을 date로 설정하여 날짜 선택기 표시
-                  e.target.showPicker();
-                }}
-                onBlur={(e) => {
-                  if (!input.moment) {
-                    e.target.type = "text"; // 값이 없을 때 텍스트 필드로 전환
-                  }
-                }}
-                placeholder="YYYY-MM-DD"
-                className={`memory-date-input ${
-                  isDateSelected ? "active" : ""
-                }`}
+                placeholder="YYYY-MM-DD" // 플레이스홀더 텍스트
+                className={!isDateSelected ? "placeholder" : ""}
+                readOnly // 사용자가 직접 입력할 수 없도록 설정
               />
               <img
                 src={CalendarIcon} // 수정된 이미지 경로 사용
                 alt="Calendar Icon"
                 className="calendar-icon"
+                onClick={openDatePicker} // 아이콘 클릭 시 날짜 선택기 열기
               />
             </div>
           </div>
