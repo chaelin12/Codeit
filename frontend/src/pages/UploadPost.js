@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import calender from "../assets/pictures/calender.png";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../components/FormButton";
 import Modal from "../components/Modal";
 import "./UploadPost.css";
 
 function UploadPost() {
+  const { groupId } = useParams(); // useParams 훅을 사용해 groupId 가져오기
   const [input, setInput] = useState({
     nickname: "",
     title: "",
@@ -20,6 +20,7 @@ function UploadPost() {
     isPublic: true,
   });
 
+  const [tags, setTags] = useState([]); // 태그 배열 상태 관리
   const [isDateSelected, setIsDateSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
@@ -41,6 +42,18 @@ function UploadPost() {
     setInput({ ...input, isPublic: !input.isPublic });
   };
 
+  const handleTagInput = (e) => {
+    if (e.key === "Enter" && e.target.value.trim() !== "") {
+      e.preventDefault();
+      setTags([...tags, e.target.value.trim()]); // 새로운 태그를 배열에 추가
+      setInput({ ...input, tags: "" }); // 입력창 비우기
+    }
+  };
+
+  const removeTag = (indexToRemove) => {
+    setTags(tags.filter((_, index) => index !== indexToRemove)); // 해당 인덱스의 태그 삭제
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -58,6 +71,7 @@ function UploadPost() {
         );
 
         imageUrl = imageUploadResponse.data.imageUrl;
+        console.log("Uploaded Image URL:", imageUrl);
       }
 
       const formData = {
@@ -67,14 +81,14 @@ function UploadPost() {
         postPassword: input.postPassword,
         groupPassword: input.groupPassword,
         imageUrl: imageUrl,
-        tags: input.tags.split(",").map((tag) => tag.trim()), // 태그는 쉼표로 분리된 문자열을 배열로 변환
+        tags: tags, // 태그 배열 전송
         location: input.location,
         moment: input.moment,
         isPublic: input.isPublic,
       };
 
       const response = await axios.post(
-        "/api/groups/${groupId}/posts",
+        `/api/groups/${groupId}/posts`,
         formData
       );
 
@@ -178,8 +192,16 @@ function UploadPost() {
               id="tags"
               value={input.tags}
               onChange={onChange}
+              onKeyDown={handleTagInput} // Enter 키를 감지
               placeholder="태그 입력 후 Enter"
             />
+            <div className="tags-container">
+              {tags.map((tag, index) => (
+                <div className="tag-item" key={index}>
+                  #{tag} <span onClick={() => removeTag(index)}>×</span>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="form-group">
             <label>장소</label>
@@ -213,15 +235,8 @@ function UploadPost() {
                   isDateSelected ? "active" : ""
                 }`}
               />
-              <img
-                src={calender}
-                alt="calendar icon"
-                className="calendar-icon"
-                onClick={() => document.getElementById("moment").showPicker()}
-              />
             </div>
           </div>
-
           <div className="form-group">
             <label>추억 공개 선택</label>
             <div className="toggle-container">
@@ -246,7 +261,9 @@ function UploadPost() {
           </div>
         </div>
       </div>
-      <Button type="submit">올리기</Button>
+      <Button type="submit" onClick={handleSubmit}>
+        올리기
+      </Button>
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
