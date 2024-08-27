@@ -118,11 +118,10 @@ router.route('/')
             }
 });
 
-module.exports = router;
 router.route('/:id')
     //그룹 수정
     .put(async (req,res)=>{
-        const group = await Group.findOne({id:req.params.id});
+        const group = await Group.findOne({ id : req.params.id });
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -135,20 +134,12 @@ router.route('/:id')
         }
         try {
             const salt = rows[0].salt;
-            const hashPw = sha(req.body.verifyPassword + salt);
+            const hashPw = sha(req.body.password + salt);
             if (group.password == hashPw) {
-                try{
-                    const generateSalt = (length = 16) => {
-                        const crypto = require('crypto');
-                        return crypto.randomBytes(length).toString('hex');
-                      };
-                    const salt = generateSalt();
-                    req.body.password = sha(req.body.password+salt);
                     const result = await Group.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
                         name: req.body.name,
-                        password: req.body.password,
                         imageUrl: req.body.imageUrl,
                         isPublic: req.body.isPublic, 
                         introduction: req.body.introduction,
@@ -163,12 +154,10 @@ router.route('/:id')
                         postCount: group.postCount,
                         createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
                         introduction: group.introduction});
-                }catch(err){
-                    console.error(err);
-                }
-        }else{
-            res.status(403).json({message : "비밀번호가 틀렸습니다"})
-        }
+                
+            }else{
+                res.status(403).json({message : "비밀번호가 틀렸습니다"})
+            }
         }catch(err){
                 res.status(400).json({message : "잘못된 요청입니다"});
             }

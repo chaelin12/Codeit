@@ -5,6 +5,7 @@ const router = express.Router();
 
 
 router.route('/comments/:id')
+    //댓글 수정
     .put(async (req,res)=>{
         const comment = await Comment.findOne({id : req.params.id});
         if (!comment) {
@@ -19,21 +20,14 @@ router.route('/comments/:id')
         }
         try {
             const salt = rows[0].salt;
-            const hashPw = sha(req.body.verifyPassword + salt);
-            if (group.password == hashPw) {
+            const hashPw = sha(req.body.password + salt);
+            if (comment.password == hashPw) {
                 try{
-                    const generateSalt = (length = 16) => {
-                        const crypto = require('crypto');
-                        return crypto.randomBytes(length).toString('hex');
-                      };
-                    const salt = generateSalt();
-                    req.body.password = sha(req.body.password+salt);
                     const comment = await Comment.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
                         nickname: req.body.nickname,
-                        content: req.body.content,
-                        password: req.body.password
+                        content: req.body.content
                     });
                     res.status.json({
                         id: comment.id,
@@ -52,6 +46,7 @@ router.route('/comments/:id')
             }
         })
     })
+    //댓글 삭제
     .delete(async (req,res)=>{
         const comment = await Comment.findOne({id: req.params.id});
         if (!comment) {

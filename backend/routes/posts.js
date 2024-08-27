@@ -19,22 +19,15 @@ router.route('/:id')
         }
         try {
             const salt = rows[0].salt;
-            const hashPw = sha(req.body.verifyPassword + salt);
-            if (post.postPassword == hashPw) {
+            const hashPw = sha(req.body.password + salt);
+            if (post.password == hashPw) {
                 try{
-                    const generateSalt = (length = 16) => {
-                        const crypto = require('crypto');
-                        return crypto.randomBytes(length).toString('hex');
-                      };
-                    const salt = generateSalt();
-                    req.body.postPassword = sha(req.body.postPassword+salt);
                     await Post.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
                         nickname: req.body.name,
                         title : req.body.title,
                         content : req.body.content,
-                        postPassword: req.body.postPassword,
                         imageUrl: req.body.imageUrl,
                         tags: req.body.tags,
                         location: req.body.location,
