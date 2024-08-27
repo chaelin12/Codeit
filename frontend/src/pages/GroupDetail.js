@@ -203,25 +203,28 @@ function GroupDetail() {
         </div>
 
         <div className="memory-cards">
-          {Posts.map(
-            (post) =>
-              post.isPublic && ( // 공개 그룹만 렌더링
-                <PostCard
-                  id={post.id}
-                  nickname={post.nickname}
-                  title={post.title}
-                  content={post.content} // 올바른 값 전달
-                  imageUrl={post.imageUrl}
-                  tags={post.tags}
-                  location={post.location}
-                  moment={post.moment}
-                  isPublic={post.isPublic}
-                  likes={post.likes}
-                  comments={post.comments}
-                />
-              )
-          )}
+          {Array.isArray(Posts) &&
+            Posts.map(
+              (post) =>
+                post.isPublic && ( // 공개 그룹만 렌더링
+                  <PostCard
+                    key={post.id} // Key 추가
+                    id={post.id}
+                    nickname={post.nickname}
+                    title={post.title}
+                    content={post.content}
+                    imageUrl={post.imageUrl}
+                    tags={post.tags}
+                    location={post.location}
+                    moment={post.moment}
+                    isPublic={post.isPublic}
+                    likes={post.likes}
+                    comments={post.comments}
+                  />
+                )
+            )}
         </div>
+
         <LoadMoreButton onClick={handleLoadMore} />
       </div>
     </div>
