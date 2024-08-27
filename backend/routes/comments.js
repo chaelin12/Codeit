@@ -11,6 +11,7 @@ router.route('/comments/:id')
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
         //비밀번호 검증
+        const { mysqldb } = await setup();
         const sql = `SELECT salt FROM commentsalt WHERE id=?`;
         mysqldb.query(sql, [comment.id], async (err, rows, fields) => {
         if (err || rows.length === 0) {
@@ -57,6 +58,7 @@ router.route('/comments/:id')
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
          //비밀번호 검증
+         const { mysqldb } = await setup();
          const sql = `SELECT salt FROM CommentSalt WHERE id=?`;
          mysqldb.query(sql, [comment.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {

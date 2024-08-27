@@ -126,6 +126,7 @@ router.route('/:id')
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
+        const { mysqldb } = await setup();
         //비밀번호 검증
         const sql = `SELECT salt FROM groupsalt WHERE id=?`;
         mysqldb.query(sql, [group.id], async (err, rows, fields) => {
@@ -181,6 +182,7 @@ router.route('/:id')
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
          //비밀번호 검증
+         const { mysqldb } = await setup();
          const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
          mysqldb.query(sql, [group.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
@@ -223,6 +225,7 @@ router.route('/:id')
 router.post('/:id/verify-password', async(req,res)=>{
     const group = await Group.findOne({ id: req.params.id });
          //비밀번호 검증
+         const { mysqldb } = await setup();
          const sql = `SELECT salt FROM groupsalt WHERE id=?`;
          mysqldb.query(sql, [group.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
