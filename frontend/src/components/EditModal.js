@@ -6,55 +6,59 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupImage, setGroupImage] = useState(groupDetail.imageUrl);
   const [groupIntro, setGroupIntro] = useState(groupDetail.introduction);
   const [isPublic, setIsPublic] = useState(groupDetail.isPublic);
-  const [inputPassword, setInputPassword] = useState(""); // Password input from the user
+  const [verifyPassword, setVerifyPassword] = useState(""); // Password input from the user
   const [errorMessage, setErrorMessage] = useState(""); // For displaying error messages
 
   const handleSave = async () => {
+    // Prepare the updated group data
+    const updatedGroup = {
+      name: groupName,
+      imageUrl: groupImage,
+      introduction: groupIntro,
+      isPublic,
+    };
+
     try {
-      // 서버에서 비밀번호를 받아와서 입력된 비밀번호와 비교
-      const response = await fetch(`/api/groups/${groupId}/get-password`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // Verify the password first
+      const passwordResponse = await fetch(
+        `/api/groups/${groupId}/verify-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ password: verifyPassword }), // Send the entered password for verification
+        }
+      );
 
-      if (!response.ok) {
-        setErrorMessage("비밀번호를 확인하는 중 오류가 발생했습니다.");
-        return;
-      }
+      const passwordData = await passwordResponse.json();
 
-      const { password: serverPassword } = await response.json();
+      if (passwordResponse.ok && passwordData.isValid) {
+        // If password is valid, proceed with updating the group information
+        const updateResponse = await fetch(`/api/posts/${groupId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedGroup),
+        });
 
-      if (inputPassword !== serverPassword) {
-        setErrorMessage("비밀번호가 일치하지 않습니다. 다시 시도해 주세요.");
-        return;
-      }
-
-      // 비밀번호가 일치할 경우, 그룹 정보를 업데이트
-      const updatedGroup = {
-        name: groupName,
-        imageUrl: groupImage,
-        introduction: groupIntro,
-        isPublic,
-      };
-
-      const updateResponse = await fetch(`/api/groups/${groupId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedGroup),
-      });
-
-      if (updateResponse.ok) {
-        onSave(updatedGroup);
-        closeModal();
+        if (updateResponse.ok) {
+          onSave(updatedGroup);
+          closeModal();
+        } else {
+          console.error("Failed to save the group data.");
+          setErrorMessage("그룹 정보를 저장하는 중 오류가 발생했습니다.");
+        }
       } else {
-        setErrorMessage("그룹 정보를 저장하는 중 오류가 발생했습니다.");
+        // If password is invalid, show an error message
+        setErrorMessage("비밀번호가 일치하지 않습니다. 다시 시도해 주세요.");
       }
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.error(
+        "An error occurred while verifying the password or saving the group data:",
+        error
+      );
       setErrorMessage("서버 요청 중 오류가 발생했습니다.");
     }
   };
@@ -115,6 +119,7 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
               placeholder="그룹을 소개해 주세요"
             ></textarea>
           </label>
+          {/* 그룹 공개 선택 영역 */}
           <div className="public-toggle">
             <label>그룹 공개 선택</label>
             <div className="toggle-container">
@@ -127,12 +132,13 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
               </div>
             </div>
           </div>
+          {/* 수정 권한 인증 영역 */}
           <div className="auth-input">
             <label>수정 권한 인증</label>
             <input
               type="password"
-              value={inputPassword}
-              onChange={(e) => setInputPassword(e.target.value)}
+              value={verifyPassword}
+              onChange={(e) => setVerifyPassword(e.target.value)}
               placeholder="비밀번호를 입력해 주세요"
             />
           </div>
