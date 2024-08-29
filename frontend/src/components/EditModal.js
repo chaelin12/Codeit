@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import "./EditModal.css"; // Import the modal styling CSS file
 
@@ -6,60 +7,41 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupImage, setGroupImage] = useState(groupDetail.imageUrl);
   const [groupIntro, setGroupIntro] = useState(groupDetail.introduction);
   const [isPublic, setIsPublic] = useState(groupDetail.isPublic);
-  const [verifyPassword, setVerifyPassword] = useState(""); // Password input from the user
+  const [editPassword, setEditPassword] = useState(""); // 새로운 변수명으로 변경
   const [errorMessage, setErrorMessage] = useState(""); // For displaying error messages
 
   const handleSave = async () => {
-    // Prepare the updated group data
-    const updatedGroup = {
-      name: groupName,
-      imageUrl: groupImage,
-      introduction: groupIntro,
-      isPublic,
-    };
-
     try {
-      // Verify the password first
-      const passwordResponse = await fetch(
-        `/api/groups/${groupId}/verify-password`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ password: verifyPassword }), // Send the entered password for verification
-        }
-      );
+      // Prepare the updated group data
+      const updatedGroup = {
+        name: groupName,
+        imageUrl: groupImage,
+        introduction: groupIntro,
+        isPublic,
+      };
 
-      const passwordData = await passwordResponse.json();
+      // 서버에 업데이트 요청을 보내는 부분입니다.
+      const response = await axios.put(`/api/groups/${groupId}`, updatedGroup, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: editPassword, // 헤더에 editPassword 값을 포함하여 서버로 보냅니다.
+        },
+      });
 
-      if (passwordResponse.ok && passwordData.isValid) {
-        // If password is valid, proceed with updating the group information
-        const updateResponse = await fetch(`/api/posts/${groupId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedGroup),
-        });
-
-        if (updateResponse.ok) {
-          onSave(updatedGroup);
-          closeModal();
-        } else {
-          console.error("Failed to save the group data.");
-          setErrorMessage("그룹 정보를 저장하는 중 오류가 발생했습니다.");
-        }
-      } else {
-        // If password is invalid, show an error message
-        setErrorMessage("비밀번호가 일치하지 않습니다. 다시 시도해 주세요.");
-      }
+      // 성공적인 응답을 받으면 모달을 닫고 그룹을 갱신합니다.
+      onSave(response.data);
+      closeModal();
     } catch (error) {
-      console.error(
-        "An error occurred while verifying the password or saving the group data:",
-        error
-      );
-      setErrorMessage("서버 요청 중 오류가 발생했습니다.");
+      // 에러 상태에 따른 메시지 설정
+      if (error.response.status === 400) {
+        setErrorMessage("잘못된 요청입니다");
+      } else if (error.response.status === 403) {
+        setErrorMessage("비밀번호가 틀렸습니다");
+      } else if (error.response.status === 404) {
+        setErrorMessage("존재하지 않습니다");
+      } else {
+        setErrorMessage("알 수 없는 오류가 발생했습니다");
+      }
     }
   };
 
@@ -137,8 +119,8 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
             <label>수정 권한 인증</label>
             <input
               type="password"
-              value={verifyPassword}
-              onChange={(e) => setVerifyPassword(e.target.value)}
+              value={editPassword}
+              onChange={(e) => setEditPassword(e.target.value)}
               placeholder="비밀번호를 입력해 주세요"
             />
           </div>
