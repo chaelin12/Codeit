@@ -6,7 +6,7 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupName, setGroupName] = useState(groupDetail.name);
   const [groupImage, setGroupImage] = useState(groupDetail.imageUrl);
   const [groupIntro, setGroupIntro] = useState(groupDetail.introduction);
-  const [groupPassword, setGroupPassword] = useState(groupDetail.password); // 기존 비밀번호
+  const [groupPassword, setGroupPassword] = useState(""); // 비밀번호는 수정 권한 인증 칸에서만 입력받음
   const [isPublic, setIsPublic] = useState(groupDetail.isPublic);
   const [errorMessage, setErrorMessage] = useState(""); // For displaying error messages
 
@@ -18,7 +18,7 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
         imageUrl: groupImage,
         introduction: groupIntro,
         isPublic,
-        password: groupPassword, // 서버에 이미 존재하는 password를 포함시킴
+        password: groupPassword, // 수정 권한 인증에 입력된 비밀번호를 서버로 전송
       };
 
       // 서버에 업데이트 요청을 보내는 부분입니다.
@@ -36,20 +36,20 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
       if (error.response && error.response.status) {
         switch (error.response.status) {
           case 400:
-            setErrorMessage("잘못된 요청입니다");
+            setErrorMessage("잘못된 요청입니다.");
             break;
           case 403:
-            setErrorMessage("비밀번호가 틀렸습니다");
+            setErrorMessage("비밀번호가 틀렸습니다.");
             break;
           case 404:
-            setErrorMessage("존재하지 않습니다");
+            setErrorMessage("존재하지 않습니다.");
             break;
           default:
-            setErrorMessage("알 수 없는 오류가 발생했습니다");
+            setErrorMessage("알 수 없는 오류가 발생했습니다.");
             break;
         }
       } else {
-        setErrorMessage("서버와의 통신 중 오류가 발생했습니다");
+        setErrorMessage("서버와의 통신 중 오류가 발생했습니다.");
       }
     }
   };
