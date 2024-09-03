@@ -17,24 +17,18 @@ function UploadPost() {
     image: null,
     tags: "",
     location: "",
-    moment: "",
+    moment: "", // 날짜 입력 필드
     isPublic: true,
   });
 
   const [tags, setTags] = useState([]); // 태그 배열 상태 관리
-  const [isDateSelected, setIsDateSelected] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
-  const [redirectPath, setRedirectPath] = useState("/");
   const navigate = useNavigate();
 
   const onChange = (e) => {
     const { id, value, type, files } = e.target;
     const inputValue = type === "file" ? files[0] : value;
-
-    if (id === "moment") {
-      setIsDateSelected(value !== ""); // 날짜가 선택되었는지 확인
-    }
 
     setInput({ ...input, [id]: inputValue });
   };
@@ -90,7 +84,7 @@ function UploadPost() {
 
       const response = await axios.post(
         `/api/groups/${groupId}/posts`,
-        formData
+        formData // 입력한 데이터를 요청 본문으로 전송
       );
 
       if (response.status === 201) {
@@ -98,13 +92,16 @@ function UploadPost() {
           title: "추억 올리기 성공",
           message: "추억이 성공적으로 등록되었습니다.",
         });
-        setRedirectPath("/GroupDetail");
+        setIsModalOpen(true);
+        setTimeout(() => {
+          navigate(`./GroupDetail}`); // 성공 시 그룹 디테일 페이지로 리다이렉트
+        }, 2000); // 모달이 표시된 후 2초 후에 리다이렉트
       } else {
         setModalInfo({
           title: "추억 올리기 실패",
           message: "추억 등록에 실패했습니다.",
         });
-        setRedirectPath("/UploadPost");
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("Error:", error.response || error.message);
@@ -112,20 +109,21 @@ function UploadPost() {
         title: "추억 올리기 실패",
         message: error.response?.data?.message || "추억 등록에 실패했습니다.",
       });
-      setRedirectPath("/UploadPost");
-    } finally {
       setIsModalOpen(true);
     }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    navigate(redirectPath);
   };
 
   const openDatePicker = () => {
     const dateInput = document.getElementById("moment");
+    if (dateInput) {
+      dateInput.showPicker(); // date input에서 날짜 선택기가 펼쳐지도록 강제로 호출
+    }
   };
+
   return (
     <div className="upload-post-container">
       <div className="title">
@@ -221,13 +219,12 @@ function UploadPost() {
             <label>추억의 순간</label>
             <div className="date-input-wrapper">
               <input
-                type="text"
+                type="date"
                 id="moment"
                 value={input.moment} // 선택된 날짜
                 onChange={onChange}
                 placeholder="YYYY-MM-DD" // 플레이스홀더 텍스트
-                className={!isDateSelected ? "placeholder" : ""}
-                readOnly // 사용자가 직접 입력할 수 없도록 설정
+                className={!input.moment ? "placeholder" : ""}
               />
               <img
                 src={CalendarIcon} // 수정된 이미지 경로 사용
