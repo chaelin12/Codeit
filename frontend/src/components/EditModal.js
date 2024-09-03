@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./EditModal.css"; // Import the modal styling CSS file
 
 const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
@@ -9,6 +9,11 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupPassword, setGroupPassword] = useState(""); // 비밀번호는 수정 권한 인증 칸에서만 입력받음
   const [isPublic, setIsPublic] = useState(groupDetail.isPublic);
   const [errorMessage, setErrorMessage] = useState(""); // For displaying error messages
+
+  // useEffect를 사용하여 groupId의 변화를 감지하고 로그를 출력
+  useEffect(() => {
+    console.log("groupId:", groupId);
+  }, [groupId]);
 
   const handleSave = async () => {
     try {

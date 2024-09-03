@@ -175,6 +175,7 @@ function GroupDetail() {
         closeModal={closeModal}
         groupDetail={groupDetail}
         onSave={handleSave}
+        groupId={groupId}
       />
       {isDeleteModalOpen && (
         <DeleteModal onClose={closeDeleteModal} onDelete={handleDelete} />
