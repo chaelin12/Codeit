@@ -120,49 +120,69 @@ router.route('/')
 
 router.route('/:id')
     //그룹 수정
-    .put(async (req,res)=>{
-        const group = await Group.findOne({ id : req.params.id });
+    .put(async (req, res) => {
+        try {
+        const groupId = req.params.id;
+        // 그룹 찾기
+        const group = await Group.findOne({ id: groupId });
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
+    
+        // MySQL 데이터베이스 설정
         const { mysqldb } = await setup();
-        //비밀번호 검증
+    
+        // 비밀번호 검증
         const sql = `SELECT salt FROM groupsalt WHERE id=?`;
-        mysqldb.query(sql, [group.id], async (err, rows, fields) => {
-        if (err || rows.length === 0) {
+        mysqldb.query(sql, [group.id], async (err, rows) => {
+            if (err || rows.length === 0) {
+            mysqldb.end(); // 연결 종료
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
-        }
-        try {
+            }
+    
+            try {
             const salt = rows[0].salt;
             const hashPw = sha(req.body.password + salt);
-            if (group.password == hashPw) {
-                    const result = await Group.updateOne({
-                        id:req.params.id,//업데이트 대상 검색
-                    },{
-                        name: req.body.name,
-                        imageUrl: req.body.imageUrl,
-                        isPublic: req.body.isPublic, 
-                        introduction: req.body.introduction,
-                    });
-                    res.status(200).json({
-                        id: group.id,
-                        name: group.name,
-                        imageUrl: group.imageUrl,
-                        isPublic: group.isPublic,
-                        likeCount: group.likeCount,
-                        badges: group.badges,
-                        postCount: group.postCount,
-                        createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
-                        introduction: group.introduction});
-                
-            }else{
-                res.status(403).json({message : "비밀번호가 틀렸습니다"})
+            if (group.password === hashPw) {
+                // 그룹 업데이트
+                await Group.updateOne({ id: groupId }, {
+                name: req.body.name,
+                imageUrl: req.body.imageUrl,
+                isPublic: req.body.isPublic,
+                introduction: req.body.introduction,
+                });
+    
+                // 업데이트된 그룹 정보 가져오기
+                const updatedGroup = await Group.findOne({ id: groupId });
+    
+                // 성공 응답
+                res.status(200).json({
+                id: updatedGroup.id,
+                name: updatedGroup.name,
+                imageUrl: updatedGroup.imageUrl,
+                isPublic: updatedGroup.isPublic,
+                likeCount: updatedGroup.likeCount,
+                badges: updatedGroup.badges,
+                postCount: updatedGroup.postCount,
+                createdAt: updatedGroup.createdAt.toISOString(),
+                introduction: updatedGroup.introduction
+                });
+            } else {
+                res.status(403).json({ message: "비밀번호가 틀렸습니다" });
             }
-        }catch(err){
-                res.status(400).json({message : "잘못된 요청입니다"});
+            } catch (err) {
+            console.error(err);
+            res.status(400).json({ message: "잘못된 요청입니다" });
+            } finally {
+            mysqldb.end(); // 연결 종료
             }
-        })
+        });
+        } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "서버 오류가 발생했습니다" });
+        }
     })
+  
     
     //그룹 삭제
     .delete(async(req,res)=>{ 
@@ -372,7 +392,6 @@ router.route('/:id/posts')
                     createdAt: post.createdAt.toISOString() // ISO 형식으로 변환
                 }))
             };
-            console.log(response);
             // 응답 보내기
             res.status(200).json(response);
 
