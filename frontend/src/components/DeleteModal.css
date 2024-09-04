@@ -46,7 +46,7 @@ h2 {
   font-weight: 500;
   margin-bottom: 8px;
   font-size: 13px;
-  text-align: left; /* Ensure the label is left-aligned */
+  text-align: left;
 }
 
 .input-group input {
@@ -73,4 +73,11 @@ h2 {
 
 .delete-button:hover {
   background-color: #333;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-align: left; /* 에러 메시지가 input 필드 아래에 왼쪽 정렬로 표시되도록 설정 */
 }

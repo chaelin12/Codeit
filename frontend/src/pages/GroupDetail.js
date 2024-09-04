@@ -178,7 +178,11 @@ function GroupDetail() {
         groupId={groupId}
       />
       {isDeleteModalOpen && (
-        <DeleteModal onClose={closeDeleteModal} onDelete={handleDelete} />
+        <DeleteModal
+          onClose={closeDeleteModal}
+          onDelete={handleDelete}
+          groupId={groupId}
+        />
       )}
       <div className="section-divider"></div>
       <div className="memory-list-section">

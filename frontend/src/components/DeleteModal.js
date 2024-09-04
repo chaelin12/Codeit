@@ -1,16 +1,43 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./DeleteModal.css";
 
-const DeleteModal = ({ onClose, onDelete }) => {
+const DeleteModal = ({ onClose, groupId }) => {
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    setError("");
   };
 
-  const handleDelete = () => {
-    // Here, you can add password validation logic
-    onDelete(password);
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/groups/${groupId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        navigate("/publicgroup"); // 그룹 삭제 성공 시 PublicGroup 페이지로 이동
+      } else if (response.status === 400) {
+        setError("잘못된 요청입니다.");
+      } else if (response.status === 403) {
+        setError("비밀번호가 틀렸습니다.");
+      } else if (response.status === 404) {
+        setError("존재하지 않습니다.");
+      } else {
+        setError("알 수 없는 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      setError("서버와의 통신에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -30,6 +57,7 @@ const DeleteModal = ({ onClose, onDelete }) => {
             onChange={handlePasswordChange}
           />
         </div>
+        {error && <p className="error-message">{error}</p>}
         <button className="delete-button" onClick={handleDelete}>
           삭제하기
         </button>
