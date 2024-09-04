@@ -64,7 +64,7 @@ function PublicGroup() {
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    navigate("/GroupDetail"); // 비공개 그룹 페이지로 이동
+    navigate("/PrivateGroup"); // 비공개 그룹 페이지로 이동
   };
 
   return (

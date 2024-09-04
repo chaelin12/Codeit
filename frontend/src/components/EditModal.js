@@ -1,61 +1,54 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import "./EditModal.css"; // Import the modal styling CSS file
 
 const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupName, setGroupName] = useState(groupDetail.name);
   const [groupImage, setGroupImage] = useState(groupDetail.imageUrl);
   const [groupIntro, setGroupIntro] = useState(groupDetail.introduction);
-  const [groupPassword, setGroupPassword] = useState(""); // 비밀번호는 수정 권한 인증 칸에서만 입력받음
   const [isPublic, setIsPublic] = useState(groupDetail.isPublic);
-  const [errorMessage, setErrorMessage] = useState(""); // For displaying error messages
+  const [groupPassword, setGroupPassword] = useState(""); // 수정 권한 인증 비밀번호를 저장
+  const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 표시용
 
-  // useEffect를 사용하여 groupId의 변화를 감지하고 로그를 출력
-  useEffect(() => {
-    console.log("groupId:", groupId);
-  }, [groupId]);
+  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
 
   const handleSave = async () => {
-    try {
-      // Prepare the updated group data
-      const updatedGroup = {
-        name: groupName,
-        imageUrl: groupImage,
-        introduction: groupIntro,
-        isPublic,
-        password: groupPassword, // 수정 권한 인증에 입력된 비밀번호를 서버로 전송
-      };
+    // 업데이트할 그룹 데이터를 준비
+    const updatedGroup = {
+      name: groupName,
+      imageUrl: groupImage,
+      introduction: groupIntro,
+      isPublic,
+      password: groupPassword, // 비밀번호를 포함
+    };
 
-      // 서버에 업데이트 요청을 보내는 부분입니다.
-      const response = await axios.put(`/api/groups/${groupId}`, updatedGroup, {
+    try {
+      // 그룹 정보 업데이트 시도
+      const updateResponse = await fetch(`/api/groups/${groupId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(updatedGroup), // JSON 데이터 전송
       });
 
-      // 성공적인 응답을 받으면 모달을 닫고 그룹을 갱신합니다.
-      onSave(response.data);
-      closeModal();
-    } catch (error) {
-      // 에러 상태에 따른 메시지 설정
-      if (error.response && error.response.status) {
-        switch (error.response.status) {
-          case 400:
-            setErrorMessage("잘못된 요청입니다.");
-            break;
-          case 403:
-            setErrorMessage("비밀번호가 틀렸습니다.");
-            break;
-          case 404:
-            setErrorMessage("존재하지 않습니다.");
-            break;
-          default:
-            setErrorMessage("알 수 없는 오류가 발생했습니다.");
-            break;
-        }
+      if (updateResponse.ok) {
+        await onSave(updatedGroup); // 저장 작업을 먼저 처리
+        closeModal(); // 모달을 닫고
+        navigate("/publicgroup"); // 성공 시 루트 페이지로 리다이렉트
+      } else if (updateResponse.status === 400) {
+        setErrorMessage("잘못된 요청입니다."); // 400 오류 처리
+      } else if (updateResponse.status === 403) {
+        setErrorMessage("비밀번호가 틀렸습니다."); // 403 오류 처리
+      } else if (updateResponse.status === 404) {
+        setErrorMessage("존재하지 않습니다."); // 404 오류 처리
       } else {
-        setErrorMessage("서버와의 통신 중 오류가 발생했습니다.");
+        console.error("Failed to save the group data.");
+        setErrorMessage("그룹 정보를 저장하는 중 오류가 발생했습니다.");
       }
+    } catch (error) {
+      console.error("An error occurred while saving the group data:", error);
+      setErrorMessage("서버 요청 중 오류가 발생했습니다.");
     }
   };
 
@@ -64,6 +57,11 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
     if (file) {
       setGroupImage(URL.createObjectURL(file));
     }
+  };
+
+  // 파일 입력 클릭 이벤트 트리거
+  const triggerFileInput = () => {
+    document.getElementById("file-input").click();
   };
 
   if (!isOpen) return null;
@@ -96,15 +94,16 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
                 placeholder="파일을 선택해 주세요"
                 readOnly
               />
-              <p className="file-upload-button">
+              <p className="file-upload-button" onClick={triggerFileInput}>
                 파일 선택
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
               </p>
+              <input
+                type="file"
+                id="file-input"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }} // 기본 파일 입력 숨김
+              />
             </div>
           </label>
           <label>
@@ -133,8 +132,8 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
             <label>수정 권한 인증</label>
             <input
               type="password"
-              value={groupPassword} // 수정 권한 인증에 입력된 값은 groupPassword로 설정됩니다.
-              onChange={(e) => setGroupPassword(e.target.value)} // 입력된 비밀번호를 groupPassword 상태로 설정
+              value={groupPassword}
+              onChange={(e) => setGroupPassword(e.target.value)} // 입력된 비밀번호를 groupPassword에 저장
               placeholder="비밀번호를 입력해 주세요"
             />
           </div>

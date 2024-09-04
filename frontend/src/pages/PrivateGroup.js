@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonGroup from "../components/ButtonGroup";
 import CreateGroupButton from "../components/CreateGroupButton";
@@ -14,35 +15,36 @@ function PrivateGroup() {
   // 상태 관리
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
-  const [groups, setGroups] = useState([
-    // 예시 그룹 데이터
-    {
-      id: 1,
-      date: "D+265",
-      isPrivate: true,
-      title: "달봉이네 가족",
-      memories: 8,
-      likes: "1.5K",
-    },
-    {
-      id: 2,
-      date: "D+265",
-      isPrivate: true,
-      title: "해봉이네 가족",
-      memories: 10,
-      likes: "2K",
-    },
-    // 추가 그룹 데이터
-  ]);
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    // 백엔드에서 그룹 데이터를 가져오는 로직을 여기에 추가
+    const fetchGroups = async () => {
+      try {
+        // 필요한 최소한의 헤더만 설정합니다.
+        const response = await axios.get("/api/groups");
+
+        const fetchedGroups = Array.isArray(response.data.data)
+          ? response.data.data
+          : [];
+
+        setGroups(fetchedGroups);
+      } catch (error) {
+        console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
+        setGroups([]); // 오류 발생 시 빈 배열로 초기화
+      }
+    };
+    fetchGroups();
+  }, []);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    // 실제로는 여기에서 검색 쿼리를 통해 필터링 로직이 추가되어야 합니다.
+    // 검색 쿼리를 통해 필터링 로직 추가
   };
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
-    // 필터에 따라 그룹 목록을 정렬하는 로직을 여기에 추가
+    // 필터에 따라 그룹 목록을 정렬하는 로직 추가
   };
 
   const handleLoadMore = () => {
@@ -80,16 +82,18 @@ function PrivateGroup() {
       </div>
       {/* 그룹 목록 */}
       <div className="group-list">
-        {groups.map((group) => (
-          <GroupCard
-            key={group.id}
-            date={group.date}
-            isPrivate={group.isPrivate}
-            title={group.title}
-            memories={group.memories}
-            likes={group.likes}
-          />
-        ))}
+        {groups
+          .filter((group) => !group.isPublic) // 비공개 그룹만 필터링
+          .map((group) => (
+            <GroupCard
+              key={group.id}
+              date={group.date}
+              isPrivate={group.isPrivate}
+              title={group.title}
+              memories={group.memories}
+              likes={group.likes}
+            />
+          ))}
       </div>
 
       {/* 더보기 버튼 */}
