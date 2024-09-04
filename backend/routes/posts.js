@@ -34,6 +34,10 @@ router.route('/:id')
                         moment: req.body.moment,
                         isPublic: req.body.isPublic
                     });
+                    // 업데이트된 그룹 정보 가져오기
+                    const post = await Post.findOne({ id: req.params.id });
+    
+            
                     // 응답으로 보낼 데이터 형식 조정
                     const response = {
                         id: post.id,
