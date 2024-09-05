@@ -35,7 +35,7 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
       if (updateResponse.ok) {
         await onSave(updatedGroup); // 저장 작업을 먼저 처리
         closeModal(); // 모달을 닫고
-        navigate("/publicgroup"); // 성공 시 루트 페이지로 리다이렉트
+        navigate("/"); // 성공 시 루트 페이지로 리다이렉트
       } else if (updateResponse.status === 400) {
         setErrorMessage("잘못된 요청입니다."); // 400 오류 처리
       } else if (updateResponse.status === 403) {
