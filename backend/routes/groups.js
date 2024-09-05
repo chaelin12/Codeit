@@ -3,7 +3,7 @@ const setup = require("../db_setup");
 const sha = require("sha256");
 const Group = require('../schemas/group');
 const Post = require('../schemas/post');
-
+const fs = require('fs');
 
 router.route('/')
     //그룹 목록 조회
@@ -199,6 +199,21 @@ router.route('/:id')
              const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
                 await Group.deleteOne({ id: req.params.id });
+                 // 3. MySQL에서 그룹의 salt 정보 삭제
+                 const deleteSaltSql = `DELETE FROM GroupSalt WHERE id = ?`;
+                 mysqldb.query(deleteSaltSql, [group.id], (err, result) => {
+                     if (err) {
+                         console.error("MySQL salt 삭제 오류:", err);
+                     } else {
+                         console.log("MySQL salt 삭제 성공");
+                     }
+                 });
+                 fs.unlink('../public/images/'+value.fileName,(err)=>{
+                    if(err){
+                        console.error(err);
+                    }
+                 })
+
                 res.status(200).json({message : "그룹 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})

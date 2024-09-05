@@ -75,7 +75,7 @@ router.route('/:id')
          //비밀번호 검증
          const { mysqldb } = await setup();
          const sql = `SELECT salt FROM PostSalt WHERE id=?`;
-         mysqldb.query(sql, [post.id], async (err, rows, fields) => {
+         mysqldb.query(sql, [post.id], async (err, rows) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
          }
@@ -84,6 +84,15 @@ router.route('/:id')
              const hashPw = sha(req.body.postPassword + salt);
              if (post.postPassword == hashPw){
                 await Post.deleteOne({ id: req.params.id });
+                 // 3. MySQL에서 그룹의 salt 정보 삭제
+                 const deleteSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
+                 mysqldb.query(deleteSaltSql, [post.id], (err) => {
+                     if (err) {
+                         console.error("MySQL salt 삭제 오류:", err);
+                     } else {
+                         console.log("MySQL salt 삭제 성공");
+                     }
+                 });
                 res.status(200).json({message : "게시글 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})

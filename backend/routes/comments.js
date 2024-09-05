@@ -29,6 +29,7 @@ router.route('/comments/:id')
                         nickname: req.body.nickname,
                         content: req.body.content
                     });
+                    
                     res.status.json({
                         id: comment.id,
                         nickname: comment.nickname,
@@ -64,6 +65,15 @@ router.route('/comments/:id')
              const hashPw = sha(req.body.password + salt);
              if (comment.password == hashPw){
                 await Comment.deleteOne({ id: req.params.id });
+                 // 3. MySQL에서 그룹의 salt 정보 삭제
+                 const deleteSaltSql = `DELETE FROM CommentSalt WHERE id = ?`;
+                 mysqldb.query(deleteSaltSql, [comment.id], (err, result) => {
+                     if (err) {
+                         console.error("MySQL salt 삭제 오류:", err);
+                     } else {
+                         console.log("MySQL salt 삭제 성공");
+                     }
+                 });
                 res.status(200).json({message : "게시글 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
