@@ -5,7 +5,7 @@ const Group = require('../schemas/group');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const fs = require('fs');
-
+const path = require('path');
 router.route('/')
     //그룹 목록 조회
     .get(async (req,res)=>{
@@ -91,9 +91,7 @@ router.route('/')
                 mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
-                  } else {
-                    console.log("salt 저장 성공");
-                  }
+                  } 
                 });
                 // 응답으로 보낼 데이터 형식 조정
                 const response = {
@@ -107,7 +105,6 @@ router.route('/')
                     createdAt: group.createdAt.toISOString(), // ISO 형식으로 변환
                     introduction: group.introduction
                 };
-                console.log(response);
                 res.status(201).json(response);
             }catch(err){
                 console.error(err);
@@ -144,6 +141,7 @@ router.route('/:id')
             const salt = rows[0].salt;
             const hashPw = sha(req.body.password + salt);
             if (group.password === hashPw) {
+                const oldImageUrl = path.join(__dirname, '../public', group.imageUrl);
                 // 그룹 업데이트
                 await Group.updateOne({ id: groupId }, {
                 name: req.body.name,
@@ -151,10 +149,14 @@ router.route('/:id')
                 isPublic: req.body.isPublic,
                 introduction: req.body.introduction,
                 });
-    
+                
                 // 업데이트된 그룹 정보 가져오기
                 const updatedGroup = await Group.findOne({ id: groupId });
-    
+                fs.rename(oldImageUrl,('./public/'+updatedGroup.imageUrl),(err)=>{
+                    if(err){
+                        console.error(err);
+                    }
+                });
                 // 성공 응답
                 res.status(200).json({
                 id: updatedGroup.id,
@@ -214,9 +216,7 @@ router.route('/:id')
                  mysqldb.query(deleteSaltSql, [group.id], (err, result) => {
                      if (err) {
                          console.error("MySQL salt 삭제 오류:", err);
-                     } else {
-                         console.log("MySQL salt 삭제 성공");
-                     }
+                     } 
                  });
                  
 
