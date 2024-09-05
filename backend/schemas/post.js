@@ -3,7 +3,7 @@ const { Schema } =mongoose;
 
 const postSchema = new Schema({
     id: { type: Number, unique: true },
-    groupId: { type: Number, required: true, ref: 'Group' },
+    groupId: { type: Number, required: true},
     nickname: { type: String, required: true },
     postPassword: {type: String,required: true},
     title: { type: String, required: true },

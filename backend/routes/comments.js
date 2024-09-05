@@ -1,7 +1,7 @@
 const express = require('express');
 const Comment = require('../schemas/comment');
 const router = express.Router();
-
+const fs = require('fs');
 
 
 router.route('/comments/:id')
@@ -64,6 +64,11 @@ router.route('/comments/:id')
              const salt = rows[0].salt;
              const hashPw = sha(req.body.password + salt);
              if (comment.password == hashPw){
+                fs.unlink('./public'+comment.imageUrl,(err)=>{
+                    if(err){
+                        console.error(err);
+                    }
+                 });
                 await Comment.deleteOne({ id: req.params.id });
                  // 3. MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM CommentSalt WHERE id = ?`;

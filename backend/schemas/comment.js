@@ -6,10 +6,14 @@ const commentSchema = new Schema({
     type: Number,
     unique: true,
   },
+  groupId: { type: Number, required: true},
+  postId:{
+    type: Number,
+    required: true,
+  },
   nickname: {
     type: String, 
     required: true,
-    ref: 'Post', // post.js스키마 연결
   },
   content: {
     type: String,

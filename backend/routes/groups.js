@@ -3,6 +3,7 @@ const setup = require("../db_setup");
 const sha = require("sha256");
 const Group = require('../schemas/group');
 const Post = require('../schemas/post');
+const Comment = require('../schemas/comment');
 const fs = require('fs');
 
 router.route('/')
@@ -204,7 +205,11 @@ router.route('/:id')
                     }
                  });
                  await Group.deleteOne({ id: req.params.id });
-                 // 3. MySQL에서 그룹의 salt 정보 삭제
+                 // 그룹에 관련된 게시글 삭제
+                 await Post.deleteMany({ groupId: req.params.id });
+                 // 게시글에 관련된 댓글 삭제
+                 await Comment.deleteMany({ groupId: req.params.id });
+                 // MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM GroupSalt WHERE id = ?`;
                  mysqldb.query(deleteSaltSql, [group.id], (err, result) => {
                      if (err) {

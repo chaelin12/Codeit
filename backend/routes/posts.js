@@ -2,6 +2,7 @@ const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
 const Post = require('../schemas/post');
+const fs = require('fs');
 
 router.route('/:id')
     //게시글 수정
@@ -83,8 +84,15 @@ router.route('/:id')
              const salt = rows[0].salt;
              const hashPw = sha(req.body.postPassword + salt);
              if (post.postPassword == hashPw){
+                fs.unlink('./public'+post.imageUrl,(err)=>{
+                    if(err){
+                        console.error(err);
+                    }
+                 });
                 await Post.deleteOne({ id: req.params.id });
-                 // 3. MySQL에서 그룹의 salt 정보 삭제
+                // 게시글에 관련된 댓글 삭제
+                await Comment.deleteMany({ postId: req.params.id });
+                 // MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
                  mysqldb.query(deleteSaltSql, [post.id], (err) => {
                      if (err) {
