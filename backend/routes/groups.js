@@ -136,7 +136,6 @@ router.route('/:id')
         const sql = `SELECT salt FROM groupsalt WHERE id=?`;
         mysqldb.query(sql, [group.id], async (err, rows) => {
             if (err || rows.length === 0) {
-            mysqldb.end(); // 연결 종료
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
             }
     
@@ -173,9 +172,7 @@ router.route('/:id')
             } catch (err) {
             console.error(err);
             res.status(400).json({ message: "잘못된 요청입니다" });
-            } finally {
-            mysqldb.end(); // 연결 종료
-            }
+            } 
         });
         } catch (err) {
         console.error(err);
