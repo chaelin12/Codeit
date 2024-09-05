@@ -190,7 +190,7 @@ router.route('/:id')
          //비밀번호 검증
          const { mysqldb } = await setup();
          const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
-         mysqldb.query(sql, [group.id], async (err, rows, fields) => {
+         mysqldb.query(sql, [group.id], async (err, rows) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
          }
@@ -198,7 +198,12 @@ router.route('/:id')
              const salt = rows[0].salt;
              const hashPw = sha(req.body.password + salt);
              if (group.password == hashPw){
-                await Group.deleteOne({ id: req.params.id });
+                fs.unlink('./public'+group.imageUrl,(err)=>{
+                    if(err){
+                        console.error(err);
+                    }
+                 });
+                 await Group.deleteOne({ id: req.params.id });
                  // 3. MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM GroupSalt WHERE id = ?`;
                  mysqldb.query(deleteSaltSql, [group.id], (err, result) => {
@@ -208,11 +213,7 @@ router.route('/:id')
                          console.log("MySQL salt 삭제 성공");
                      }
                  });
-                 fs.unlink('../public/images/'+value.fileName,(err)=>{
-                    if(err){
-                        console.error(err);
-                    }
-                 })
+                 
 
                 res.status(200).json({message : "그룹 삭제 성공"});
             }else{
