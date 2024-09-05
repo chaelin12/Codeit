@@ -2,8 +2,9 @@ const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
 const Post = require('../schemas/post');
+const Comment = require('../schemas/comment');
 const fs = require('fs');
-
+const path = require('path');
 router.route('/:id')
     //게시글 수정
     .put(async (req,res)=>{
@@ -23,6 +24,7 @@ router.route('/:id')
             const hashPw = sha(req.body.password + salt);
             if (post.password == hashPw) {
                 try{
+                    const oldImageUrl = path.join(__dirname, '../public', post.imageUrl);
                     await Post.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
@@ -37,7 +39,12 @@ router.route('/:id')
                     });
                     // 업데이트된 그룹 정보 가져오기
                     const post = await Post.findOne({ id: req.params.id });
-    
+                    //이미지 새 이미지로 로컬에서 교체
+                    fs.rename(oldImageUrl,('./public/'+post.imageUrl),(err)=>{
+                        if(err){
+                            console.error(err);
+                        }
+                    });
             
                     // 응답으로 보낼 데이터 형식 조정
                     const response = {
@@ -97,9 +104,7 @@ router.route('/:id')
                  mysqldb.query(deleteSaltSql, [post.id], (err) => {
                      if (err) {
                          console.error("MySQL salt 삭제 오류:", err);
-                     } else {
-                         console.log("MySQL salt 삭제 성공");
-                     }
+                     } 
                  });
                 res.status(200).json({message : "게시글 삭제 성공"});
             }else{
@@ -193,7 +198,10 @@ router.route('/:id/comments')
                   };
                 const salt = generateSalt();
                 req.body.password=sha(req.body.password+salt);
-                const comment = await Post.create({
+                const post = await Post.findOne({id : req.params.id});
+                const comment = await Comment.create({
+                    postId : req.params.id,
+                    groupId : post.groupId,
                     nickname: req.body.name,
                     content : req.body.content,
                     password: req.body.password
