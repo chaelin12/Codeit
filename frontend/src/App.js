@@ -22,7 +22,6 @@ function App() {
         <Link to="/">PublicGroup</Link> |{" "}
         <Link to="/privateGroup">PrivateGroup</Link> |{" "}
         <Link to="/accessPrivate">AccessPrivate</Link> |{" "}
-        <Link to="/uploadPost">UploadPost</Link> |{" "}
       </nav>
 
       <Routes>
