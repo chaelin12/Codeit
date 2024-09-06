@@ -13,58 +13,70 @@ import "./PublicGroup.css";
 function PublicGroup() {
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("public");
-  // 상태 관리
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
   const [groups, setGroups] = useState([]);
+  const [page, setPage] = useState(1); // 페이지 번호 상태 추가
+  const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
 
   useEffect(() => {
-    // 백엔드에서 그룹 데이터를 가져오는 로직을 여기에 추가
-    const fetchGroups = async () => {
+    const fetchGroups = async (pageNum) => {
       try {
-        // 필요한 최소한의 헤더만 설정합니다.
-        const response = await axios.get("/api/groups");
+        const response = await axios.get(`/api/groups?page=${pageNum}`);
 
         const fetchedGroups = Array.isArray(response.data.data)
           ? response.data.data
           : [];
 
-        setGroups(fetchedGroups);
+        // 중복 제거 로직 추가
+        setGroups((prevGroups) => {
+          // 그룹의 고유 ID를 기준으로 중복을 제거
+          const existingGroupIds = new Set(prevGroups.map((group) => group.id));
+          const newGroups = fetchedGroups.filter(
+            (group) => !existingGroupIds.has(group.id)
+          );
+          return [...prevGroups, ...newGroups];
+        });
+
+        if (fetchedGroups.length === 0) {
+          setHasMore(false);
+        }
       } catch (error) {
         console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
-        setGroups([]); // 오류 발생 시 빈 배열로 초기화
       }
     };
-    fetchGroups();
-  }, []);
+
+    // 페이지가 변경될 때마다 새로운 그룹 데이터를 가져옵니다.
+    fetchGroups(page);
+  }, [page]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    // 실제로는 여기에서 검색 쿼리를 통해 필터링 로직이 추가되어야 합니다.
+    // 검색 쿼리를 기반으로 필터링된 그룹 데이터를 불러오는 로직 추가 가능
   };
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
-    // 필터에 따라 그룹 목록을 정렬하는 로직을 여기에 추가
+    // 필터에 따른 정렬 로직 추가 가능
   };
 
   const handleLoadMore = () => {
-    // "더보기" 버튼 클릭 시 더 많은 그룹 데이터를 불러오는 로직 추가
+    if (hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   const handleCreateGroup = () => {
     navigate("/creategroup");
-    // 그룹 만들기 로직을 여기에 추가
   };
 
   const handlePublicClick = () => {
     setActiveButton("public");
-    console.log("공개 그룹 보기");
   };
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    navigate("/PrivateGroup"); // 비공개 그룹 페이지로 이동
+    navigate("/PrivateGroup");
   };
 
   return (
@@ -81,7 +93,6 @@ function PublicGroup() {
         <SearchBar onSearch={handleSearch} />
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
-      {/* 그룹이 없을 때 NoGroup 컴포넌트 표시 */}
       {groups.length === 0 ? (
         <NoGroup onCreateGroup={handleCreateGroup} />
       ) : (
@@ -91,11 +102,11 @@ function PublicGroup() {
               (group) =>
                 group.isPublic && ( // 공개 그룹만 렌더링
                   <GroupCard
-                    key={group.id} // key 속성 추가
+                    key={group.id} // 중복 방지를 위한 key 사용
                     id={group.id}
                     name={group.name}
                     imageUrl={group.imageUrl}
-                    isPublic={group.isPublic} // 올바른 값 전달
+                    isPublic={group.isPublic}
                     likeCount={group.likeCount}
                     badgeCount={group.badges}
                     postCount={group.postCount}
@@ -106,7 +117,11 @@ function PublicGroup() {
             )}
           </div>
           <div className="load-more-container">
-            <LoadMoreButton onClick={handleLoadMore} />
+            {hasMore ? (
+              <LoadMoreButton onClick={handleLoadMore} />
+            ) : (
+              <p>더 이상 그룹이 없습니다.</p>
+            )}
           </div>
         </>
       )}
