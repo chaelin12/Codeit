@@ -15,7 +15,7 @@ router.route('/:id')
         //비밀번호 검증
         const { mysqldb } = await setup();
         const sql = `SELECT salt FROM postsalt WHERE id=?`;
-        mysqldb.query(sql, [post.id], async (err, rows, fields) => {
+        mysqldb.query(sql, [post.id], async (err, rows) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
         }
@@ -28,7 +28,7 @@ router.route('/:id')
                     await Post.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
-                        nickname: req.body.name,
+                        nickname: req.body.nickname,
                         title : req.body.title,
                         content : req.body.content,
                         imageUrl: req.body.imageUrl,
@@ -202,7 +202,7 @@ router.route('/:id/comments')
                 const comment = await Comment.create({
                     postId : req.params.id,
                     groupId : post.groupId,
-                    nickname: req.body.name,
+                    nickname: req.body.nickname,
                     content : req.body.content,
                     password: req.body.password
                 });
