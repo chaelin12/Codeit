@@ -1,47 +1,70 @@
+import axios from "axios"; // Import axios for handling API requests
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
-import "./EditModal.css"; // Import the modal styling CSS file
+import { useNavigate } from "react-router-dom";
+import "./EditModal.css";
 
 const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupName, setGroupName] = useState(groupDetail.name);
-  const [groupImage, setGroupImage] = useState(groupDetail.imageUrl);
+  const [groupImage, setGroupImage] = useState(groupDetail.imageUrl); // 기존 URL로 초기화
+  const [newImageFile, setNewImageFile] = useState(null); // 새로 업로드할 파일 저장
   const [groupIntro, setGroupIntro] = useState(groupDetail.introduction);
   const [isPublic, setIsPublic] = useState(groupDetail.isPublic);
-  const [groupPassword, setGroupPassword] = useState(""); // 수정 권한 인증 비밀번호를 저장
-  const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 표시용
+  const [groupPassword, setGroupPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
+  const navigate = useNavigate();
 
   const handleSave = async () => {
-    // 업데이트할 그룹 데이터를 준비
-    const updatedGroup = {
-      name: groupName,
-      imageUrl: groupImage,
-      introduction: groupIntro,
-      isPublic,
-      password: groupPassword, // 비밀번호를 포함
-    };
-
     try {
-      // 그룹 정보 업데이트 시도
+      let imageUrl = groupImage; // 기본적으로 기존 이미지 URL 사용
+
+      // 이미지 파일이 선택된 경우 새로 업로드
+      if (newImageFile) {
+        const imageFormData = new FormData();
+        imageFormData.append("image", newImageFile);
+
+        // 이미지 업로드 요청
+        const imageUploadResponse = await axios.post(
+          "/api/image",
+          imageFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        imageUrl = imageUploadResponse.data.imageUrl; // 새로 업로드된 이미지의 URL
+      }
+
+      // 업데이트할 그룹 데이터를 준비
+      const updatedGroup = {
+        name: groupName,
+        imageUrl, // 업로드한 이미지 URL
+        introduction: groupIntro,
+        isPublic,
+        password: groupPassword,
+      };
+
+      // 그룹 정보 업데이트 요청
       const updateResponse = await fetch(`/api/groups/${groupId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedGroup), // JSON 데이터 전송
+        body: JSON.stringify(updatedGroup),
       });
 
       if (updateResponse.ok) {
-        await onSave(updatedGroup); // 저장 작업을 먼저 처리
-        closeModal(); // 모달을 닫고
-        navigate("/"); // 성공 시 루트 페이지로 리다이렉트
+        await onSave(updatedGroup);
+        closeModal();
+        navigate("/");
       } else if (updateResponse.status === 400) {
-        setErrorMessage("잘못된 요청입니다."); // 400 오류 처리
+        setErrorMessage("잘못된 요청입니다.");
       } else if (updateResponse.status === 403) {
-        setErrorMessage("비밀번호가 틀렸습니다."); // 403 오류 처리
+        setErrorMessage("비밀번호가 틀렸습니다.");
       } else if (updateResponse.status === 404) {
-        setErrorMessage("존재하지 않습니다."); // 404 오류 처리
+        setErrorMessage("존재하지 않습니다.");
       } else {
         console.error("Failed to save the group data.");
         setErrorMessage("그룹 정보를 저장하는 중 오류가 발생했습니다.");
@@ -55,7 +78,8 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setGroupImage(URL.createObjectURL(file));
+      setNewImageFile(file); // 새로 선택된 파일을 저장
+      setGroupImage(URL.createObjectURL(file)); // 미리보기용 로컬 URL 생성
     }
   };
 
@@ -90,7 +114,9 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
               <input
                 type="text"
                 className="image-placeholder"
-                value={groupImage ? groupImage.split("/").pop() : ""}
+                value={
+                  newImageFile ? newImageFile.name : groupImage.split("/").pop()
+                }
                 placeholder="파일을 선택해 주세요"
                 readOnly
               />
@@ -114,7 +140,6 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
               placeholder="그룹을 소개해 주세요"
             ></textarea>
           </label>
-          {/* 그룹 공개 선택 영역 */}
           <div className="public-toggle">
             <label>그룹 공개 선택</label>
             <div className="toggle-container">
@@ -127,13 +152,12 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
               </div>
             </div>
           </div>
-          {/* 수정 권한 인증 영역 */}
           <div className="auth-input">
             <label>수정 권한 인증</label>
             <input
               type="password"
               value={groupPassword}
-              onChange={(e) => setGroupPassword(e.target.value)} // 입력된 비밀번호를 groupPassword에 저장
+              onChange={(e) => setGroupPassword(e.target.value)}
               placeholder="비밀번호를 입력해 주세요"
             />
           </div>
