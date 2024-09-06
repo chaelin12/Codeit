@@ -1,13 +1,15 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import CalendarIcon from "../assets/pictures/calender.png"; // 이미지 파일 가져오기
+import CalendarIcon from "../assets/pictures/calender.png";
 import Button from "../components/FormButton";
 import Modal from "../components/Modal";
 import "./UploadPost.css";
 
 function UploadPost() {
-  const { groupId } = useParams(); // useParams 훅을 사용해 groupId 가져오기
+  const { groupId } = useParams();
+  const navigate = useNavigate();
+
   const [input, setInput] = useState({
     nickname: "",
     title: "",
@@ -17,21 +19,31 @@ function UploadPost() {
     image: null,
     tags: "",
     location: "",
-    moment: "", // 날짜 입력 필드
+    moment: "",
     isPublic: true,
   });
 
-  const [tags, setTags] = useState([]); // 태그 배열 상태 관리
+  const [tags, setTags] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
   const [redirectPath, setRedirectPath] = useState("/");
 
-  const navigate = useNavigate();
+  // 구조화하여 상태 가져오기
+  const {
+    nickname,
+    title,
+    content,
+    postPassword,
+    groupPassword,
+    image,
+    location,
+    moment,
+    isPublic,
+  } = input;
 
   const onChange = (e) => {
     const { id, value, type, files } = e.target;
     const inputValue = type === "file" ? files[0] : value;
-
     setInput({ ...input, [id]: inputValue });
   };
 
@@ -42,22 +54,23 @@ function UploadPost() {
   const handleTagInput = (e) => {
     if (e.key === "Enter" && e.target.value.trim() !== "") {
       e.preventDefault();
-      setTags([...tags, e.target.value.trim()]); // 새로운 태그를 배열에 추가
-      setInput({ ...input, tags: "" }); // 입력창 비우기
+      setTags([...tags, e.target.value.trim()]);
+      setInput({ ...input, tags: "" });
     }
   };
 
   const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove)); // 해당 인덱스의 태그 삭제
+    setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       let imageUrl = "";
-      if (input.image) {
+
+      if (image) {
         const imageFormData = new FormData();
-        imageFormData.append("image", input.image);
+        imageFormData.append("image", image);
 
         const imageUploadResponse = await axios.post(
           "/api/image",
@@ -68,44 +81,36 @@ function UploadPost() {
         );
 
         imageUrl = imageUploadResponse.data.imageUrl;
-        console.log("Uploaded Image URL:", imageUrl);
       }
 
       const formData = {
-        nickname: input.nickname,
-        title: input.title,
-        content: input.content,
-        postPassword: input.postPassword,
-        groupPassword: input.groupPassword,
-        imageUrl: imageUrl,
-        tags: tags,
-        location: input.location,
-        moment: input.moment,
-        isPublic: input.isPublic,
+        nickname,
+        title,
+        content,
+        postPassword,
+        groupPassword,
+        imageUrl,
+        tags,
+        location,
+        moment,
+        isPublic,
       };
 
       const response = await axios.post(
-        `/api/groups/${groupId}/posts`, // groupId를 URL에 포함해 요청
+        `/api/groups/${groupId}/posts`,
         formData
       );
 
       if (response.status === 200) {
-        console.log("추억 올리기 성공: 추억이 성공적으로 등록되었습니다."); // 성공 메시지 로그
         setModalInfo({
           title: "추억 올리기 성공",
           message: "추억이 성공적으로 등록되었습니다.",
         });
         setRedirectPath(`/groupdetail/${groupId}`);
       } else {
-        console.log("추억 올리기 실패: 추억 등록에 실패했습니다."); // 실패 메시지 로그
-        setModalInfo({
-          title: "추억 올리기 실패",
-          message: "추억 등록에 실패했습니다.",
-        });
-        setRedirectPath("/uploadPost");
+        throw new Error("추억 등록에 실패했습니다.");
       }
     } catch (error) {
-      console.error("Error:", error.response || error.message);
       setModalInfo({
         title: "추억 올리기 실패",
         message: error.response?.data?.message || "추억 등록에 실패했습니다.",
@@ -124,7 +129,7 @@ function UploadPost() {
   const openDatePicker = () => {
     const dateInput = document.getElementById("moment");
     if (dateInput) {
-      dateInput.showPicker(); // date input에서 날짜 선택기가 펼쳐지도록 강제로 호출
+      dateInput.showPicker();
     }
   };
 
@@ -140,7 +145,7 @@ function UploadPost() {
             <input
               type="text"
               id="nickname"
-              value={input.nickname}
+              value={nickname}
               onChange={onChange}
               placeholder="닉네임을 입력해 주세요"
             />
@@ -150,7 +155,7 @@ function UploadPost() {
             <input
               type="text"
               id="title"
-              value={input.title}
+              value={title}
               onChange={onChange}
               placeholder="제목을 입력해 주세요"
             />
@@ -162,7 +167,7 @@ function UploadPost() {
                 type="text"
                 placeholder="파일을 선택해 주세요"
                 readOnly
-                value={input.image ? input.image.name : ""}
+                value={image ? image.name : ""}
                 className="image-placeholder"
               />
               <label htmlFor="image" className="file-upload-button">
@@ -180,7 +185,7 @@ function UploadPost() {
             <label>본문</label>
             <textarea
               id="content"
-              value={input.content}
+              value={content}
               onChange={onChange}
               placeholder="본문 내용을 입력해 주세요"
               rows="5"
@@ -198,7 +203,7 @@ function UploadPost() {
               id="tags"
               value={input.tags}
               onChange={onChange}
-              onKeyDown={handleTagInput} // Enter 키를 감지
+              onKeyDown={handleTagInput}
               placeholder="태그 입력 후 Enter"
             />
             <div className="tags-container">
@@ -214,7 +219,7 @@ function UploadPost() {
             <input
               type="text"
               id="location"
-              value={input.location}
+              value={location}
               onChange={onChange}
               placeholder="장소를 입력해 주세요"
             />
@@ -225,16 +230,16 @@ function UploadPost() {
               <input
                 type="date"
                 id="moment"
-                value={input.moment} // 선택된 날짜
+                value={moment}
                 onChange={onChange}
-                placeholder="YYYY-MM-DD" // 플레이스홀더 텍스트
-                className={!input.moment ? "placeholder" : ""}
+                placeholder="YYYY-MM-DD"
+                className={!moment ? "placeholder" : ""}
               />
               <img
-                src={CalendarIcon} // 수정된 이미지 경로 사용
+                src={CalendarIcon}
                 alt="Calendar Icon"
                 className="calendar-icon"
-                onClick={openDatePicker} // 아이콘 클릭 시 날짜 선택기 열기
+                onClick={openDatePicker}
               />
             </div>
           </div>
@@ -243,7 +248,7 @@ function UploadPost() {
             <div className="toggle-container">
               <p>공개</p>
               <div
-                className={`toggle-switch ${input.isPublic ? "active" : ""}`}
+                className={`toggle-switch ${isPublic ? "active" : ""}`}
                 onClick={handleToggle}
               >
                 <div className="switch-handle"></div>
@@ -255,7 +260,7 @@ function UploadPost() {
             <input
               type="password"
               id="postPassword"
-              value={input.postPassword}
+              value={postPassword}
               onChange={onChange}
               placeholder="비밀번호를 입력해 주세요"
             />
