@@ -152,6 +152,7 @@ router.route('/:id')
                 
                 // 업데이트된 그룹 정보 가져오기
                 const updatedGroup = await Group.findOne({ id: groupId });
+                //이미지 새 이미지로 로컬에서 교체
                 fs.rename(oldImageUrl,('./public/'+updatedGroup.imageUrl),(err)=>{
                     if(err){
                         console.error(err);
@@ -309,7 +310,7 @@ router.route('/:id/posts')
                 req.body.postPassword=sha(req.body.postPassword+salt);
                 const post = await Post.create({
                     groupId: req.params.id,
-                    nickname: req.body.name,
+                    nickname: req.body.nickname,
                     title : req.body.title,
                     content : req.body.content,
                     postPassword: req.body.postPassword,
