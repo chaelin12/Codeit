@@ -24,6 +24,8 @@ function UploadPost() {
   const [tags, setTags] = useState([]); // 태그 배열 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
+  const [redirectPath, setRedirectPath] = useState("/");
+
   const navigate = useNavigate();
 
   const onChange = (e) => {
@@ -76,32 +78,31 @@ function UploadPost() {
         postPassword: input.postPassword,
         groupPassword: input.groupPassword,
         imageUrl: imageUrl,
-        tags: tags, // 태그 배열 전송
+        tags: tags,
         location: input.location,
         moment: input.moment,
         isPublic: input.isPublic,
       };
 
       const response = await axios.post(
-        `/api/groups/${groupId}/posts`,
-        formData // 입력한 데이터를 요청 본문으로 전송
+        `/api/groups/${groupId}/posts`, // groupId를 URL에 포함해 요청
+        formData
       );
 
-      if (response.status === 201) {
+      if (response.status === 200) {
+        console.log("추억 올리기 성공: 추억이 성공적으로 등록되었습니다."); // 성공 메시지 로그
         setModalInfo({
           title: "추억 올리기 성공",
           message: "추억이 성공적으로 등록되었습니다.",
         });
-        setIsModalOpen(true);
-        setTimeout(() => {
-          navigate(`./GroupDetail}`); // 성공 시 그룹 디테일 페이지로 리다이렉트
-        }, 2000); // 모달이 표시된 후 2초 후에 리다이렉트
+        setRedirectPath(`/groupdetail/${groupId}`);
       } else {
+        console.log("추억 올리기 실패: 추억 등록에 실패했습니다."); // 실패 메시지 로그
         setModalInfo({
           title: "추억 올리기 실패",
           message: "추억 등록에 실패했습니다.",
         });
-        setIsModalOpen(true);
+        setRedirectPath("/uploadPost");
       }
     } catch (error) {
       console.error("Error:", error.response || error.message);
@@ -109,11 +110,14 @@ function UploadPost() {
         title: "추억 올리기 실패",
         message: error.response?.data?.message || "추억 등록에 실패했습니다.",
       });
+      setRedirectPath("/uploadPost");
+    } finally {
       setIsModalOpen(true);
     }
   };
 
   const handleCloseModal = () => {
+    navigate(redirectPath);
     setIsModalOpen(false);
   };
 
@@ -266,6 +270,7 @@ function UploadPost() {
         onClose={handleCloseModal}
         title={modalInfo.title}
         message={modalInfo.message}
+        redirectPath={redirectPath}
       />
     </div>
   );

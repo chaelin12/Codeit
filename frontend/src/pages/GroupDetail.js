@@ -103,7 +103,7 @@ function GroupDetail() {
   const handleLoadMore = () => {};
 
   const handleUploadPostClick = () => {
-    navigate("/UploadPost");
+    navigate(`/uploadPost/${groupId}`);
   };
 
   const handlePublicClick = () => {
