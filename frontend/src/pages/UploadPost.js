@@ -25,10 +25,13 @@ function UploadPost() {
 
   const [tags, setTags] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalInfo, setModalInfo] = useState({ title: "", message: "" });
+  const [modalInfo, setModalInfo] = useState({
+    title: "",
+    message: "",
+    success: false,
+  });
   const [redirectPath, setRedirectPath] = useState("/");
 
-  // 구조화하여 상태 가져오기
   const {
     nickname,
     title,
@@ -101,29 +104,41 @@ function UploadPost() {
         formData
       );
 
-      if (response.status === 200) {
+      // 추가된 콘솔 로그
+      console.log("Response status:", response.status);
+      console.log("Response data:", response.data);
+
+      if (response.status === 200 || response.status === 201) {
         setModalInfo({
           title: "추억 올리기 성공",
           message: "추억이 성공적으로 등록되었습니다.",
+          success: true, // 성공 모달
         });
-        setRedirectPath(`/groupdetail/${groupId}`);
+        setRedirectPath(`/groupdetail/${groupId}`); // 그룹 상세 페이지로 이동
       } else {
         throw new Error("추억 등록에 실패했습니다.");
       }
     } catch (error) {
+      // 에러 정보 출력
+      console.error("Error:", error);
+
       setModalInfo({
         title: "추억 올리기 실패",
         message: error.response?.data?.message || "추억 등록에 실패했습니다.",
+        success: false, // 실패 모달
       });
-      setRedirectPath("/uploadPost");
+      setRedirectPath("/uploadPost"); // 현재 페이지 유지
     } finally {
       setIsModalOpen(true);
     }
   };
 
   const handleCloseModal = () => {
-    navigate(redirectPath);
-    setIsModalOpen(false);
+    if (modalInfo.success) {
+      navigate(`/groupdetail/${groupId}`); // 성공 시 그룹 상세 페이지로 이동
+    } else {
+      setIsModalOpen(false); // 실패 시 모달 닫고 현재 페이지 유지
+    }
   };
 
   const openDatePicker = () => {
@@ -275,7 +290,6 @@ function UploadPost() {
         onClose={handleCloseModal}
         title={modalInfo.title}
         message={modalInfo.message}
-        redirectPath={redirectPath}
       />
     </div>
   );
