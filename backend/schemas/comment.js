@@ -6,7 +6,10 @@ const commentSchema = new Schema({
     type: Number,
     unique: true,
   },
-  groupId: { type: Number, required: true},
+  groupId: { 
+    type: Number, 
+    required: true,
+  },
   postId:{
     type: Number,
     required: true,
@@ -35,8 +38,8 @@ commentSchema.pre('save', async function (next) {
   // ID 증가 로직
   if (doc.isNew) {
     try {
-      const highestGroup = await mongoose.model('Comment').findOne({}, 'id').sort({ id: -1 }).exec();
-      doc.id = highestGroup ? highestGroup.id + 1 : 1;
+      const highestComment = await mongoose.model('Comment').findOne({}, 'id').sort({ id: -1 }).exec();
+      doc.id = highestComment ? highestComment.id + 1 : 1;
       next();
     } catch (error) {
       next(error);

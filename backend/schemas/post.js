@@ -24,7 +24,7 @@ postSchema.pre('save', async function (next) {
     // ID 증가 로직
     if (doc.isNew) {
       try {
-        const highestGroup = await mongoose.model('Post').findOne({}, 'id').sort({ id: -1 }).exec();
+        const highestPost = await mongoose.model('Post').findOne({}, 'id').sort({ id: -1 }).exec();
         doc.id = highestPost ? highestPost.id + 1 : 1;
         next();
       } catch (error) {
