@@ -325,9 +325,7 @@ router.route('/:id/posts')
                 mysqldb.query(sql, [post.id, salt], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
-                  } else {
-                    console.log("salt 저장 성공");
-                  }
+                  } 
                 });
                 // 응답으로 보낼 데이터 형식 조정
                 const response = {
@@ -345,7 +343,7 @@ router.route('/:id/posts')
                     commentCount: post.commentCount,
                     createdAt: post.createdAt.toISOString() // ISO 형식으로 변환
                 };
-                res.status(201).json(response);
+                res.status(200).json(response);
             }catch(err){
                 console.error(err);
             }
@@ -363,8 +361,7 @@ router.route('/:id/posts')
         const sortBy = req.query.sortBy || 'latest';
         const keyword = req.query.keyword || '';
         const isPublic = req.query.isPublic; // 공개/비공개 여부를 쿼리 파라미터로 받음
-        const groupId = req.query.groupId;
-
+        const groupId = req.params.id;
         let sortOption = { createdAt: -1 };
     
         if (sortBy === 'mostCommented') {

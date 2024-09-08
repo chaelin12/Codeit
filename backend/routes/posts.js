@@ -236,14 +236,16 @@ router.route('/:id/comments')
         const pageSize = parseInt(req.query.pageSize, 10) || 10;
         const skip = (page - 1) * pageSize;
         const keyword = req.query.keyword || ''
-    
+        const postId = req.params.id;
 
         try {
             let filter = {};
             if (keyword) {
                 filter.name = { $regex: keyword, $options: 'i' };
             }
-    
+            if (postId){
+                filter.postId = postId;
+            }
             const totalCommentCount = await Comment.countDocuments(filter);
     
             const comments = await Comment.find(filter)
