@@ -8,52 +8,55 @@
 }
 
 .post-card-header {
-  display: flex;
-  align-items: center;
   margin-bottom: 15px;
+  text-align: left;
 }
 
 .post-card-public-status {
-  color: gray;
+  color: #8d8d8d;
 }
 
 .post-card-image {
-  width: 50px;
-  height: auto;
+  width: 100%; /* Make the image take up full card width */
+  height: auto; /* Maintain the aspect ratio */
+  margin-bottom: 15px;
+  border-radius: 8px; /* Optional: Add a slight border radius to the image */
   object-fit: cover;
-  margin-right: 15px;
 }
 
+.post-info {
+  flex-grow: 1; /* Left align text */
+}
 .post-card-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-top: 5px;
-}
-
-.post-card-moment,
-.post-card-location {
-  font-size: 0.875rem;
-  color: #777;
-}
-
-.post-card-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.875rem;
-  color: #666;
-  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 15px;
 }
 
 .post-card-tags {
+  margin-top: 5px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
 }
 
 .post-card-tag {
-  background-color: #f1f1f1;
-  border-radius: 12px;
-  padding: 5px 10px;
+  padding: 5px 5px;
   font-size: 0.875rem;
-  color: #555;
+  color: #b8b8b8;
+}
+
+.post-more {
+  display: flex;
+  justify-content: space-between; /* Space between time and stats */
+  align-items: center; /* Align items vertically in the center */
+  margin-top: 15px;
+}
+.post-time {
+  font-size: 15px;
+  color: #282828;
+  text-align: left;
+}
+.post-stats {
+  color: #666;
+  text-align: right;
 }

@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import bubble from "../assets/pictures/bubble.png";
+import flower from "../assets/pictures/flower.png";
 import "./PostCard.css";
 
 function PostCard({
@@ -23,25 +25,19 @@ function PostCard({
 
   return (
     <div className="post-card">
-      <img src={imageUrl} alt={title} className="post-card-image" />
-      <div className="post-card-content">
-        <div className="post-card-header">
-          <span className="post-card-nickname">{nickname}</span>
+      <div className="post-card-header">
+        <img src={imageUrl} alt={title} className="post-card-image" />
+        <div className="post-info">
+          <span className="post-card-nickname">{nickname} </span>
+          <span className="separator"> | </span>
           <span className="post-card-public-status">
             {isPublic ? "공개" : "비공개"}
           </span>
         </div>
-        <h3 className="post-card-title" onClick={handleTitleClick}>
+        <div className="post-card-title" onClick={handleTitleClick}>
           {title}
-        </h3>
-        <p className="post-card-moment">{moment}</p>
-        <p className="post-card-location">{location}</p>
-        <span className="post-card-createdAt">{createdAt}</span>
-        <div className="post-card-info">
-          <span className="post-card-nickname">{nickname}</span>
-          <span className="post-card-likeCount">❤️ {likeCount}</span>
-          <span className="post-card-commentCount">💬 {commentCount}</span>
         </div>
+
         <div className="post-card-tags">
           {tags.map((tag, index) => (
             <span key={index} className="post-card-tag">
@@ -49,9 +45,21 @@ function PostCard({
             </span>
           ))}
         </div>
+        <div className="post-more">
+          <div className="post-time">
+            <span className="post-card-moment">{moment}</span>
+            <span className="Delimiter"> · </span>
+            <span className="post-card-location">{location}</span>
+          </div>
+          <div className="post-stats">
+            <img src={flower}></img>
+            <span className="post-card-likeCount"> {likeCount}</span>
+            <img src={bubble}></img>
+            <span className="post-card-commentCount">{commentCount}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
 export default PostCard;

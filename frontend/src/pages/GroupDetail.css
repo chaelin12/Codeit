@@ -61,7 +61,7 @@
 
 .group-stats {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 400;
   color: #282828;
   display: flex;
   gap: 20px;
@@ -103,23 +103,6 @@
 
 .groupdelete {
   color: #8d8d8d;
-}
-.section-divider {
-  color: #282828;
-}
-
-.section-divider {
-  height: 1px;
-  background-color: #ddd;
-  margin: 40px 0; /* Margin to create space around the separator */
-}
-
-.memory-title {
-  display: flex;
-  font-size: 10px;
-  justify-content: center; /* Align title and button horizontally */
-  align-items: center; /* Align items vertically to the center */
-  margin-bottom: 20px;
 }
 
 .create-memory-button-container {

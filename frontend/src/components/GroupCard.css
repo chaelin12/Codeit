@@ -10,6 +10,7 @@
 
 .group-card-header {
   margin-bottom: 15px;
+  text-align: left;
 }
 
 .group-card-image {
@@ -22,7 +23,6 @@
 
 .group-info {
   flex-grow: 1;
-  text-align: left; /* Left align text */
 }
 
 .group-date {
@@ -37,14 +37,14 @@
   color: #b8b8b8;
 }
 
-.public {
+.group-card-public-status {
   color: #8d8d8d; /* 공개/비공개 회색 */
 }
 
 .group-title {
   font-size: 18px;
-  font-weight: 600;
-  margin-top: 5px;
+  font-weight: 700;
+  margin-top: 15px;
 }
 
 .group-introduction {
@@ -55,9 +55,7 @@
 
 .group-stats {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #888;
+  color: #b8b8b8;
   font-size: 14px;
-  margin-top: 10px;
+  margin-top: 15px;
 }

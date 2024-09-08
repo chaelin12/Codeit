@@ -239,3 +239,31 @@ function GroupDetail() {
 }
 
 export default GroupDetail;
+
+/*
+<div className="memory-cards">
+  {Array.isArray(Posts) && Posts.length > 0 ? (
+    Posts.map((post) => {
+      console.log(`Post ID: ${post.id}, Group ID: ${groupId}`); // Log post ID and group ID
+      return (
+        <PostCard
+          key={post.id}
+          id={post.id}
+          nickname={post.nickname}
+          title={post.title}
+          content={post.content}
+          imageUrl={post.imageUrl}
+          tags={post.tags}
+          location={post.location}
+          moment={post.moment}
+          isPublic={post.isPublic}
+          likeCount={post.likeCount}
+          commentCount={post.commentCount}
+        />
+      );
+    })
+  ) : (
+    <div>게시물이 없습니다.</div>
+  )}
+</div>
+*/

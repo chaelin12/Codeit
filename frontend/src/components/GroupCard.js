@@ -60,19 +60,20 @@ function GroupCard({
           <div className="group-date">
             <span className="date">D+{daysPassed}</span>
             <span className="separator"> | </span>
-            <span className="public">공개</span>
+            <span className="post-card-public-status">
+              {isPublic ? "공개" : "비공개"}
+            </span>
           </div>
           <div className="group-title" onClick={() => handleGroupCardClick(id)}>
             {name}
           </div>
-
           <div className="group-introduction">{introduction}</div>
         </div>
-      </div>
-      <div className="group-stats">
-        <span className="group-badge">획득 배지 {badgeCount}</span>
-        <span className="group-memories">추억 {postCount}</span>
-        <span className="group-likes">공감 {likeCount}</span>
+        <div className="group-stats">
+          <span className="group-badge">획득 배지 {badgeCount}</span>
+          <span className="group-memories">추억 {postCount}</span>
+          <span className="group-likes">공감 {likeCount}</span>
+        </div>
       </div>
     </div>
   );

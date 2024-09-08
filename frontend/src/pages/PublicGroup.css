@@ -31,14 +31,8 @@
 
 .group-list {
   display: grid;
-  grid-template-columns: repeat(
-    4,
-    1fr
-  ); /* 한 줄에 4개의 카드가 배치되도록 설정 */
-  grid-template-rows: masonry;
-  grid-auto-rows: auto;
-  gap: 10px; /* 카드 간의 간격 */
-  max-width: 1560px; /* 컨테이너 최대 너비 설정 */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px; /* Space between items */
+  max-width: 1560px; /* Container maximum width */
   box-sizing: border-box;
-  grid-auto-flow: dense;
 }
