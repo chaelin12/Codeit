@@ -24,8 +24,9 @@ function GroupDetail() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [Posts, setPosts] = useState([]);
 
+  // useEffect가 두 번 실행되는 문제를 해결하려면 React.StrictMode를 제거해야 합니다.
+
   useEffect(() => {
-    console.log("groupId:", groupId);
     const fetchGroups = async () => {
       try {
         const response = await axios.get(`/api/groups/${groupId}`);
@@ -33,8 +34,8 @@ function GroupDetail() {
         setGroupDetail(response.data);
 
         const PostsResponse = await axios.get(`/api/groups/${groupId}/posts`);
-        setPosts(PostsResponse.data);
-
+        console.log("Posts Response:", PostsResponse.data);
+        setPosts(PostsResponse.data.data || []); // 데이터 배열을 안전하게 처리
         setLoading(false);
       } catch (error) {
         console.error("Error fetching group details:", error.message);
@@ -45,13 +46,14 @@ function GroupDetail() {
         setLoading(false);
       }
     };
+
     fetchGroups();
   }, [groupId]);
 
   const handleDelete = async (password) => {
     try {
       await axios.delete(`/api/groups/${groupId}`, {
-        data: { password }, // Send password for verification
+        data: { password },
       });
       console.log("Group deleted successfully");
       navigate("/groups");
@@ -208,26 +210,26 @@ function GroupDetail() {
         </div>
 
         <div className="memory-cards">
-          {Array.isArray(Posts) &&
-            Posts.map(
-              (post) =>
-                post.isPublic && ( // 공개 그룹만 렌더링
-                  <PostCard
-                    key={post.id} // Key 추가
-                    id={post.id}
-                    nickname={post.nickname}
-                    title={post.title}
-                    content={post.content}
-                    imageUrl={post.imageUrl}
-                    tags={post.tags}
-                    location={post.location}
-                    moment={post.moment}
-                    isPublic={post.isPublic}
-                    likes={post.likes}
-                    comments={post.comments}
-                  />
-                )
-            )}
+          {Array.isArray(Posts) && Posts.length > 0 ? (
+            Posts.map((post) => (
+              <PostCard
+                key={post.id}
+                id={post.id}
+                nickname={post.nickname}
+                title={post.title}
+                content={post.content}
+                imageUrl={post.imageUrl}
+                tags={post.tags}
+                location={post.location}
+                moment={post.moment}
+                isPublic={post.isPublic}
+                likeCount={post.likeCount}
+                commentCount={post.commentCount}
+              />
+            ))
+          ) : (
+            <div>게시물이 없습니다.</div>
+          )}
         </div>
 
         <LoadMoreButton onClick={handleLoadMore} />

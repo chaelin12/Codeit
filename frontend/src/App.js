@@ -4,6 +4,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import AccessPrivate from "./pages/AccessPrivate";
 import CreateGroup from "./pages/CreateGroup";
 import GroupDetail from "./pages/GroupDetail";
+import PostDetail from "./pages/PostDetail";
 import PrivateGroup from "./pages/PrivateGroup";
 import PublicGroup from "./pages/PublicGroup";
 import UploadPost from "./pages/UploadPost";
@@ -32,6 +33,7 @@ function App() {
         <Route path="/accessPrivate" element={<AccessPrivate />} />
         <Route path="/groupdetail/:groupId" element={<GroupDetail />} />
         <Route path="/uploadPost/:groupId" element={<UploadPost />} />
+        <Route path="/postdetail/:groupId/:postId" element={<PostDetail />} />
       </Routes>
     </div>
   );

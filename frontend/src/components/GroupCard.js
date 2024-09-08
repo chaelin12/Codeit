@@ -11,6 +11,7 @@ function GroupCard({
   postCount,
   createdAt,
   introduction,
+  isPublic,
   onClick,
 }) {
   const [daysPassed, setDaysPassed] = useState(0);

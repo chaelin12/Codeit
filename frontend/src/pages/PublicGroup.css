@@ -31,14 +31,14 @@
 
 .group-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  max-width: 1560px; /* 최대 너비 설정 */
-  margin: 0 auto; /* 가운데 정렬 */
+  grid-template-columns: repeat(
+    4,
+    1fr
+  ); /* 한 줄에 4개의 카드가 배치되도록 설정 */
+  grid-template-rows: masonry;
+  grid-auto-rows: auto;
+  gap: 10px; /* 카드 간의 간격 */
+  max-width: 1560px; /* 컨테이너 최대 너비 설정 */
   box-sizing: border-box;
-}
-
-.button-group .button.active {
-  background-color: #282828;
-  color: #ffffff;
+  grid-auto-flow: dense;
 }
