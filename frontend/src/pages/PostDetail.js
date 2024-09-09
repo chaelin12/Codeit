@@ -65,7 +65,7 @@ const PostDetail = () => {
             <div className="postedit" onClick={openModal}>
               추억 수정하기
             </div>
-            <div className="postedit" onClick={openDeleteModal}>
+            <div className="postdelete" onClick={openDeleteModal}>
               추억 삭제하기
             </div>
           </div>
@@ -79,28 +79,40 @@ const PostDetail = () => {
           ))}
         </div>
         <div className="post-stats">
-          <span>{post.location}</span> {/* 위치 정보 */}
-          <span>·</span>
-          <span>작성일: {new Date(post.moment).toLocaleDateString()}</span>{" "}
-          {/* 날짜 포맷 */}
-          <span>·</span>
-          <img src={flower}></img>
-          <span className="post-likeCount"> {post.likeCount}</span>
-          <img src={bubble}></img>
-          <span className="post-commentCount">{post.commentCount}</span>
+          <div className="post-num">
+            <span className="post-lotation">{post.location}</span>{" "}
+            <span> · </span>
+            <span className="post-moment">
+              {new Date(post.moment)
+                .toISOString()
+                .slice(2, 10)
+                .replace(/-/g, ".")}
+            </span>
+          </div>
+          <div className="post-icon">
+            <img src={flower}></img>
+            <span className="post-likeCount"> {post.likeCount}</span>
+            <img src={bubble}></img>
+            <span className="post-commentCount">{post.commentCount}</span>
+          </div>
+          <div className="post-sendempathy">
+            <button
+              className="post-like-button"
+              onClick={() => console.log("공감 보내기")}
+            >
+              공감 보내기
+            </button>
+          </div>
         </div>
       </div>
-
+      <div className="section-divider"></div>
       <div className="post-image-container">
         <img
           src={post.imageUrl} // 서버에서 가져온 이미지 경로
           alt={post.title}
           className="post-image"
         />
-      </div>
-
-      <div className="post-content">
-        <p>{post.content}</p>
+        <div className="post-content">{post.content}</div>
       </div>
     </div>
   );

@@ -145,6 +145,7 @@
   height: 1px; /* 적절한 높이 설정 */
   background-color: #ddd; /* 색상 명확히 설정 */
   margin: 40px 40px; /* 위아래 간격 설정 */
+  width: 100%;
 }
 
 .memory-list-section {

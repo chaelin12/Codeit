@@ -47,9 +47,11 @@ function PostCard({
         </div>
         <div className="post-card-more">
           <div className="post-card-time">
-            <span className="post-card-moment">{moment}</span>
-            <span className="Delimiter"> · </span>
             <span className="post-card-location">{location}</span>
+            <span className="Delimiter"> · </span>
+            <span className="post-moment">
+              {new Date(moment).toISOString().slice(2, 10).replace(/-/g, ".")}
+            </span>
           </div>
           <div className="post-card-stats">
             <img src={flower}></img>

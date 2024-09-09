@@ -12,6 +12,7 @@
   flex-direction: column;
   align-items: flex-start; /* 아이템들이 상단에 맞춰 정렬 */
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .post-name-action {
@@ -23,21 +24,30 @@
   font-size: 0.9em; /* 글자 크기 통일 */
 }
 
+.postedit {
+  color: #282828;
+}
+
+.postdelete {
+  color: #8d8d8d;
+}
 .post-title {
   font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 10px;
 }
-
+.post-public {
+  color: #8d8d8d;
+}
 .post-tags {
   display: flex;
   margin-bottom: 10px;
 }
 
 .post-tag {
-  padding: 5px 15px;
-  font-size: 12px;
-  margin-right: 10px;
+  padding: 5px 5px;
+  font-size: 15px;
+  margin-right: 3px;
   color: #b8b8b8;
 }
 
@@ -55,52 +65,59 @@
   font-weight: 400;
   cursor: pointer;
 }
-.post-image-container {
-  text-align: center;
-  margin: 30px 0;
+.image-container {
+  display: flex;
+  flex-direction: column; /* 이미지와 본문을 수직으로 정렬 */
+  align-items: center; /* 이미지와 본문을 가운데 정렬 */
+  width: 100%;
+  max-width: 600px; /* 최대 너비를 설정하여 사진 크기 조절 */
+  margin: 0 auto; /* 가운데 정렬 */
+  padding: 20px 0;
 }
 
 .post-image {
-  width: 100%;
-  max-width: 720px;
-  height: auto;
-  border-radius: 8px;
+  width: 30%; /* 컨테이너 너비에 맞게 */
+  height: auto; /* 비율 유지 */
+  border-radius: 8px; /* 이미지 모서리를 둥글게 */
+  margin-bottom: 20px; /* 이미지와 본문 사이 간격 */
 }
 
 .post-content {
   font-size: 16px;
   line-height: 1.8;
+  text-align: center;
   margin-top: 20px;
-  text-align: justify;
-}
-
-.comments-section {
-  margin-top: 30px;
-}
-
-.comments-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.comments-list li {
-  margin-bottom: 10px;
-  font-size: 14px;
 }
 
 .post-stats {
   display: flex;
-  align-items: center; /* 공감과 댓글을 수평 정렬 */
-  color: #282828;
-  text-align: right;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
 }
-
+.post-num {
+  color: #282828;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.post-icon {
+  display: flex;
+  align-items: center;
+  color: #8d8d8d;
+}
+.post-likeCount {
+  margin-right: 10px;
+}
 .post-stats img {
   width: 20px; /* 아이콘 크기 조정 */
-  height: 20px; /* 아이콘 크기 조정 */
-  margin-right: 5px; /* 아이콘과 숫자 간의 간격 */
+  height: 20px;
 }
 
-.post-likeCount {
-  margin-right: 10px; /* 공감과 댓글 사이의 간격 추가 */
+.post-like-button {
+  border: 1px solid #282828;
+  text-align: right;
+  color: #282828;
+  background-color: #fafafa;
+  padding: 10px 20px;
+  border-radius: 4px;
 }
