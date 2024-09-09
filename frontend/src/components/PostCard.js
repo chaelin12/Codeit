@@ -45,13 +45,13 @@ function PostCard({
             </span>
           ))}
         </div>
-        <div className="post-more">
-          <div className="post-time">
+        <div className="post-card-more">
+          <div className="post-card-time">
             <span className="post-card-moment">{moment}</span>
             <span className="Delimiter"> · </span>
             <span className="post-card-location">{location}</span>
           </div>
-          <div className="post-stats">
+          <div className="post-card-stats">
             <img src={flower}></img>
             <span className="post-card-likeCount"> {likeCount}</span>
             <img src={bubble}></img>

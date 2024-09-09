@@ -1,0 +1,106 @@
+.post-detail-page {
+  padding: 20px;
+  max-width: 1200px; /* 공개 그룹 페이지와 동일한 최대 너비 */
+  margin: 0 auto; /* 양 옆 균등한 공간으로 가운데 정렬 */
+  padding: 20px;
+  position: relative;
+  background-color: #fafafa;
+}
+
+.post-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 아이템들이 상단에 맞춰 정렬 */
+  margin-bottom: 20px;
+}
+
+.post-name-action {
+  display: flex;
+  justify-content: space-between; /* 닉네임, 공개/비공개와 수정/삭제를 양 끝에 배치 */
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 0.9em; /* 글자 크기 통일 */
+}
+
+.post-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post-tags {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.post-tag {
+  padding: 5px 15px;
+  font-size: 12px;
+  margin-right: 10px;
+  color: #b8b8b8;
+}
+
+.post-tag:last-child {
+  margin-right: 0;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 수정/삭제 버튼 간 간격 */
+}
+
+.post-actions div {
+  font-weight: 400;
+  cursor: pointer;
+}
+.post-image-container {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.post-image {
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.post-content {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-top: 20px;
+  text-align: justify;
+}
+
+.comments-section {
+  margin-top: 30px;
+}
+
+.comments-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comments-list li {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.post-stats {
+  display: flex;
+  align-items: center; /* 공감과 댓글을 수평 정렬 */
+  color: #282828;
+  text-align: right;
+}
+
+.post-stats img {
+  width: 20px; /* 아이콘 크기 조정 */
+  height: 20px; /* 아이콘 크기 조정 */
+  margin-right: 5px; /* 아이콘과 숫자 간의 간격 */
+}
+
+.post-likeCount {
+  margin-right: 10px; /* 공감과 댓글 사이의 간격 추가 */
+}

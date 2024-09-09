@@ -1,4 +1,6 @@
 .group-detail-page {
+  max-width: 1200px; /* 공개 그룹 페이지와 동일한 최대 너비 */
+  margin: 0 auto; /* 양 옆 균등한 공간으로 가운데 정렬 */
   padding: 20px;
   position: relative;
   background-color: #fafafa;
@@ -11,8 +13,8 @@
 }
 
 .group-image img {
-  width: 150px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   border-radius: 8px;
   margin-right: 20px;
 }
@@ -51,6 +53,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  gap: 10px;
 }
 
 .group-name {
@@ -70,6 +73,7 @@
 .introduction {
   margin-bottom: 5px;
   font-size: 13px;
+  text-align: left;
 }
 
 .group-badges {
@@ -138,7 +142,30 @@
 }
 
 .section-divider {
-  color: #ddd;
+  height: 1px; /* 적절한 높이 설정 */
+  background-color: #ddd; /* 색상 명확히 설정 */
+  margin: 40px 40px; /* 위아래 간격 설정 */
+}
+
+.memory-list-section {
+  margin-top: 20px;
+}
+
+.memory-title {
+  display: flex;
+  justify-content: space-between; /* 제목과 버튼을 양 끝에 배치 */
+  align-items: center; /* 세로 정렬 */
+  margin-bottom: 20px; /* 제목과 카드 사이 간격 */
+  width: 100%;
+}
+
+.memory-title h1 {
+  flex: 1; /* h1을 중앙에 정렬되게 만듦 */
+  text-align: center; /* h1 텍스트 중앙 정렬 */
+}
+
+.create-memory-button-container {
+  margin-left: 20px;
 }
 
 .memory-cards {

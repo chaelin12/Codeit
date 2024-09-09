@@ -33,7 +33,7 @@ function App() {
         <Route path="/accessPrivate" element={<AccessPrivate />} />
         <Route path="/groupdetail/:groupId" element={<GroupDetail />} />
         <Route path="/uploadPost/:groupId" element={<UploadPost />} />
-        <Route path="/postdetail/:groupId/:postId" element={<PostDetail />} />
+        <Route path="/postdetail/:postId" element={<PostDetail />} />
       </Routes>
     </div>
   );

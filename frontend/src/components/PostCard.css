@@ -26,6 +26,7 @@
 
 .post-info {
   flex-grow: 1; /* Left align text */
+  font-size: 15px;
 }
 .post-card-title {
   font-size: 20px;
@@ -45,18 +46,34 @@
   color: #b8b8b8;
 }
 
-.post-more {
+.post-card-more {
   display: flex;
-  justify-content: space-between; /* Space between time and stats */
-  align-items: center; /* Align items vertically in the center */
+  justify-content: space-between; /* 시간과 공감/댓글을 양 끝에 배치 */
+  align-items: center; /* 세로로 가운데 정렬 */
   margin-top: 15px;
 }
-.post-time {
+
+.post-card-time {
   font-size: 15px;
   color: #282828;
   text-align: left;
+  display: flex;
+  align-items: center; /* 시간, 위치를 수평 정렬 */
 }
-.post-stats {
+
+.post-card-stats {
+  display: flex;
+  align-items: center; /* 공감과 댓글을 수평 정렬 */
   color: #666;
   text-align: right;
+}
+
+.post-stats img {
+  width: 20px; /* 아이콘 크기 조정 */
+  height: 20px; /* 아이콘 크기 조정 */
+  margin-right: 5px; /* 아이콘과 숫자 간의 간격 */
+}
+
+.post-card-likeCount {
+  margin-right: 10px; /* 공감과 댓글 사이의 간격 추가 */
 }
