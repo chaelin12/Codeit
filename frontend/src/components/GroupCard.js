@@ -60,7 +60,7 @@ function GroupCard({
           <div className="group-date">
             <span className="date">D+{daysPassed}</span>
             <span className="separator"> | </span>
-            <span className="post-card-public-status">
+            <span className="group-card-public-status">
               {isPublic ? "공개" : "비공개"}
             </span>
           </div>

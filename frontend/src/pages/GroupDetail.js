@@ -24,8 +24,6 @@ function GroupDetail() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [Posts, setPosts] = useState([]);
 
-  // useEffect가 두 번 실행되는 문제를 해결하려면 React.StrictMode를 제거해야 합니다.
-
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -122,7 +120,10 @@ function GroupDetail() {
     <div className="group-detail-page">
       <div className="group-header">
         <div className="group-image">
-          <img src={groupDetail.imageUrl} alt={groupDetail.name} />
+          {/* 이미지가 있을 때만 렌더링 */}
+          {groupDetail.imageUrl && (
+            <img src={groupDetail.imageUrl} alt={groupDetail.name} />
+          )}
         </div>
         <div className="group-info">
           <div className="group-date-actions">

@@ -26,7 +26,10 @@ function PostCard({
   return (
     <div className="post-card">
       <div className="post-card-header">
-        <img src={imageUrl} alt={title} className="post-card-image" />
+        {imageUrl && (
+          <img src={imageUrl} alt={title} className="post-card-image" />
+        )}
+
         <div className="post-info">
           <span className="post-card-nickname">{nickname} </span>
           <span className="separator"> | </span>

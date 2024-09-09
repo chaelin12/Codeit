@@ -190,10 +190,6 @@ button.submit-button {
   text-align: center;
 }
 
-button.submit-button:hover {
-  background-color: #333;
-}
-
 /* Tags styling */
 .tags-container {
   display: flex;

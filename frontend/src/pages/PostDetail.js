@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // postId를 라우트 파라미터로 받기 위해 사용
+import { useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
 import flower from "../assets/pictures/flower.png";
+import Button from "../components/FormButton";
 import "./PostDetail.css";
 
 const PostDetail = () => {
-  const { postId } = useParams(); // postId를 URL에서 가져옴
-  const [post, setPost] = useState(null); // 포스트 데이터를 저장할 state
-  const [loading, setLoading] = useState(true); // 로딩 상태 관리
-  const [error, setError] = useState(null); // 에러 상태 관리
+  const { postId } = useParams(); // get postId from URL
+  const [post, setPost] = useState(null); // to store the post data
+  const [loading, setLoading] = useState(true); // to manage loading state
+  const [error, setError] = useState(null); // to manage error state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [comment, setComment] = useState(""); // State for new comment input
+  const [comments, setComments] = useState([]); // State for existing comments
 
-  // API로부터 포스트 데이터를 받아오는 함수
   useEffect(() => {
     const fetchPostData = async () => {
       try {
         const response = await fetch(`/api/posts/${postId}`);
         if (!response.ok) {
-          throw new Error("데이터를 불러오는데 실패했습니다.");
+          throw new Error("Failed to fetch data");
         }
         const data = await response.json();
         setPost(data);
@@ -28,26 +30,49 @@ const PostDetail = () => {
         setLoading(false);
       }
     };
-
     fetchPostData();
   }, [postId]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
   const openDeleteModal = () => setIsDeleteModalOpen(true);
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`/api/posts/${postId}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: comment }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit comment");
+      }
+
+      const newComment = await response.json();
+      setComments([...comments, newComment]);
+      setComment(""); // Clear the input field
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   if (loading) {
-    return <div>Loading...</div>; // 로딩 중일 때
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>; // 에러가 있을 때
+    return <div>Error: {error}</div>;
   }
 
   if (!post) {
-    return <div>No group details found</div>; // 포스트 데이터가 없을 때
+    return <div>No group details found</div>;
   }
 
   return (
@@ -58,7 +83,7 @@ const PostDetail = () => {
             <span className="post-nickname">{post.nickname}</span>
             <span className="separator"> | </span>
             <span className="post-public">
-              {PostDetail.isPublic ? "공개" : "비공개"}
+              {post.isPublic ? "공개" : "비공개"}
             </span>
           </div>
           <div className="post-actions">
@@ -80,7 +105,7 @@ const PostDetail = () => {
         </div>
         <div className="post-stats">
           <div className="post-num">
-            <span className="post-lotation">{post.location}</span>{" "}
+            <span className="post-location">{post.location}</span>
             <span> · </span>
             <span className="post-moment">
               {new Date(post.moment)
@@ -90,15 +115,15 @@ const PostDetail = () => {
             </span>
           </div>
           <div className="post-icon">
-            <img src={flower}></img>
+            <img src={flower} alt="like-icon" />
             <span className="post-likeCount"> {post.likeCount}</span>
-            <img src={bubble}></img>
+            <img src={bubble} alt="comment-icon" />
             <span className="post-commentCount">{post.commentCount}</span>
           </div>
           <div className="post-sendempathy">
             <button
               className="post-like-button"
-              onClick={() => console.log("공감 보내기")}
+              onClick={() => console.log("Send Empathy")}
             >
               공감 보내기
             </button>
@@ -106,13 +131,33 @@ const PostDetail = () => {
         </div>
       </div>
       <div className="section-divider"></div>
-      <div className="post-image-container">
+      {/* 이미지가 있을 때만 렌더링 */}
+      {post.imageUrl && (
         <img
-          src={post.imageUrl} // 서버에서 가져온 이미지 경로
+          src={post.imageUrl} // image fetched from server
           alt={post.title}
           className="post-image"
         />
-        <div className="post-content">{post.content}</div>
+      )}
+      <div className="post-content">{post.content}</div>
+      <Button type="submit" onClick={handleCommentSubmit}>
+        댓글 등록하기
+      </Button>
+
+      <div className="comments-section">
+        <p>댓글 {comments.length}</p>
+        <div className="section-divider"></div>
+        <ul className="comments-list">
+          {comments.map((comment, index) => (
+            <li key={index} className="comment-item">
+              <span className="comment-user">{comment.user}</span>
+              <span className="comment-date">
+                {new Date(comment.createdAt).toLocaleString()}
+              </span>
+              <p className="comment-text">{comment.text}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
