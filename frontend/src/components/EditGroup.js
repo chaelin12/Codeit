@@ -1,9 +1,9 @@
 import axios from "axios"; // Import axios for handling API requests
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./EditModal.css";
+import "./EditGroup.css";
 
-const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
+const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   const [groupName, setGroupName] = useState(groupDetail.name);
   const [groupImage, setGroupImage] = useState(groupDetail.imageUrl); // 기존 URL로 초기화
   const [newImageFile, setNewImageFile] = useState(null); // 새로 업로드할 파일 저장
@@ -173,4 +173,4 @@ const EditModal = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
   );
 };
 
-export default EditModal;
+export default EditGroup;

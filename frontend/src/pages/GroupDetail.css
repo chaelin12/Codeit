@@ -9,7 +9,7 @@
 .group-header {
   display: flex;
   align-items: flex-start; /* 아이템들이 상단에 맞춰 정렬 */
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .group-image img {
@@ -142,12 +142,12 @@
 }
 
 .section-divider {
-  height: 1px; /* 적절한 높이 설정 */
-  background-color: #ddd; /* 색상 명확히 설정 */
-  margin: 40px 40px; /* 위아래 간격 설정 */
+  height: 1px;
+  background-color: #ddd;
   width: 100%;
-}
 
+  margin: 0; /* Remove side margins to ensure full width */
+}
 .memory-list-section {
   margin-top: 20px;
 }

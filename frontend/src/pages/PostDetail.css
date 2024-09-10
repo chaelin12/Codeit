@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* 아이템들이 상단에 맞춰 정렬 */
-  margin-bottom: 20px;
+  margin-bottom: 50px;
   text-align: left;
 }
 
@@ -69,6 +69,7 @@
 .post-stats {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-top: 20px;
   gap: 20px;
 }
@@ -107,6 +108,7 @@
   display: block; /* 이미지가 독립적으로 한 줄을 차지하도록 설정 */
   margin-left: auto; /* 이미지 가운데 정렬 */
   margin-right: auto; /* 이미지 가운데 정렬 */
+  margin-top: 50px;
 }
 
 .post-content {
@@ -120,4 +122,5 @@
 }
 .comments-section {
   text-align: left;
+  font-weight: 500;
 }

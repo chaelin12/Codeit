@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
 import flower from "../assets/pictures/flower.png";
+import DeletePost from "../components/DeletePost"; // Import DeletePostModal
+import EditPost from "../components/EditPost"; // Import EditPostModal
 import Button from "../components/FormButton";
 import "./PostDetail.css";
 
@@ -10,8 +12,8 @@ const PostDetail = () => {
   const [post, setPost] = useState(null); // to store the post data
   const [loading, setLoading] = useState(true); // to manage loading state
   const [error, setError] = useState(null); // to manage error state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
   const [comment, setComment] = useState(""); // State for new comment input
   const [comments, setComments] = useState([]); // State for existing comments
 
@@ -33,10 +35,10 @@ const PostDetail = () => {
     fetchPostData();
   }, [postId]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-  const openDeleteModal = () => setIsDeleteModalOpen(true);
-  const closeDeleteModal = () => setIsDeleteModalOpen(false);
+  const openEditModal = () => setIsEditModalOpen(true); // Open edit modal
+  const closeEditModal = () => setIsEditModalOpen(false); // Close edit modal
+  const openDeleteModal = () => setIsDeleteModalOpen(true); // Open delete modal
+  const closeDeleteModal = () => setIsDeleteModalOpen(false); // Close delete modal
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -72,7 +74,7 @@ const PostDetail = () => {
   }
 
   if (!post) {
-    return <div>No group details found</div>;
+    return <div>No post details found</div>;
   }
 
   return (
@@ -87,7 +89,7 @@ const PostDetail = () => {
             </span>
           </div>
           <div className="post-actions">
-            <div className="postedit" onClick={openModal}>
+            <div className="postedit" onClick={openEditModal}>
               추억 수정하기
             </div>
             <div className="postdelete" onClick={openDeleteModal}>
@@ -159,6 +161,26 @@ const PostDetail = () => {
           ))}
         </ul>
       </div>
+
+      {/* 모달 컴포넌트들 */}
+      {isEditModalOpen && (
+        <EditPost
+          isOpen={isEditModalOpen}
+          onClose={closeEditModal}
+          postId={postId}
+        />
+      )}
+      {isDeleteModalOpen && (
+        <DeletePost
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          postId={postId}
+          onDelete={() => {
+            // Handle post deletion logic, such as redirecting to another page
+            console.log("Post deleted");
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -2,8 +2,8 @@ import axios from "axios";
 import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ButtonGroup from "../components/ButtonGroup";
-import DeleteModal from "../components/DeleteModal";
-import EditModal from "../components/EditModal";
+import DeleteGroup from "../components/DeleteGroup";
+import EditGroup from "../components/EditGroup";
 import FilterSelect from "../components/FilterSelect";
 import LoadMoreButton from "../components/LoadMoreButton";
 import PostCard from "../components/PostCard";
@@ -173,7 +173,7 @@ function GroupDetail() {
           </div>
         </div>
       </div>
-      <EditModal
+      <EditGroup
         isOpen={isModalOpen}
         closeModal={closeModal}
         groupDetail={groupDetail}
@@ -181,7 +181,7 @@ function GroupDetail() {
         groupId={groupId}
       />
       {isDeleteModalOpen && (
-        <DeleteModal
+        <DeleteGroup
           onClose={closeDeleteModal}
           onDelete={handleDelete}
           groupId={groupId}

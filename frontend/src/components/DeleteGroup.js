@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./DeleteModal.css";
+import "./DeleteGroup.css";
 
-const DeleteModal = ({ onClose, groupId }) => {
+const DeleteGroup = ({ onClose, groupId }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -66,4 +66,4 @@ const DeleteModal = ({ onClose, groupId }) => {
   );
 };
 
-export default DeleteModal;
+export default DeleteGroup;
