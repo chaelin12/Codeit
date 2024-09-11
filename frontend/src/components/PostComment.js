@@ -2,34 +2,19 @@ import React, { useState } from "react";
 import Button from "../components/FormButton";
 import "./PostComment.css"; // Updated CSS file
 
-const PostComment = ({ isOpen, onClose, postId, postDetails = {} }) => {
+const PostComment = ({ isOpen, onClose, postId }) => {
   const [nickname, setNickname] = useState("");
-  const [comment, setComment] = useState("");
+  const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // To display error messages
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Default values in case postDetails is not properly passed
-    const {
-      title = "",
-      imageUrl = "",
-      tags = [],
-      location = "",
-      moment = new Date().toISOString().split("T")[0], // Default to today's date
-      isPublic = true,
-    } = postDetails;
-
     const commentData = {
       nickname,
-      title,
-      content: comment,
-      postPassword: password,
-      imageUrl,
-      tags,
-      location,
-      moment,
-      isPublic,
+      content,
+      password,
     };
 
     try {
@@ -42,8 +27,13 @@ const PostComment = ({ isOpen, onClose, postId, postDetails = {} }) => {
       });
 
       if (!response.ok) {
-        const errorMessage = await response.text(); // Get error message from response
-        throw new Error(`Failed to submit comment: ${errorMessage}`);
+        if (response.status === 400) {
+          setErrorMessage("잘못된 요청입니다");
+        } else {
+          const errorMessage = await response.text(); // Get error message from response
+          setErrorMessage(`Failed to submit comment: ${errorMessage}`);
+        }
+        throw new Error("Failed to submit comment");
       }
 
       const result = await response.json();
@@ -67,6 +57,7 @@ const PostComment = ({ isOpen, onClose, postId, postDetails = {} }) => {
           &times;
         </button>
         <h2>댓글 등록</h2>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <form onSubmit={handleSubmit}>
           <label>
             닉네임
@@ -81,8 +72,8 @@ const PostComment = ({ isOpen, onClose, postId, postDetails = {} }) => {
           <label>
             댓글
             <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="댓글을 입력해 주세요."
               required
             />
@@ -97,9 +88,7 @@ const PostComment = ({ isOpen, onClose, postId, postDetails = {} }) => {
               required
             />
           </label>
-          <Button type="button" onClick={handleSubmit}>
-            등록하기
-          </Button>
+          <Button type="submit">등록하기</Button>
         </form>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 
-const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
+const DeleteComment = ({ isOpen, onClose, commentId, onDelete }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/posts/${postId}`, {
+      const response = await fetch(`/api/comments/${commentId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
         <button className="close-button" onClick={onClose}>
           ×
         </button>
-        <h2>추억 삭제</h2>
+        <h2>댓글 삭제</h2>
         <div className="input-group">
           <label htmlFor="password">삭제 권한 인증</label>
           <input
@@ -65,4 +65,4 @@ const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
   );
 };
 
-export default DeletePost;
+export default DeleteComment;

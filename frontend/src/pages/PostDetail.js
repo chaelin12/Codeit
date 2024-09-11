@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
 import flower from "../assets/pictures/flower.png";
+import DeleteComment from "../components/DeleteComment";
 import DeletePost from "../components/DeletePost"; // Import DeletePostModal
+import EditComment from "../components/EditComment";
 import EditPost from "../components/EditPost"; // Import EditPostModal
 import Button from "../components/FormButton";
 import PostComment from "../components/PostComment"; // Ensure you have PostComment modal component
@@ -16,8 +18,10 @@ const PostDetail = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false); // State for comment modal
+  const [isCommentEditModalOpen, setIsCommentEditModalOpen] = useState(false);
+  const [isCommentDeleteModalOpen, setIsCommentDeleteModalOpen] =
+    useState(false);
   const [comments, setComments] = useState([]);
-  const [comment, setComment] = useState(""); // Track the comment input
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -43,6 +47,10 @@ const PostDetail = () => {
   const closeDeleteModal = () => setIsDeleteModalOpen(false); // Close delete modal
   const openCommentModal = () => setIsCommentModalOpen(true); // Open comment modal
   const closeCommentModal = () => setIsCommentModalOpen(false); // Close comment modal
+  const openCommentEditModal = () => setIsCommentEditModalOpen(true); // Open comment modal
+  const closeCommentEditModal = () => setIsCommentEditModalOpen(false); // Close comment modal
+  const openCommentDeleteModal = () => setIsCommentDeleteModalOpen(true); // Open comment modal
+  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment modal
 
   const handleCommentSubmit = async (newComment) => {
     try {
@@ -161,7 +169,12 @@ const PostDetail = () => {
           ))}
         </ul>
       </div>
-
+      <p type="button" onClick={openCommentEditModal}>
+        댓글 수정하기
+      </p>
+      <p type="button" onClick={openCommentDeleteModal}>
+        댓글 삭제하기
+      </p>
       {/* 모달 컴포넌트들 */}
       {isEditModalOpen && (
         <EditPost
@@ -176,19 +189,25 @@ const PostDetail = () => {
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           postId={postId}
-          onDelete={() => {
-            // Handle post deletion logic, such as redirecting to another page
-            console.log("Post deleted");
-          }}
         />
       )}
-
-      {/* Comment Modal */}
       {isCommentModalOpen && (
         <PostComment
           isOpen={isCommentModalOpen}
           onClose={closeCommentModal}
           onSubmit={handleCommentSubmit}
+        />
+      )}
+      {isCommentEditModalOpen && (
+        <EditComment
+          isOpen={isCommentEditModalOpen}
+          onClose={closeCommentEditModal}
+        />
+      )}
+      {isCommentDeleteModalOpen && (
+        <DeleteComment
+          isOpen={isCommentDeleteModalOpen}
+          onClose={closeCommentDeleteModal}
         />
       )}
     </div>
