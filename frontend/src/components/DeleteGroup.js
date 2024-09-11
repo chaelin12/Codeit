@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/FormButton";
 import "./DeleteGroup.css";
 
 const DeleteGroup = ({ onClose, groupId }) => {
@@ -58,9 +59,9 @@ const DeleteGroup = ({ onClose, groupId }) => {
           />
         </div>
         {error && <p className="error-message">{error}</p>}
-        <button className="delete-button" onClick={handleDelete}>
+        <Button className="delete-button" onClick={handleDelete}>
           삭제하기
-        </button>
+        </Button>
       </div>
     </div>
   );

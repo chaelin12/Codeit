@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Button from "../components/FormButton";
-import "./PostComment.css"; // CSS file
+import "./PostComment.css"; // Updated CSS file
 
-const PostComment = ({ isOpen, onClose, postId }) => {
+const PostComment = ({ isOpen, onClose, postId, postDetails = {} }) => {
   const [nickname, setNickname] = useState("");
   const [comment, setComment] = useState("");
   const [password, setPassword] = useState("");
@@ -10,10 +10,26 @@ const PostComment = ({ isOpen, onClose, postId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Default values in case postDetails is not properly passed
+    const {
+      title = "",
+      imageUrl = "",
+      tags = [],
+      location = "",
+      moment = new Date().toISOString().split("T")[0], // Default to today's date
+      isPublic = true,
+    } = postDetails;
+
     const commentData = {
       nickname,
-      comment,
-      password,
+      title,
+      content: comment,
+      postPassword: password,
+      imageUrl,
+      tags,
+      location,
+      moment,
+      isPublic,
     };
 
     try {
@@ -26,22 +42,26 @@ const PostComment = ({ isOpen, onClose, postId }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit comment");
+        const errorMessage = await response.text(); // Get error message from response
+        throw new Error(`Failed to submit comment: ${errorMessage}`);
       }
 
       const result = await response.json();
       console.log("Comment submitted:", result);
       onClose(); // Close the modal after successful submission
     } catch (error) {
-      console.error("Error submitting comment:", error);
+      console.error("Error submitting comment:", error.message);
     }
   };
 
   if (!isOpen) return null; // Don't render the modal if it's not open
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="comment-modal-overlay" onClick={onClose}>
+      <div
+        className="comment-modal-content"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button className="modal-close-button" onClick={onClose}>
           &times;
@@ -54,7 +74,7 @@ const PostComment = ({ isOpen, onClose, postId }) => {
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="닉네임을 입력해 주세요"
+              placeholder="닉네임을 입력해 주세요."
               required
             />
           </label>
@@ -63,7 +83,7 @@ const PostComment = ({ isOpen, onClose, postId }) => {
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="댓글을 입력해 주세요"
+              placeholder="댓글을 입력해 주세요."
               required
             />
           </label>
@@ -73,11 +93,13 @@ const PostComment = ({ isOpen, onClose, postId }) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력해 주세요"
+              placeholder="비밀번호를 입력해 주세요."
               required
             />
           </label>
-          <Button type="button">등록하기</Button>
+          <Button type="button" onClick={handleSubmit}>
+            등록하기
+          </Button>
         </form>
       </div>
     </div>

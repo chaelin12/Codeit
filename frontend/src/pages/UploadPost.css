@@ -33,7 +33,7 @@
 
 .form-group label {
   display: block;
-  font-weight: bold;
+  font-weight: 500;
   margin-bottom: 5px;
 }
 
@@ -106,23 +106,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-weight: normal;
 }
 
-.date-input-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.memory-date-input {
-  width: 100%;
-  padding: 10px;
-  padding-right: 40px; /* Add some padding to the right to make room for the icon */
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  color: #000;
-  box-sizing: border-box;
-}
-
 .calendar-icon {
   position: absolute;
   top: 50%;
@@ -173,7 +156,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .divider {
-  width: 2px;
+  width: 1px;
   background-color: #ccc;
   height: auto;
   margin: 0 20px;

@@ -61,7 +61,9 @@ function UploadPost() {
       setInput({ ...input, tags: "" });
     }
   };
-
+  const triggerFileInput = () => {
+    document.getElementById("file-input").click();
+  };
   const removeTag = (indexToRemove) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
@@ -185,9 +187,9 @@ function UploadPost() {
                 value={image ? image.name : ""}
                 className="image-placeholder"
               />
-              <label htmlFor="image" className="file-upload-button">
+              <p className="file-upload-button" onClick={triggerFileInput}>
                 파일 선택
-              </label>
+              </p>
               <input
                 type="file"
                 id="image"

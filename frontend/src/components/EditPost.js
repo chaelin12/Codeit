@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CalendarIcon from "../assets/pictures/calender.png";
 import Button from "../components/FormButton";
-import "./EditPost.css"; // 스타일을 가져와서 사용
+import "./EditPost.css";
 
-const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
+const EditPost = ({ isOpen, onClose, postId, onSave }) => {
   const [post, setPost] = useState(null);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
@@ -12,11 +14,13 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
   const [tags, setTags] = useState([]);
   const [location, setLocation] = useState("");
   const [moment, setMoment] = useState("");
-  const [image, setImage] = useState(null); // 새로운 이미지 파일
-  const [currentImageUrl, setCurrentImageUrl] = useState(""); // 기존 이미지 URL
+  const [image, setImage] = useState(null);
+  const [currentImageUrl, setCurrentImageUrl] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // 모달이 열릴 때 postId에 해당하는 데이터 불러오기
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -31,7 +35,7 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
         setLocation(data.location);
         setMoment(new Date(data.moment).toISOString().slice(0, 10));
         setIsPublic(data.isPublic);
-        setCurrentImageUrl(data.imageUrl); // 기존 이미지 URL 설정
+        setCurrentImageUrl(data.imageUrl);
       } catch (error) {
         console.error("Error fetching post data:", error);
       }
@@ -42,24 +46,31 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
     }
   }, [postId, isOpen]);
 
-  // 태그 처리
+  const triggerFileInput = () => {
+    document.getElementById("file-input").click();
+  };
+
   const handleTagInput = (e) => {
     if (e.key === "Enter" && e.target.value.trim() !== "") {
       e.preventDefault();
       setTags([...tags, e.target.value.trim()]);
-      e.target.value = ""; // 입력 필드 초기화
+      e.target.value = "";
     }
   };
-
+  const openDatePicker = () => {
+    const dateInput = document.getElementById("moment");
+    if (dateInput) {
+      dateInput.showPicker();
+    }
+  };
   const removeTag = (indexToRemove) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
-  // 입력 변경 처리
   const handleChange = (e) => {
     const { id, value, type, files } = e.target;
     if (type === "file") {
-      setImage(files[0]); // 새로 선택된 이미지 파일
+      setImage(files[0]);
     } else {
       switch (id) {
         case "nickname":
@@ -86,12 +97,10 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
     }
   };
 
-  // 수정된 내용 저장
   const handleSave = async () => {
     let imageUrl = currentImageUrl;
 
     try {
-      // 새로운 이미지 파일이 선택된 경우 업로드
       if (image) {
         const imageFormData = new FormData();
         imageFormData.append("image", image);
@@ -119,25 +128,47 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
         isPublic,
       };
 
-      await axios.put(`/api/posts/${postId}`, updatedPost);
-      onSave(updatedPost); // 저장 후 콜백 호출
-      closeModal(); // 모달 닫기
+      const response = await axios.put(`/api/posts/${postId}`, updatedPost);
+
+      if (response.status === 200) {
+        const { groupId } = response.data; // 서버 응답에서 groupId를 받아옴
+        if (groupId) {
+          // groupId가 존재하면 해당 페이지로 이동
+          navigate("/groupdetail/:groupId");
+          onClose();
+        }
+      }
     } catch (error) {
-      console.error("Error updating post:", error);
+      // 서버에서 받은 오류에 따라 메시지 출력
+      if (error.response) {
+        if (error.response.status === 400) {
+          setErrorMessage("잘못된 요청입니다.");
+        } else if (error.response.status === 403) {
+          setErrorMessage("비밀번호가 틀렸습니다.");
+        } else if (error.response.status === 404) {
+          setErrorMessage("존재하지 않습니다.");
+        } else {
+          console.error("Failed to save the group data.");
+          setErrorMessage("추억 정보를 저장하는 중 오류가 발생했습니다.");
+        }
+      } else {
+        console.error("An error occurred while saving the group data:", error);
+        setErrorMessage("서버 요청 중 오류가 발생했습니다.");
+      }
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="editpost-modal-overlay" onClick={closeModal}>
+    <div className="editpost-modal-overlay" onClick={onClose}>
       <div
         className="editpost-modal-content"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="editpost-modal-header">
           <h2>추억 수정하기</h2>
-          <button className="close-btn" onClick={closeModal}>
+          <button className="close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
@@ -176,12 +207,13 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
                   }
                   className="editpost-image-placeholder"
                 />
-                <label htmlFor="image" className="file-upload-button">
+                <p className="file-upload-button" onClick={triggerFileInput}>
                   파일 선택
-                </label>
+                </p>
                 <input
                   type="file"
-                  id="image"
+                  id="file-input"
+                  accept="image/*"
                   onChange={handleChange}
                   style={{ display: "none" }}
                 />
@@ -198,7 +230,7 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
               />
             </div>
           </div>
-
+          <div className="divider"></div>
           <div className="editpost-right-section">
             <div className="editpost-form-group">
               <label htmlFor="tags">태그</label>
@@ -229,17 +261,27 @@ const EditPost = ({ isOpen, closeModal, postId, onSave }) => {
             </div>
 
             <div className="editpost-form-group">
-              <label htmlFor="moment">추억의 순간</label>
-              <input
-                type="date"
-                id="moment"
-                value={moment}
-                onChange={handleChange}
-              />
+              <label>추억의 순간</label>
+              <div className="editpostdate-input-wrapper">
+                <input
+                  type="date"
+                  id="moment"
+                  value={moment}
+                  onChange={handleChange}
+                  placeholder="YYYY-MM-DD"
+                  className={!moment ? "placeholder" : ""}
+                />
+                <img
+                  src={CalendarIcon}
+                  alt="Calendar Icon"
+                  className="editpost-calendar-icon"
+                  onClick={openDatePicker}
+                />
+              </div>
             </div>
 
             <div className="editpost-form-group">
-              <label>추억 공개 여부</label>
+              <label>추억 공개 선택</label>
               <div className="editpost-toggle-container">
                 <p>공개</p>
                 <div
