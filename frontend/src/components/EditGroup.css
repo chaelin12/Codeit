@@ -97,7 +97,7 @@
 /* Public Toggle */
 .public-toggle {
   display: flex;
-  flex-direction: column; /* Align items vertically */
+  flex-direction: column;
   gap: 5px;
 }
 
@@ -105,7 +105,7 @@
   display: flex;
   align-items: center;
   font-weight: 400;
-  margin-top: 5px; /* Space below the label */
+  margin-top: 5px;
 }
 
 /* Toggle Switch */
@@ -143,7 +143,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin-top: 10px; /* Space below the toggle section */
+  margin-top: 10px;
   margin-bottom: 20px;
 }
 

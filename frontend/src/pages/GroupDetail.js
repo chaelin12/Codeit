@@ -215,6 +215,7 @@ function GroupDetail() {
             Posts.map((post) => (
               <PostCard
                 key={post.id}
+                groupId={groupId}
                 id={post.id}
                 nickname={post.nickname}
                 title={post.title}

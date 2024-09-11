@@ -5,6 +5,7 @@ import flower from "../assets/pictures/flower.png";
 import DeletePost from "../components/DeletePost"; // Import DeletePostModal
 import EditPost from "../components/EditPost"; // Import EditPostModal
 import Button from "../components/FormButton";
+import PostComment from "../components/PostComment"; // Ensure you have PostComment modal component
 import "./PostDetail.css";
 
 const PostDetail = () => {
@@ -14,8 +15,9 @@ const PostDetail = () => {
   const [error, setError] = useState(null); // to manage error state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
-  const [comment, setComment] = useState(""); // State for new comment input
-  const [comments, setComments] = useState([]); // State for existing comments
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false); // State for comment modal
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState(""); // Track the comment input
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -39,27 +41,24 @@ const PostDetail = () => {
   const closeEditModal = () => setIsEditModalOpen(false); // Close edit modal
   const openDeleteModal = () => setIsDeleteModalOpen(true); // Open delete modal
   const closeDeleteModal = () => setIsDeleteModalOpen(false); // Close delete modal
+  const openCommentModal = () => setIsCommentModalOpen(true); // Open comment modal
+  const closeCommentModal = () => setIsCommentModalOpen(false); // Close comment modal
 
-  const handleCommentChange = (e) => {
-    setComment(e.target.value);
-  };
-
-  const handleCommentSubmit = async (e) => {
-    e.preventDefault();
+  const handleCommentSubmit = async (newComment) => {
     try {
       const response = await fetch(`/api/posts/${postId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: comment }),
+        body: JSON.stringify(newComment),
       });
 
       if (!response.ok) {
         throw new Error("Failed to submit comment");
       }
 
-      const newComment = await response.json();
-      setComments([...comments, newComment]);
-      setComment(""); // Clear the input field
+      const savedComment = await response.json();
+      setComments([...comments, savedComment]); // Update comments
+      closeCommentModal(); // Close the modal after submission
     } catch (error) {
       console.error("Error:", error);
     }
@@ -142,7 +141,8 @@ const PostDetail = () => {
         />
       )}
       <div className="post-content">{post.content}</div>
-      <Button type="submit" onClick={handleCommentSubmit}>
+
+      <Button type="button" onClick={openCommentModal}>
         댓글 등록하기
       </Button>
 
@@ -170,6 +170,7 @@ const PostDetail = () => {
           postId={postId}
         />
       )}
+
       {isDeleteModalOpen && (
         <DeletePost
           isOpen={isDeleteModalOpen}
@@ -179,6 +180,15 @@ const PostDetail = () => {
             // Handle post deletion logic, such as redirecting to another page
             console.log("Post deleted");
           }}
+        />
+      )}
+
+      {/* Comment Modal */}
+      {isCommentModalOpen && (
+        <PostComment
+          isOpen={isCommentModalOpen}
+          onClose={closeCommentModal}
+          onSubmit={handleCommentSubmit}
         />
       )}
     </div>
