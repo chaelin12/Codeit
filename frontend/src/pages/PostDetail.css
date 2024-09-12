@@ -123,4 +123,88 @@
 .comments-section {
   text-align: left;
   font-weight: 500;
+  margin-top: 40px; /* 댓글 섹션과 본문 간의 여백 */
+  padding: 20px 0;
+}
+
+.comments-section p {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px; /* 제목과 댓글 리스트 간 간격 */
+}
+
+/* 댓글 리스트 스타일 */
+.comments-list {
+  list-style: none; /* 리스트 점 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+}
+
+/* 댓글 작성자 정보 */
+.comment-user {
+  font-weight: 500;
+  font-size: 16px;
+  color: #282828;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.comment-date {
+  font-size: 14px;
+  font-weight: 300;
+  color: #b8b8b8;
+  margin-bottom: 8px; /* 날짜와 댓글 내용 간 간격 */
+}
+.comment-actions {
+  display: flex;
+  justify-content: space-between;
+}
+/* 댓글 내용 */
+.comment-text {
+  font-size: 1em;
+  line-height: 1.5; /* 가독성을 위한 줄 간격 */
+  color: #333;
+  word-wrap: break-word; /* 긴 단어가 줄바꿈되도록 설정 */
+}
+.comment-Icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* 수정 및 삭제 아이콘을 오른쪽 끝에 배치 */
+  gap: 15px; /* 아이콘 간격 */
+}
+.comment-edit-icon,
+.comment-delete-icon {
+  width: 18px;
+  cursor: pointer;
+}
+.first-section-divider {
+  height: 1px;
+  background-color: #282828;
+  width: 100%;
+  margin: 0;
+}
+.comment-divider {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #dddddd;
+}
+/* '댓글 더보기' 버튼 */
+button {
+  display: block;
+  margin: 20px auto; /* 가운데 정렬 */
+  padding: 10px 20px;
+  border: 1px solid #282828;
+  background-color: #fafafa;
+  color: #282828;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* 모바일 환경에서의 반응형 처리 */
+@media (max-width: 768px) {
+  .post-content,
+  .post-image {
+    width: 90%; /* 모바일에서는 본문과 이미지를 더 크게 표시 */
+  }
 }

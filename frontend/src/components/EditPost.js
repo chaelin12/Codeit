@@ -5,7 +5,7 @@ import CalendarIcon from "../assets/pictures/calender.png";
 import Button from "../components/FormButton";
 import "./EditPost.css";
 
-const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
+const EditPost = ({ isOpen, onClose, postId, groupId }) => {
   const [post, setPost] = useState(null);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
