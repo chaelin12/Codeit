@@ -37,33 +37,22 @@
   margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  background-color: #fafafa; /* 배경색 설정 */
-  border: 1px solid #dddddd; /* 테두리 색 설정 */
-  border-radius: 5px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
 .form-group-image {
   display: flex;
   align-items: center;
 }
 
-.image-placeholder {
+.post-image-placeholder {
   flex-grow: 1;
   padding: 10px;
-  border: 1px solid #b8b8b8;
+  border: 1px solid #dddddd;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 12px;
   margin-right: 10px;
   height: 45px;
   display: flex;
   align-items: center;
-  color: #ddd;
+  color: #b8b8b8;
 }
 
 .file-upload-button {

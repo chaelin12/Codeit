@@ -61,9 +61,11 @@ function UploadPost() {
       setInput({ ...input, tags: "" });
     }
   };
+
   const triggerFileInput = () => {
-    document.getElementById("file-input").click();
+    document.getElementById("image").click(); // Corrected file input ID
   };
+
   const removeTag = (indexToRemove) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
@@ -106,7 +108,6 @@ function UploadPost() {
         formData
       );
 
-      // 추가된 콘솔 로그
       console.log("Response status:", response.status);
       console.log("Response data:", response.data);
 
@@ -114,22 +115,21 @@ function UploadPost() {
         setModalInfo({
           title: "추억 올리기 성공",
           message: "추억이 성공적으로 등록되었습니다.",
-          success: true, // 성공 모달
+          success: true, // Success modal
         });
-        setRedirectPath(`/groupdetail/${groupId}`); // 그룹 상세 페이지로 이동
+        setRedirectPath(`/groupdetail/${groupId}`); // Redirect to group details
       } else {
         throw new Error("추억 등록에 실패했습니다.");
       }
     } catch (error) {
-      // 에러 정보 출력
       console.error("Error:", error);
 
       setModalInfo({
         title: "추억 올리기 실패",
         message: error.response?.data?.message || "추억 등록에 실패했습니다.",
-        success: false, // 실패 모달
+        success: false, // Error modal
       });
-      setRedirectPath("/uploadPost"); // 현재 페이지 유지
+      setRedirectPath("/uploadPost");
     } finally {
       setIsModalOpen(true);
     }
@@ -137,9 +137,9 @@ function UploadPost() {
 
   const handleCloseModal = () => {
     if (modalInfo.success) {
-      navigate(`/groupdetail/${groupId}`); // 성공 시 그룹 상세 페이지로 이동
+      navigate(`/groupdetail/${groupId}`);
     } else {
-      setIsModalOpen(false); // 실패 시 모달 닫고 현재 페이지 유지
+      setIsModalOpen(false);
     }
   };
 
@@ -180,13 +180,9 @@ function UploadPost() {
           <div className="form-group">
             <label>이미지</label>
             <div className="form-group-image">
-              <input
-                type="text"
-                placeholder="파일을 선택해 주세요"
-                readOnly
-                value={image ? image.name : ""}
-                className="image-placeholder"
-              />
+              <div className="post-image-placeholder">
+                {image ? image.name : "파일을 선택해 주세요"}
+              </div>
               <p className="file-upload-button" onClick={triggerFileInput}>
                 파일 선택
               </p>

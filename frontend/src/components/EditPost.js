@@ -134,7 +134,7 @@ const EditPost = ({ isOpen, onClose, postId, onSave }) => {
         const { groupId } = response.data; // 서버 응답에서 groupId를 받아옴
         if (groupId) {
           // groupId가 존재하면 해당 페이지로 이동
-          navigate("/groupdetail/:groupId");
+          navigate("/");
           onClose();
         }
       }
