@@ -58,6 +58,11 @@ const PostDetail = () => {
 
         // 기존 댓글 배열에 덧붙이지 않고 새로 덮어씀
         setComments(data.data);
+        setTotalPages(data.totalPages);
+        setPost((prevPost) => ({
+          ...prevPost, // 기존 post 정보를 유지하고
+          totalCommentCount: data.totalCommentCount, // totalCommentCount 업데이트
+        }));
       } catch (error) {
         setError(error.message);
       }
