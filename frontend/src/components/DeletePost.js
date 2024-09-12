@@ -19,13 +19,14 @@ const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password }), // 비밀번호를 서버에 전송
+        body: JSON.stringify({ postPassword: password }), // 비밀번호를 서버에 전송
       });
 
       const data = await response.json(); // 서버에서 반환한 데이터
 
       if (response.ok) {
-        navigate("/g"); // 삭제 성공 시 PublicGroup 페이지로 이동
+        navigate("/"); // 삭제 성공 시 PublicGroup 페이지로 이동
+        onClose();
       } else if (response.status === 400) {
         setError(data.message || "잘못된 요청입니다."); // 서버에서의 오류 메시지를 표시
       } else if (response.status === 403) {
