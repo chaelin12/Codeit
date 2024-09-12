@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
 import flower from "../assets/pictures/flower.png";
 import DeleteComment from "../components/DeleteComment";
-import DeletePost from "../components/DeletePost"; // Import DeletePostModal
+import DeletePost from "../components/DeletePost";
 import EditComment from "../components/EditComment";
-import EditPost from "../components/EditPost"; // Import EditPostModal
+import EditPost from "../components/EditPost";
 import Button from "../components/FormButton";
 import PostComment from "../components/PostComment"; // Ensure you have PostComment modal component
 import "./PostDetail.css";
@@ -181,6 +181,7 @@ const PostDetail = () => {
           isOpen={isEditModalOpen}
           onClose={closeEditModal}
           postId={postId}
+          groupId={post.groupId} // groupId 전달
         />
       )}
 
@@ -189,6 +190,7 @@ const PostDetail = () => {
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           postId={postId}
+          groupId={post.groupId} // groupId 전달
         />
       )}
       {isCommentModalOpen && (
@@ -196,18 +198,21 @@ const PostDetail = () => {
           isOpen={isCommentModalOpen}
           onClose={closeCommentModal}
           onSubmit={handleCommentSubmit}
+          postId={postId}
         />
       )}
       {isCommentEditModalOpen && (
         <EditComment
           isOpen={isCommentEditModalOpen}
           onClose={closeCommentEditModal}
+          postId={postId}
         />
       )}
       {isCommentDeleteModalOpen && (
         <DeleteComment
           isOpen={isCommentDeleteModalOpen}
           onClose={closeCommentDeleteModal}
+          postId={postId}
         />
       )}
     </div>
