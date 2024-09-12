@@ -23,7 +23,7 @@ router.route('/comments/:id')
             const hashPw = sha(req.body.password + salt);
             if (comment.password == hashPw) {
                 try{
-                    const comment = await Comment.updateOne({
+                    const updatedComment = await Comment.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
                         nickname: req.body.nickname,
@@ -31,10 +31,10 @@ router.route('/comments/:id')
                     });
                     
                     res.status.json({
-                        id: comment.id,
-                        nickname: comment.nickname,
-                        content: comment.content,
-                        createdAt: comment.createdAt.toISOString()
+                        id: updatedComment.id,
+                        nickname: updatedComment.nickname,
+                        content: updatedComment.content,
+                        createdAt: updatedComment.createdAt.toISOString()
                     });
                 }catch(err){
                     console.error(err);

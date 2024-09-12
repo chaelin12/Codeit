@@ -21,8 +21,8 @@ router.route('/:id')
         }
         try {
             const salt = rows[0].salt;
-            const hashPw = sha(req.body.password + salt);
-            if (post.password == hashPw) {
+            const hashPw = sha(req.body.postPassword + salt);
+            if (post.postPassword === hashPw) {
                 try{
                     const oldImageUrl = path.join(__dirname, '../public', post.imageUrl);
                     await Post.updateOne({
@@ -38,7 +38,7 @@ router.route('/:id')
                         isPublic: req.body.isPublic
                     });
                     // 업데이트된 그룹 정보 가져오기
-                    const post = await Post.findOne({ id: req.params.id });
+                    const updatedPost = await Post.findOne({ id: req.params.id });
                     //이미지 새 이미지로 로컬에서 교체
                     fs.rename(oldImageUrl,('./public/'+post.imageUrl),(err)=>{
                         if(err){
@@ -48,19 +48,19 @@ router.route('/:id')
             
                     // 응답으로 보낼 데이터 형식 조정
                     const response = {
-                        id: post.id,
-                        groupId: post.groupId,
-                        nickname: post.nickname,
-                        title: post.title,
-                        content: post.content,
-                        imageUrl: post.imageUrl,
-                        tags: post.tags,
-                        location: post.location,
-                        moment: post.moment,
-                        isPublic: post.isPublic,
-                        likeCount: post.likeCount,
-                        commentCount: post.commentCount,
-                        createdAt: post.createdAt.toISOString() // ISO 형식으로 변환
+                        id: updatedPost.id,
+                        groupId: updatedPost.groupId,
+                        nickname: updatedPost.nickname,
+                        title: updatedPost.title,
+                        content: updatedPost.content,
+                        imageUrl: updatedPost.imageUrl,
+                        tags: updatedPost.tags,
+                        location: updatedPost.location,
+                        moment: updatedPost.moment,
+                        isPublic: updatedPost.isPublic,
+                        likeCount: updatedPost.likeCount,
+                        commentCount: updatedPost.commentCount,
+                        createdAt: updatedPost.createdAt.toISOString() // ISO 형식으로 변환
                     };
                     res.status(200).json(response);
                 }catch(err){
