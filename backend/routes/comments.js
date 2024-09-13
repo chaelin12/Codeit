@@ -1,10 +1,10 @@
-const express = require('express');
+const router = require("express").Router();
+const setup = require("../db_setup");
+const sha = require("sha256");
 const Comment = require('../schemas/comment');
-const router = express.Router();
-const fs = require('fs');
 
 
-router.route('/comments/:id')
+router.route('/:id')
     //댓글 수정
     .put(async (req,res)=>{
         const comment = await Comment.findOne({id : req.params.id});
@@ -81,3 +81,4 @@ router.route('/comments/:id')
         }
     })
     });
+module.exports = router;

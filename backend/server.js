@@ -34,12 +34,12 @@ app.get('/', (req, res) => {
 const imagesRouter = require('./routes/images.js');
 const groupsRouter = require('./routes/groups.js');
 const postsRouter = require('./routes/posts.js');
-//const postsRouter = require('./routes/comments.js');
+const commentsRouter = require('./routes/comments.js');
 
 app.use('/api/image', imagesRouter);
 app.use('/api/groups', groupsRouter);
 app.use('/api/posts', postsRouter);
-//app.use('/api/comments', commentsRouter);
+app.use('/api/comments', commentsRouter);
 
 app.listen(process.env.WEB_PORT, async () => {
   await setup();
