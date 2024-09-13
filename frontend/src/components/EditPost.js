@@ -5,7 +5,7 @@ import CalendarIcon from "../assets/pictures/calender.png";
 import Button from "../components/FormButton";
 import "./EditPost.css";
 
-const EditPost = ({ isOpen, onClose, postId, onSave }) => {
+const EditPost = ({ isOpen, onClose, postId, groupId }) => {
   const [post, setPost] = useState(null);
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
@@ -19,7 +19,7 @@ const EditPost = ({ isOpen, onClose, postId, onSave }) => {
   const [isPublic, setIsPublic] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // react-router-dom의 navigate 훅
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -131,12 +131,9 @@ const EditPost = ({ isOpen, onClose, postId, onSave }) => {
       const response = await axios.put(`/api/posts/${postId}`, updatedPost);
 
       if (response.status === 200) {
-        const { groupId } = response.data; // 서버 응답에서 groupId를 받아옴
-        if (groupId) {
-          // groupId가 존재하면 해당 페이지로 이동
-          navigate("/");
-          onClose();
-        }
+        // 수정 성공 시 groupId 사용하여 groupdetail 페이지로 이동
+        navigate(`/groupdetail/${groupId}`);
+        onClose();
       }
     } catch (error) {
       // 서버에서 받은 오류에 따라 메시지 출력

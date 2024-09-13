@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 
-const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
+const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const DeletePost = ({ isOpen, onClose, postId, onDelete }) => {
       const data = await response.json(); // 서버에서 반환한 데이터
 
       if (response.ok) {
-        navigate("/"); // 삭제 성공 시 PublicGroup 페이지로 이동
+        navigate(`/groupdetail/${groupId}`); // 삭제 성공 시 PublicGroup 페이지로 이동
         onClose();
       } else if (response.status === 400) {
         setError(data.message || "잘못된 요청입니다."); // 서버에서의 오류 메시지를 표시

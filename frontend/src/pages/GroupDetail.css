@@ -62,8 +62,8 @@
   margin-right: 20px;
 }
 
-.group-stats {
-  font-size: 13px;
+.group-stats-sum {
+  font-size: 14px;
   font-weight: 400;
   color: #282828;
   display: flex;

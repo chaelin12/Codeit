@@ -34,6 +34,13 @@ function GroupDetail() {
         const PostsResponse = await axios.get(`/api/groups/${groupId}/posts`);
         console.log("Posts Response:", PostsResponse.data);
         setPosts(PostsResponse.data.data || []); // 데이터 배열을 안전하게 처리
+
+        // 클라이언트에서 postCount 설정
+        setGroupDetail((prevDetail) => ({
+          ...prevDetail,
+          postCount: PostsResponse.data.data.length, // 게시글 개수로 postCount 설정
+        }));
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching group details:", error.message);
@@ -145,9 +152,9 @@ function GroupDetail() {
           </div>
           <div className="group-name-stats">
             <div className="group-name">{groupDetail.name}</div>
-            <div className="group-stats">
+            <div className="group-stats-sum">
               <span>추억 {groupDetail.postCount}</span>
-              <span className="separator"> | </span>
+              <span className="group-separator"> | </span>
               <span>그룹 공감 {groupDetail.likeCount}</span>
             </div>
           </div>
@@ -215,7 +222,6 @@ function GroupDetail() {
             Posts.map((post) => (
               <PostCard
                 key={post.id}
-                groupId={groupId}
                 id={post.id}
                 nickname={post.nickname}
                 title={post.title}
