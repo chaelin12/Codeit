@@ -1,6 +1,7 @@
 import axios from "axios"; // Import axios for handling API requests
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/FormButton";
 import "./EditGroup.css";
 
 const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
@@ -164,9 +165,9 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
           {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
         <div className="modal-footer">
-          <button className="save-btn" onClick={handleSave}>
+          <Button className="save-btn" onClick={handleSave}>
             수정하기
-          </button>
+          </Button>
         </div>
       </div>
     </div>

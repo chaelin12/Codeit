@@ -6,72 +6,75 @@ import Button from "../components/FormButton";
 import "./EditPost.css";
 
 const EditPost = ({ isOpen, onClose, postId, groupId }) => {
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState(null); // Store the post data
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [postPassword, setPostPassword] = useState("");
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState([]); // Array for tags
   const [location, setLocation] = useState("");
   const [moment, setMoment] = useState("");
-  const [image, setImage] = useState(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState("");
-  const [isPublic, setIsPublic] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [image, setImage] = useState(null); // Handle file upload
+  const [currentImageUrl, setCurrentImageUrl] = useState(""); // Existing image URL
+  const [isPublic, setIsPublic] = useState(true); // Toggle for public/private post
+  const [errorMessage, setErrorMessage] = useState(""); // Error message state
 
-  const navigate = useNavigate(); // react-router-dom의 navigate 훅
+  const navigate = useNavigate();
 
+  // Load post data when modal is opened and postId is provided
   useEffect(() => {
     const fetchPostData = async () => {
       try {
         const response = await axios.get(`/api/posts/${postId}`);
         const data = response.data;
 
+        // Set state with post data
         setPost(data);
-        setNickname(data.nickname);
-        setTitle(data.title);
-        setContent(data.content);
+        setNickname(data.nickname || ""); // Fallback to empty string if null
+        setTitle(data.title || "");
+        setContent(data.content || "");
         setTags(data.tags || []);
-        setLocation(data.location);
-        setMoment(new Date(data.moment).toISOString().slice(0, 10));
-        setIsPublic(data.isPublic);
-        setCurrentImageUrl(data.imageUrl);
+        setLocation(data.location || "");
+        setMoment(new Date(data.moment).toISOString().slice(0, 10)); // Set moment as 'YYYY-MM-DD'
+        setIsPublic(data.isPublic); // Boolean flag
+        setCurrentImageUrl(data.imageUrl || ""); // Handle current image URL
       } catch (error) {
         console.error("Error fetching post data:", error);
+        setErrorMessage("포스트 데이터를 불러오는 중 오류가 발생했습니다.");
       }
     };
 
     if (postId && isOpen) {
-      fetchPostData();
+      fetchPostData(); // Only fetch data when the modal is open and postId is available
     }
   }, [postId, isOpen]);
 
+  // Trigger file input to select an image
   const triggerFileInput = () => {
     document.getElementById("file-input").click();
   };
 
+  // Handle tag input, allows Enter key to add new tag
   const handleTagInput = (e) => {
     if (e.key === "Enter" && e.target.value.trim() !== "") {
       e.preventDefault();
       setTags([...tags, e.target.value.trim()]);
-      e.target.value = "";
+      e.target.value = ""; // Clear input after adding tag
     }
   };
-  const openDatePicker = () => {
-    const dateInput = document.getElementById("moment");
-    if (dateInput) {
-      dateInput.showPicker();
-    }
-  };
+
+  // Remove a tag by index
   const removeTag = (indexToRemove) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { id, value, type, files } = e.target;
     if (type === "file") {
-      setImage(files[0]);
+      setImage(files[0]); // Handle image upload
     } else {
+      // Update respective field state based on input id
       switch (id) {
         case "nickname":
           setNickname(value);
@@ -97,14 +100,16 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
     }
   };
 
+  // Save post changes
   const handleSave = async () => {
-    let imageUrl = currentImageUrl;
+    let imageUrl = currentImageUrl; // Keep existing image URL unless a new image is uploaded
 
     try {
       if (image) {
         const imageFormData = new FormData();
         imageFormData.append("image", image);
 
+        // Upload new image
         const imageUploadResponse = await axios.post(
           "/api/image",
           imageFormData,
@@ -113,9 +118,10 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
           }
         );
 
-        imageUrl = imageUploadResponse.data.imageUrl;
+        imageUrl = imageUploadResponse.data.imageUrl; // Use new image URL
       }
 
+      // Prepare updated post data
       const updatedPost = {
         nickname,
         title,
@@ -128,15 +134,15 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
         isPublic,
       };
 
+      // Send update request
       const response = await axios.put(`/api/posts/${postId}`, updatedPost);
 
       if (response.status === 200) {
-        // 수정 성공 시 groupId 사용하여 groupdetail 페이지로 이동
+        // Redirect to group detail page after successful update
         navigate(`/groupdetail/${groupId}`);
-        onClose();
+        onClose(); // Close modal
       }
     } catch (error) {
-      // 서버에서 받은 오류에 따라 메시지 출력
       if (error.response) {
         if (error.response.status === 400) {
           setErrorMessage("잘못된 요청입니다.");
@@ -145,23 +151,21 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
         } else if (error.response.status === 404) {
           setErrorMessage("존재하지 않습니다.");
         } else {
-          console.error("Failed to save the group data.");
-          setErrorMessage("추억 정보를 저장하는 중 오류가 발생했습니다.");
+          setErrorMessage("포스트 데이터를 저장하는 중 오류가 발생했습니다.");
         }
       } else {
-        console.error("An error occurred while saving the group data:", error);
         setErrorMessage("서버 요청 중 오류가 발생했습니다.");
       }
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) return null; // Don't render modal if it's not open
 
   return (
     <div className="editpost-modal-overlay" onClick={onClose}>
       <div
         className="editpost-modal-content"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
       >
         <div className="editpost-modal-header">
           <h2>추억 수정하기</h2>
@@ -212,7 +216,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
                   id="file-input"
                   accept="image/*"
                   onChange={handleChange}
-                  style={{ display: "none" }}
+                  style={{ display: "none" }} // Hide the actual file input
                 />
               </div>
             </div>
@@ -272,7 +276,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
                   src={CalendarIcon}
                   alt="Calendar Icon"
                   className="editpost-calendar-icon"
-                  onClick={openDatePicker}
+                  onClick={() => document.getElementById("moment").showPicker()} // Open date picker
                 />
               </div>
             </div>
@@ -283,7 +287,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
                 <p>공개</p>
                 <div
                   className={`toggle-switch ${isPublic ? "active" : ""}`}
-                  onClick={() => setIsPublic(!isPublic)}
+                  onClick={() => setIsPublic(!isPublic)} // Toggle public/private
                 >
                   <div className="switch-handle"></div>
                 </div>
@@ -302,6 +306,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
             </div>
           </div>
         </div>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div className="editpost-modal-footer">
           <Button type="button" onClick={handleSave}>
             수정하기

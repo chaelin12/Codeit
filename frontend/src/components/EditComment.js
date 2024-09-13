@@ -2,28 +2,34 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
+import "./EditComment.css";
 
-const EditComment = ({ isOpen, onClose, commentId, postId }) => {
-  const [commentData, setCommentData] = useState(null);
+const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  // Load comment data when modal opens
   useEffect(() => {
-    // 댓글 데이터 불러오기
+    console.log("commentId:", commentId); // Log the commentId for debugging
+
     const fetchCommentData = async () => {
       try {
         const response = await axios.get(`/api/comments/${commentId}`);
         const data = response.data;
 
-        setCommentData(data);
-        setNickname(data.nickname);
-        setContent(data.content);
+        // Populate fields with fetched comment data
+        setNickname(data.nickname || "");
+        setContent(data.content || "");
       } catch (error) {
-        console.error("Error fetching comment data:", error);
-        setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
+        if (error.response && error.response.status === 404) {
+          setErrorMessage("해당 댓글을 찾을 수 없습니다.");
+        } else {
+          console.error("Error fetching comment data:", error);
+          setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
+        }
       }
     };
 
@@ -32,14 +38,14 @@ const EditComment = ({ isOpen, onClose, commentId, postId }) => {
     }
   }, [commentId, isOpen]);
 
+  // Handle Save
   const handleSave = async () => {
-    if (!commentData) return; // If commentData is not loaded, do nothing
+    if (!nickname || !content || !password) {
+      setErrorMessage("모든 필드를 입력해 주세요.");
+      return;
+    }
 
-    const updatedComment = {
-      nickname,
-      content,
-      password,
-    };
+    const updatedComment = { nickname, content, password };
 
     try {
       const response = await axios.put(
@@ -48,34 +54,35 @@ const EditComment = ({ isOpen, onClose, commentId, postId }) => {
       );
 
       if (response.status === 200) {
+        onSave(updatedComment); // Callback after successful update
         navigate(`/postdetail/${postId}`);
-        onClose(); // 성공적으로 업데이트 후 모달을 닫음
+        onClose(); // Close modal after saving
       }
     } catch (error) {
       if (error.response) {
-        if (error.response.status === 400) {
+        const { status } = error.response;
+        if (status === 400) {
           setErrorMessage("잘못된 요청입니다.");
-        } else if (error.response.status === 403) {
+        } else if (status === 403) {
           setErrorMessage("비밀번호가 틀렸습니다.");
-        } else if (error.response.status === 404) {
+        } else if (status === 404) {
           setErrorMessage("댓글을 찾을 수 없습니다.");
         } else {
           setErrorMessage("댓글을 업데이트하는 중 오류가 발생했습니다.");
         }
       } else {
-        console.error("Error updating comment:", error);
         setErrorMessage("서버 요청 중 오류가 발생했습니다.");
       }
     }
   };
 
-  if (!isOpen) return null; // 모달이 열리지 않았을 때는 렌더링하지 않음
+  if (!isOpen) return null; // Do not render if modal is not open
 
   return (
     <div className="comment-modal-overlay" onClick={onClose}>
       <div
         className="comment-modal-content"
-        onClick={(e) => e.stopPropagation()} // 모달 외부 클릭 시 닫기 방지
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button className="modal-close-button" onClick={onClose}>
@@ -89,7 +96,7 @@ const EditComment = ({ isOpen, onClose, commentId, postId }) => {
               type="text"
               id="nickname"
               value={nickname}
-              onChange={(e) => setNickname(e.target.value)} // onChange 핸들러 추가
+              onChange={(e) => setNickname(e.target.value)}
             />
           </label>
           <label>
@@ -97,7 +104,7 @@ const EditComment = ({ isOpen, onClose, commentId, postId }) => {
             <textarea
               id="content"
               value={content}
-              onChange={(e) => setContent(e.target.value)} // onChange 핸들러 추가
+              onChange={(e) => setContent(e.target.value)}
             />
           </label>
           <label>
@@ -105,7 +112,7 @@ const EditComment = ({ isOpen, onClose, commentId, postId }) => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // onChange 핸들러 추가
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력해 주세요."
               required
             />

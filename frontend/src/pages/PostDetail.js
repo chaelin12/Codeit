@@ -26,6 +26,7 @@ const PostDetail = () => {
   const [comments, setComments] = useState([]); // store comments
   const [currentPage, setCurrentPage] = useState(1); // track current page for pagination
   const [totalPages, setTotalPages] = useState(1); // Total pages for comments
+  const [selectedCommentId, setSelectedCommentId] = useState(null); // 선택된 commentId 저장
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -76,10 +77,16 @@ const PostDetail = () => {
   const closeDeleteModal = () => setIsDeleteModalOpen(false); // Close delete modal
   const openCommentModal = () => setIsCommentModalOpen(true); // Open comment modal
   const closeCommentModal = () => setIsCommentModalOpen(false); // Close comment modal
-  const openCommentEditModal = () => setIsCommentEditModalOpen(true); // Open comment modal
-  const closeCommentEditModal = () => setIsCommentEditModalOpen(false); // Close comment modal
-  const openCommentDeleteModal = () => setIsCommentDeleteModalOpen(true); // Open comment modal
-  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment modal
+  const openCommentEditModal = (commentId) => {
+    setSelectedCommentId(commentId); // 선택한 댓글의 commentId 저장
+    setIsCommentEditModalOpen(true); // Open comment edit modal
+  };
+  const closeCommentEditModal = () => setIsCommentEditModalOpen(false); // Close comment edit modal
+  const openCommentDeleteModal = (commentId) => {
+    setSelectedCommentId(commentId); // 선택한 댓글의 commentId 저장
+    setIsCommentDeleteModalOpen(true); // Open comment delete modal
+  };
+  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment delete modal
 
   const handleCommentSubmit = async (newComment) => {
     try {
@@ -209,13 +216,13 @@ const PostDetail = () => {
                     src={editIcon}
                     alt="edit Icon"
                     className="comment-edit-icon"
-                    onClick={openCommentEditModal}
+                    onClick={() => openCommentEditModal(comment.id)}
                   />
                   <img
                     src={deleteIcon}
                     alt="delete Icon"
                     className="comment-delete-icon"
-                    onClick={openCommentDeleteModal}
+                    onClick={() => openCommentDeleteModal(comment.id)}
                   />
                 </div>
               </div>
@@ -233,6 +240,7 @@ const PostDetail = () => {
           isOpen={isEditModalOpen}
           onClose={closeEditModal}
           groupId={post.groupId}
+          postId={postId}
         />
       )}
       {isDeleteModalOpen && (
@@ -240,6 +248,7 @@ const PostDetail = () => {
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           groupId={post.groupId}
+          postId={postId}
         />
       )}
       {isCommentModalOpen && (
@@ -255,6 +264,7 @@ const PostDetail = () => {
           isOpen={isCommentEditModalOpen}
           onClose={closeCommentEditModal}
           postId={postId}
+          commentId={selectedCommentId} // 전달된 commentId 사용
         />
       )}
       {isCommentDeleteModalOpen && (
@@ -262,6 +272,7 @@ const PostDetail = () => {
           isOpen={isCommentDeleteModalOpen}
           onClose={closeCommentDeleteModal}
           postId={postId}
+          commentId={selectedCommentId} // 전달된 commentId 사용
         />
       )}
     </div>

@@ -176,7 +176,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
   border: 1px solid #dddddd;
   border-radius: 4px;
-  color: #b8b8b8;
 }
 
 .editpost-modal-footer {
