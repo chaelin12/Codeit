@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 import "./EditComment.css";
 
@@ -9,12 +8,9 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
   // Load comment data when modal opens
   useEffect(() => {
-    console.log("commentId:", commentId); // Log the commentId for debugging
-
     const fetchCommentData = async () => {
       try {
         const response = await axios.get(`/api/comments/${commentId}`);
@@ -55,7 +51,6 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
 
       if (response.status === 200) {
         onSave(updatedComment); // Callback after successful update
-        navigate(`/postdetail/${postId}`);
         onClose(); // Close modal after saving
       }
     } catch (error) {

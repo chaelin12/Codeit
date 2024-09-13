@@ -46,28 +46,27 @@ const PostDetail = () => {
     fetchPostData();
   }, [postId]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(
-          `/api/posts/${postId}/comments?page=${currentPage}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch comments");
-        }
-        const data = await response.json();
-
-        // 기존 댓글 배열에 덧붙이지 않고 새로 덮어씀
-        setComments(data.data);
-        setTotalPages(data.totalPages);
-        setPost((prevPost) => ({
-          ...prevPost, // 기존 post 정보를 유지하고
-          totalCommentCount: data.totalCommentCount, // totalCommentCount 업데이트
-        }));
-      } catch (error) {
-        setError(error.message);
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(
+        `/api/posts/${postId}/comments?page=${currentPage}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch comments");
       }
-    };
+      const data = await response.json();
+      setComments(data.data);
+      setTotalPages(data.totalPages);
+      setPost((prevPost) => ({
+        ...prevPost,
+        totalCommentCount: data.totalCommentCount, // totalCommentCount 업데이트
+      }));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  useEffect(() => {
     fetchComments();
   }, [postId, currentPage]);
 
@@ -101,8 +100,16 @@ const PostDetail = () => {
       }
 
       const savedComment = await response.json();
-      setComments([...comments, savedComment]); // Update comments
-      closeCommentModal(); // Close the modal after submission
+
+      // 댓글이 성공적으로 추가되면, 기존 댓글 리스트에 새 댓글을 추가하고
+      // 총 댓글 개수도 업데이트합니다.
+      setComments((prevComments) => [...prevComments, savedComment]);
+      setPost((prevPost) => ({
+        ...prevPost,
+        totalCommentCount: prevPost.totalCommentCount + 1, // 댓글 개수 업데이트
+      }));
+
+      closeCommentModal(); // 모달 닫기
     } catch (error) {
       console.error("Error:", error);
     }
@@ -123,7 +130,15 @@ const PostDetail = () => {
   if (!post) {
     return <div>No post details found</div>;
   }
-
+  const handleDeleteComment = (deletedCommentId) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id !== deletedCommentId)
+    );
+    setPost((prevPost) => ({
+      ...prevPost,
+      totalCommentCount: prevPost.totalCommentCount - 1,
+    }));
+  };
   return (
     <div className="post-detail-page">
       <div className="post-header">
@@ -273,6 +288,7 @@ const PostDetail = () => {
           onClose={closeCommentDeleteModal}
           postId={postId}
           commentId={selectedCommentId} // 전달된 commentId 사용
+          onDelete={handleDeleteComment}
         />
       )}
     </div>

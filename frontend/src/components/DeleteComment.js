@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 
 const DeleteComment = ({ isOpen, onClose, commentId, postId, onDelete }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -25,13 +23,14 @@ const DeleteComment = ({ isOpen, onClose, commentId, postId, onDelete }) => {
       const data = await response.json(); // 서버에서 반환한 데이터
 
       if (response.ok) {
-        navigate(`/postdetail/${postId}`); // 삭제 성공 시 PublicGroup 페이지로 이동
+        onDelete(commentId); // 삭제 성공 시 전달받은 commentId를 삭제 처리
+        onClose(); // 모달 닫기
       } else if (response.status === 400) {
         setError(data.message || "잘못된 요청입니다."); // 서버에서의 오류 메시지를 표시
       } else if (response.status === 403) {
         setError(data.message || "비밀번호가 틀렸습니다."); // 비밀번호 오류 처리
       } else if (response.status === 404) {
-        setError(data.message || "존재하지 않습니다."); // 그룹이 존재하지 않을 때 처리
+        setError(data.message || "존재하지 않습니다."); // 댓글이 존재하지 않을 때 처리
       } else {
         setError("알 수 없는 오류가 발생했습니다. 다시 시도해주세요."); // 그 외의 오류 처리
       }
@@ -39,6 +38,7 @@ const DeleteComment = ({ isOpen, onClose, commentId, postId, onDelete }) => {
       setError("서버와의 통신에 실패했습니다. 다시 시도해주세요."); // 네트워크 오류 처리
     }
   };
+
   return (
     <div className="delete-modal-overlay" onClick={onClose}>
       <div className="delete-modal" onClick={(e) => e.stopPropagation()}>
