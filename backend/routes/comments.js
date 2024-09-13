@@ -49,6 +49,7 @@ router.route('/:id')
     })
     //댓글 삭제
     .delete(async (req,res)=>{
+        console.log(req.params.id);
         const comment = await Comment.findOne({id: req.params.id});
         if (!comment) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });

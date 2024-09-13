@@ -206,9 +206,9 @@ router.route('/:id/comments')
                     content : req.body.content,
                     password: req.body.password
                 });
-                const sql = `INSERT INTO commentsalt(id, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO CommentSalt(id, salt) VALUES (?, ?)`;
                 //id는 자동생성 값이므로 post.id로 사용해야함 req.body X
-                mysqldb.query(sql, [comment.id, salt], (err, rows, fields) => {
+                mysqldb.query(sql, [comment.id, salt], (err) => {
                   if (err) {
                     console.log(err);
                   } else {
@@ -222,7 +222,7 @@ router.route('/:id/comments')
                     content: comment.content,
                     createdAt: comment.createdAt.toISOString() // ISO 형식으로 변환
                 };
-                res.status(201).json(response);
+                res.status(200).json(response);
             }catch(err){
                 res.status(400).json({message : "잘못된 요청입니다."});
             }
