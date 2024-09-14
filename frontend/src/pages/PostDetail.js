@@ -13,28 +13,27 @@ import PostComment from "../components/PostComment"; // Ensure you have PostComm
 import "./PostDetail.css";
 
 const PostDetail = () => {
-  const { postId } = useParams(); // get postId from URL
-  const [post, setPost] = useState(null); // to store the post data
-  const [loading, setLoading] = useState(true); // to manage loading state
-  const [error, setError] = useState(null); // to manage error state
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false); // State for comment modal
+  const { postId } = useParams();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [isCommentEditModalOpen, setIsCommentEditModalOpen] = useState(false);
   const [isCommentDeleteModalOpen, setIsCommentDeleteModalOpen] =
     useState(false);
-  const [comments, setComments] = useState([]); // store comments
-  const [currentPage, setCurrentPage] = useState(1); // track current page for pagination
-  const [totalPages, setTotalPages] = useState(1); // Total pages for comments
-  const [selectedCommentId, setSelectedCommentId] = useState(null); // 선택된 commentId 저장
+  const [comments, setComments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchPostData = async () => {
       try {
         const response = await fetch(`/api/posts/${postId}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error("Failed to fetch post data");
         }
         const data = await response.json();
         setPost(data);
@@ -47,58 +46,55 @@ const PostDetail = () => {
     fetchPostData();
   }, [postId]);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(`/api/posts/${postId}/comments`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch comments");
-        }
-        const data = await response.json();
-        setComments(data);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    };
-
-    fetchComments();
-  }, [postId]);
-
-  const openEditModal = () => setIsEditModalOpen(true); // Open edit modal
-  const closeEditModal = () => setIsEditModalOpen(false); // Close edit modal
-  const openDeleteModal = () => setIsDeleteModalOpen(true); // Open delete modal
-  const closeDeleteModal = () => setIsDeleteModalOpen(false); // Close delete modal
-  const openCommentModal = () => setIsCommentModalOpen(true); // Open comment modal
-  const closeCommentModal = () => setIsCommentModalOpen(false); // Close comment modal
-  const openCommentEditModal = (commentId) => {
-    setSelectedCommentId(commentId); // 선택한 댓글의 commentId 저장
-    setIsCommentEditModalOpen(true); // Open comment edit modal
-  };
-  const closeCommentEditModal = () => setIsCommentEditModalOpen(false); // Close comment edit modal
-  const openCommentDeleteModal = (commentId) => {
-    setSelectedCommentId(commentId); // 선택한 댓글의 commentId 저장
-    setIsCommentDeleteModalOpen(true); // Open comment delete modal
-  };
-  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment delete modal
-
-  const handleCommentSubmit = (newComment) => {
+  const fetchComments = async () => {
     try {
-      setComments((prevComments) =>
-        Array.isArray(prevComments)
-          ? [...prevComments, newComment]
-          : [newComment]
-      );
-
-      closeCommentModal();
-      navigate(`/postdetail/${postId}`);
+      const response = await fetch(`/api/posts/${postId}/comments`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch comments");
+      }
+      const data = await response.json();
+      setComments(data.data || []); // 'data'가 실제 댓글 배열
+      setTotalPages(data.totalPages || 1); // 'totalPages' 설정
+      setPost((prevPost) => ({
+        ...prevPost,
+        totalCommentCount: data.totalCommentCount || 0,
+      })); // 'totalCommentCount' 업데이트
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching comments:", error);
     }
   };
 
+  useEffect(() => {
+    fetchComments();
+  }, [postId]);
+
+  const openEditModal = () => setIsEditModalOpen(true);
+  const closeEditModal = () => setIsEditModalOpen(false);
+  const openDeleteModal = () => setIsDeleteModalOpen(true);
+  const closeDeleteModal = () => setIsDeleteModalOpen(false);
+  const openCommentModal = () => setIsCommentModalOpen(true);
+  const closeCommentModal = () => setIsCommentModalOpen(false);
+  const openCommentEditModal = (commentId) => {
+    setSelectedCommentId(commentId);
+    setIsCommentEditModalOpen(true);
+  };
+  const closeCommentEditModal = () => setIsCommentEditModalOpen(false);
+  const openCommentDeleteModal = (commentId) => {
+    setSelectedCommentId(commentId);
+    setIsCommentDeleteModalOpen(true);
+  };
+  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false);
+
+  const handleCommentSubmit = (newComment) => {
+    setComments((prevComments) =>
+      Array.isArray(prevComments) ? [...prevComments, newComment] : [newComment]
+    );
+    closeCommentModal();
+  };
+
   const handlePostEditSave = (updatedPost) => {
-    setPost(updatedPost); // 수정된 추억 상태를 반영
-    closeEditModal(); // 모달 닫기
+    setPost(updatedPost);
+    closeEditModal();
     navigate(`/postdetail/${postId}`);
   };
 
@@ -130,8 +126,25 @@ const PostDetail = () => {
     );
   };
 
-  const loadMoreComments = () => {
-    setCurrentPage((prevPage) => prevPage + 1); // Increment page to load more comments
+  const loadMoreComments = async () => {
+    try {
+      const response = await fetch(
+        `/api/posts/${postId}/comments?page=${currentPage + 1}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch more comments");
+      }
+      const data = await response.json();
+      if (Array.isArray(data.data)) {
+        setComments((prevComments) => [...prevComments, ...data.data]); // 'data.data'가 댓글 배열
+      } else {
+        console.error("Error: Comments data is not an array");
+      }
+      setCurrentPage((prevPage) => prevPage + 1);
+      setTotalPages(data.totalPages || 1);
+    } catch (error) {
+      console.error("Error loading more comments:", error);
+    }
   };
 
   if (loading) {
@@ -189,7 +202,7 @@ const PostDetail = () => {
             <img src={flower} alt="like-icon" />
             <span className="post-likeCount"> {post.likeCount}</span>
             <img src={bubble} alt="comment-icon" />
-            <span className="post-commentCount">{post.commentCount}</span>
+            <span className="post-commentCount">{post.totalCommentCount}</span>
           </div>
           <div className="post-sendempathy">
             <button
@@ -202,13 +215,8 @@ const PostDetail = () => {
         </div>
       </div>
       <div className="section-divider"></div>
-      {/* 이미지가 있을 때만 렌더링 */}
       {post.imageUrl && (
-        <img
-          src={post.imageUrl} // image fetched from server
-          alt={post.title}
-          className="post-image"
-        />
+        <img src={post.imageUrl} alt={post.title} className="post-image" />
       )}
       <div className="post-content">{post.content}</div>
 
@@ -217,7 +225,7 @@ const PostDetail = () => {
       </Button>
 
       <div className="comments-section">
-        <p>댓글 {post.totalCommentCount}</p> {/* 댓글 개수 표시 */}
+        <p>댓글 {post.totalCommentCount}</p>
         <div className="first-section-divider"></div>
         {Array.isArray(comments) && comments.length > 0 ? (
           <ul className="comments-list">
@@ -249,19 +257,18 @@ const PostDetail = () => {
                     />
                   </div>
                 </div>
-                <div className="comment-divider"></div> {/* Divider */}
+                <div className="comment-divider"></div>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No comments available.</p> // No comments message
+          <p>No comments available.</p>
         )}
         {currentPage < totalPages && (
           <Button onClick={loadMoreComments}>댓글 더보기</Button>
         )}
       </div>
 
-      {/* 모달 컴포넌트들 */}
       {isEditModalOpen && (
         <EditPost
           isOpen={isEditModalOpen}
@@ -293,7 +300,7 @@ const PostDetail = () => {
           onClose={closeCommentEditModal}
           postId={postId}
           commentId={selectedCommentId}
-          onSave={handleCommentEditSave} // onSave 콜백 전달
+          onSave={handleCommentEditSave}
         />
       )}
       {isCommentDeleteModalOpen && (
@@ -301,7 +308,7 @@ const PostDetail = () => {
           isOpen={isCommentDeleteModalOpen}
           onClose={closeCommentDeleteModal}
           postId={postId}
-          commentId={selectedCommentId} // 전달된 commentId 사용
+          commentId={selectedCommentId}
           onDelete={handleDeleteComment}
         />
       )}
