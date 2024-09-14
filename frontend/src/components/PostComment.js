@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 import "./PostComment.css"; // Updated CSS file
 
-const PostComment = ({ isOpen, onClose, postId }) => {
+const PostComment = ({ isOpen, onClose, postId, onAddComment }) => {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // To display error messages
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,8 +27,6 @@ const PostComment = ({ isOpen, onClose, postId }) => {
       });
 
       if (!response.ok) {
-        navigate(`/postdetail/${postId}`);
-        onClose();
         if (response.status === 400) {
           setErrorMessage("잘못된 요청입니다");
         } else {
@@ -43,6 +38,9 @@ const PostComment = ({ isOpen, onClose, postId }) => {
 
       const result = await response.json();
       console.log("Comment submitted:", result);
+
+      // Call the callback to add the comment to the list
+      onAddComment(result);
       onClose(); // Close the modal after successful submission
     } catch (error) {
       console.error("Error submitting comment:", error.message);
