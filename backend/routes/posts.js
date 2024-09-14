@@ -133,7 +133,7 @@ router.route('/:id')
             likeCount: post.likeCount,
             commentCount: post.commentCount,
             createdAt: post.createdAt.toISOString()
-        })
+        });
         }catch(err){
             res.status(400).json({message : "잘못된 요청입니다"});
         }

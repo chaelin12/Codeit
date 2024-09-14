@@ -5,9 +5,29 @@ const Comment = require('../schemas/comment');
 
 
 router.route('/:id')
+    //댓글 상세 조회
+    .get(async (req,res)=>{
+        try{
+            const comment = Comment.findOne({id : req.params.id});
+            res.status(200).json({
+                id:comment.id,
+                groupId: comment.groupId,
+                postId: comment.postId,
+                nickname : comment.nickname,
+                content : comment.content,
+                createdAt : comment.createdAt.toISOString()
+            });
+        } catch(err){
+            res.status(400).json({message : "잘못된 요청입니다"});
+        }
+    })
     //댓글 수정
     .put(async (req,res)=>{
-        const comment = await Comment.findOne({id : req.params.id});
+        console.log(req.body);
+        if(req.body==null){
+            console.log("없음");
+        }
+        const comment = await Comment.findOne({id: req.params.id});
         if (!comment) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -29,7 +49,6 @@ router.route('/:id')
                         nickname: req.body.nickname,
                         content: req.body.content
                     });
-                    
                     res.status(200).json({
                         id: updatedComment.id,
                         nickname: updatedComment.nickname,
@@ -49,7 +68,6 @@ router.route('/:id')
     })
     //댓글 삭제
     .delete(async (req,res)=>{
-        console.log(req.params.id);
         const comment = await Comment.findOne({id: req.params.id});
         if (!comment) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
