@@ -52,13 +52,10 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
         `/api/comments/${commentId}`,
         updatedComment
       );
-
       if (response.status === 200) {
-        // Call onSave to update the parent component (or refresh data)
         onSave(updatedComment); // Callback after successful update
-
-        // Close the modal
-        onClose();
+        navigate(`/postdetail/${postId}`);
+        onClose(); // Close modal after saving
       }
     } catch (error) {
       if (error.response) {

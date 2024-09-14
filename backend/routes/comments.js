@@ -23,9 +23,6 @@ router.route('/:id')
     })
     //댓글 수정
     .put(async (req,res)=>{
-        if(req.body==null){
-            console.log("없음");
-        }
         const comment = await Comment.findOne({id: req.params.id});
         if (!comment) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
@@ -33,7 +30,7 @@ router.route('/:id')
         //비밀번호 검증
         const { mysqldb } = await setup();
         const sql = `SELECT salt FROM commentsalt WHERE id=?`;
-        mysqldb.query(sql, [comment.id], async (err, rows, fields) => {
+        mysqldb.query(sql, [comment.id], async (err, rows) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
         }
