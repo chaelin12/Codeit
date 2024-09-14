@@ -207,12 +207,10 @@ router.route('/:id/comments')
                     password: req.body.password
                 });
                 const sql = `INSERT INTO CommentSalt(id, salt) VALUES (?, ?)`;
-                //id는 자동생성 값이므로 post.id로 사용해야함 req.body X
+                
                 mysqldb.query(sql, [comment.id, salt], (err) => {
                   if (err) {
                     console.log(err);
-                  } else {
-                    console.log("salt 저장 성공");
                   }
                 });
                 // 응답으로 보낼 데이터 형식 조정
