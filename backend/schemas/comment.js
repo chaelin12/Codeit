@@ -29,7 +29,7 @@ const commentSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-  },
+  }
 });
 // 그룹 저장 전에 자동으로 ID를 증가시키는 미들웨어
 commentSchema.pre('save', async function (next) {

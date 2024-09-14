@@ -8,7 +8,7 @@ router.route('/:id')
     //댓글 상세 조회
     .get(async (req,res)=>{
         try{
-            const comment = Comment.findOne({id : req.params.id});
+            const comment = await Comment.findOne({id : req.params.id});
             res.status(200).json({
                 id:comment.id,
                 groupId: comment.groupId,
@@ -23,7 +23,6 @@ router.route('/:id')
     })
     //댓글 수정
     .put(async (req,res)=>{
-        console.log(req.body);
         if(req.body==null){
             console.log("없음");
         }
@@ -43,12 +42,13 @@ router.route('/:id')
             const hashPw = sha(req.body.password + salt);
             if (comment.password == hashPw) {
                 try{
-                    const updatedComment = await Comment.updateOne({
+                    await Comment.updateOne({
                         id:req.params.id,//업데이트 대상 검색
                     },{
                         nickname: req.body.nickname,
                         content: req.body.content
                     });
+                    const updatedComment = await Comment.findOne({id:req.params.id});
                     res.status(200).json({
                         id: updatedComment.id,
                         nickname: updatedComment.nickname,
