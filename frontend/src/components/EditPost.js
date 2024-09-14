@@ -5,7 +5,7 @@ import CalendarIcon from "../assets/pictures/calender.png";
 import Button from "../components/FormButton";
 import "./EditPost.css";
 
-const EditPost = ({ isOpen, onClose, postId, groupId }) => {
+const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
   const [post, setPost] = useState(null); // Store the post data
   const [nickname, setNickname] = useState("");
   const [title, setTitle] = useState("");
@@ -139,7 +139,8 @@ const EditPost = ({ isOpen, onClose, postId, groupId }) => {
 
       if (response.status === 200) {
         // Redirect to group detail page after successful update
-        navigate(`/groupdetail/${groupId}`);
+        onSave(updatedPost);
+        navigate(`/postdetail/${postId}`);
         onClose(); // Close modal
       }
     } catch (error) {

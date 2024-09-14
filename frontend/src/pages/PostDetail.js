@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
 import deleteIcon from "../assets/pictures/delete.png";
 import editIcon from "../assets/pictures/edit.png";
@@ -27,6 +27,7 @@ const PostDetail = () => {
   const [currentPage, setCurrentPage] = useState(1); // track current page for pagination
   const [totalPages, setTotalPages] = useState(1); // Total pages for comments
   const [selectedCommentId, setSelectedCommentId] = useState(null); // 선택된 commentId 저장
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -114,7 +115,12 @@ const PostDetail = () => {
       console.error("Error:", error);
     }
   };
-
+  const handlePostEditSave = (updatedPost) => {
+    setPost(updatedPost); // 수정된 추억 상태를 반영
+    closeEditModal(); // 모달 닫기
+    // 페이지를 다시 로드하여 변경된 상태 반영
+    navigate(0); // 현재 페이지를 강제로 새로고침
+  };
   const handleCommentEditSave = (updatedComment) => {
     setComments((prevComments) =>
       prevComments.map((comment) =>
@@ -122,6 +128,7 @@ const PostDetail = () => {
       )
     );
     closeCommentEditModal();
+    navigate(0); // 현재 페이지를 강제로 새로고침
   };
 
   const handleDeleteComment = (deletedCommentId) => {
@@ -267,6 +274,7 @@ const PostDetail = () => {
           onClose={closeEditModal}
           groupId={post.groupId}
           postId={postId}
+          onSave={handlePostEditSave}
         />
       )}
       {isDeleteModalOpen && (

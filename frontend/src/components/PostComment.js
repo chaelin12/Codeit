@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "../components/FormButton";
 import "./PostComment.css"; // Updated CSS file
 
-const PostComment = ({ isOpen, onClose, postId, onAddComment }) => {
+const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +40,7 @@ const PostComment = ({ isOpen, onClose, postId, onAddComment }) => {
       console.log("Comment submitted:", result);
 
       // Call the callback to add the comment to the list
-      onAddComment(result);
+      onSubmit(result); // Changed to onSubmit
       onClose(); // Close the modal after successful submission
     } catch (error) {
       console.error("Error submitting comment:", error.message);
