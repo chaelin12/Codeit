@@ -25,7 +25,6 @@ app.use(
 );
 // 정적 파일 제공 설정
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
-app.use(express.static(path.join(__dirname, '../frontend/build')));
 // 모든 요청에 대해 index.html 제공
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
