@@ -188,8 +188,6 @@ router.route('/:id')
     //그룹 삭제
     .delete(async(req,res)=>{ 
         const group = await Group.findOne({id:req.params.id});
-        const post = await Post.findOne({id:req.params.id});
-        const comment = await Comment.findOne({id:req.params.id});
         if (!group) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -209,16 +207,18 @@ router.route('/:id')
                         console.error(err);
                     }
                  });
-                 fs.unlink('./public'+post.imageUrl,(err)=>{
-                    if(err){
+                 // 그룹에 관련된 게시글 조회 및 삭제
+                const posts = await Post.find({ groupId:req.params.id });
+                for (const post of posts) {
+                    // 게시글 이미지 삭제
+                    if (post.imageUrl) {
+                    fs.unlink(`./public${post.imageUrl}`, (err) => {
+                        if (err) {
                         console.error(err);
-                    }
-                 });
-                 fs.unlink('./public'+comment.imageUrl,(err)=>{
-                    if(err){
-                        console.error(err);
-                    }
-                 });
+                        }
+                    });
+                    }}
+                 
                  await Group.deleteOne({ id: req.params.id });
                  // 그룹에 관련된 게시글 삭제
                  await Post.deleteMany({ groupId: req.params.id });
@@ -226,23 +226,12 @@ router.route('/:id')
                  await Comment.deleteMany({ groupId: req.params.id });
                  // MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM GroupSalt WHERE id = ?`;
-                 const deletePostSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
-                 const deleteCommentSaltSql = `DELETE FROM CommentSalt WHERE id = ?`;
                  mysqldb.query(deleteSaltSql, [group.id], (err, result) => {
                      if (err) {
                          console.error("MySQL salt 삭제 오류:", err);
                      } 
                  });
-                 mysqldb.query(deletePostSaltSql, [post.id], (err, result) => {
-                    if (err) {
-                        console.error("MySQL salt 삭제 오류:", err);
-                    } 
-                });
-                mysqldb.query(deleteCommentSaltSql, [comment.id], (err, result) => {
-                    if (err) {
-                        console.error("MySQL salt 삭제 오류:", err);
-                    } 
-                });
+                 
                  
 
                 res.status(200).json({message : "그룹 삭제 성공"});
@@ -344,9 +333,9 @@ router.route('/:id/posts')
                     moment: req.body.moment,
                     isPublic: req.body.isPublic
                 });
-                const sql = `INSERT INTO postsalt(id, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO postsalt(id, salt, group_id) VALUES (?, ?, ?)`;
                 //id는 자동생성 값이므로 post.id로 사용해야함 req.body X
-                mysqldb.query(sql, [post.id, salt], (err, rows, fields) => {
+                mysqldb.query(sql, [post.id, salt, post.groupId], (err, rows, fields) => {
                   if (err) {
                     console.log(err);
                   } 

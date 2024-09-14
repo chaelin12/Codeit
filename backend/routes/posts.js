@@ -97,27 +97,18 @@ router.route('/:id')
                         console.error(err);
                     }
                  });
-                 fs.unlink('./public'+comment.imageUrl,(err)=>{
-                    if(err){
-                        console.error(err);
-                    }
-                 });
+                 
                 await Post.deleteOne({ id: req.params.id });
                 // 게시글에 관련된 댓글 삭제
                 await Comment.deleteMany({ postId: req.params.id });
                  // MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
-                 const deleteCommentSaltSql = `DELETE FROM CommentSalt WHERE id = ?`;
                  mysqldb.query(deleteSaltSql, [post.id], (err) => {
                      if (err) {
                          console.error("MySQL salt 삭제 오류:", err);
                      } 
                  });
-                 mysqldb.query(deleteCommentSaltSql, [post.id], (err) => {
-                    if (err) {
-                        console.error("MySQL salt 삭제 오류:", err);
-                    } 
-                });
+                 
                 res.status(200).json({message : "게시글 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
@@ -218,9 +209,9 @@ router.route('/:id/comments')
                     content : req.body.content,
                     password: req.body.password
                 });
-                const sql = `INSERT INTO CommentSalt(id, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO CommentSalt(id, salt, post_id) VALUES (?, ?, ?)`;
                 
-                mysqldb.query(sql, [comment.id, salt], (err) => {
+                mysqldb.query(sql, [comment.id, salt, comment.postId], (err) => {
                   if (err) {
                     console.log(err);
                   }
