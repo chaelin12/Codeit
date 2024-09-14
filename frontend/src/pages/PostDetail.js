@@ -115,6 +115,25 @@ const PostDetail = () => {
     }
   };
 
+  const handleCommentEditSave = (updatedComment) => {
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.id === updatedComment.id ? updatedComment : comment
+      )
+    );
+    closeCommentEditModal();
+  };
+
+  const handleDeleteComment = (deletedCommentId) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id !== deletedCommentId)
+    );
+    setPost((prevPost) => ({
+      ...prevPost,
+      totalCommentCount: prevPost.totalCommentCount - 1,
+    }));
+  };
+
   const loadMoreComments = () => {
     setCurrentPage((prevPage) => prevPage + 1); // Increment page to load more comments
   };
@@ -130,15 +149,7 @@ const PostDetail = () => {
   if (!post) {
     return <div>No post details found</div>;
   }
-  const handleDeleteComment = (deletedCommentId) => {
-    setComments((prevComments) =>
-      prevComments.filter((comment) => comment.id !== deletedCommentId)
-    );
-    setPost((prevPost) => ({
-      ...prevPost,
-      totalCommentCount: prevPost.totalCommentCount - 1,
-    }));
-  };
+
   return (
     <div className="post-detail-page">
       <div className="post-header">
@@ -279,7 +290,8 @@ const PostDetail = () => {
           isOpen={isCommentEditModalOpen}
           onClose={closeCommentEditModal}
           postId={postId}
-          commentId={selectedCommentId} // 전달된 commentId 사용
+          commentId={selectedCommentId}
+          onSave={handleCommentEditSave} // onSave 콜백 전달
         />
       )}
       {isCommentDeleteModalOpen && (
