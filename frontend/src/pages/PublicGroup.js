@@ -16,6 +16,7 @@ function PublicGroup() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
   const [groups, setGroups] = useState([]);
+  const [filteredGroups, setFilteredGroups] = useState([]); // 필터링된 그룹 목록
   const [page, setPage] = useState(1); // 페이지 번호 상태 추가
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 여부
 
@@ -28,9 +29,7 @@ function PublicGroup() {
           ? response.data.data
           : [];
 
-        // 중복 제거 로직 추가
         setGroups((prevGroups) => {
-          // 그룹의 고유 ID를 기준으로 중복을 제거
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
           const newGroups = fetchedGroups.filter(
             (group) => !existingGroupIds.has(group.id)
@@ -50,9 +49,17 @@ function PublicGroup() {
     fetchGroups(page);
   }, [page]);
 
+  // 검색 쿼리에 따라 그룹 목록을 필터링
+  useEffect(() => {
+    const lowercasedQuery = searchQuery.toLowerCase(); // 검색어를 소문자로 변환
+    const filtered = groups.filter((group) =>
+      group.name.toLowerCase().includes(lowercasedQuery)
+    );
+    setFilteredGroups(filtered);
+  }, [searchQuery, groups]);
+
   const handleSearch = (query) => {
-    setSearchQuery(query);
-    // 검색 쿼리를 기반으로 필터링된 그룹 데이터를 불러오는 로직 추가 가능
+    setSearchQuery(query); // 검색어를 상태로 설정
   };
 
   const handleFilterChange = (selectedFilter) => {
@@ -93,14 +100,14 @@ function PublicGroup() {
         <SearchBar onSearch={handleSearch} />
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
-      {groups.length === 0 ? (
+      {filteredGroups.length === 0 ? (
         <NoGroup onCreateGroup={handleCreateGroup} />
       ) : (
         <>
           <div className="group-list">
-            {groups.map(
+            {filteredGroups.map(
               (group) =>
-                group.isPublic && ( // 공개 그룹만 렌더링
+                group.isPublic && (
                   <GroupCard
                     key={group.id} // 중복 방지를 위한 key 사용
                     id={group.id}

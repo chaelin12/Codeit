@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
 import deleteIcon from "../assets/pictures/delete.png";
 import editIcon from "../assets/pictures/edit.png";
@@ -11,7 +11,6 @@ import EditPost from "../components/EditPost";
 import Button from "../components/FormButton";
 import PostComment from "../components/PostComment"; // Ensure you have PostComment modal component
 import "./PostDetail.css";
-import { useNavigate } from "react-router-dom";
 
 const PostDetail = () => {
   const { postId } = useParams(); // get postId from URL
@@ -29,7 +28,7 @@ const PostDetail = () => {
   const [totalPages, setTotalPages] = useState(1); // Total pages for comments
   const [selectedCommentId, setSelectedCommentId] = useState(null); // 선택된 commentId 저장
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -61,7 +60,7 @@ const PostDetail = () => {
         console.error("Error fetching comments:", error);
       }
     };
-  
+
     fetchComments();
   }, [postId]);
 
@@ -83,28 +82,33 @@ const PostDetail = () => {
   const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment delete modal
 
   const handleCommentSubmit = (newComment) => {
-    try{
-    // 새로운 댓글을 받아서 목록에 추가
-    setComments((prevComments) => [...prevComments, newComment]);
-  
-    // 댓글 등록 모달 닫기
-    closeCommentModal();
-    navigate(`/postdetail/${postId}`); // 현재 페이지를 유지하면서 새로고침 없이 이동
+    try {
+      setComments((prevComments) =>
+        Array.isArray(prevComments)
+          ? [...prevComments, newComment]
+          : [newComment]
+      );
+
+      closeCommentModal();
+      navigate(`/postdetail/${postId}`);
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
   const handlePostEditSave = (updatedPost) => {
     setPost(updatedPost); // 수정된 추억 상태를 반영
     closeEditModal(); // 모달 닫기
-    // 페이지를 다시 로드하여 변경된 상태 반영
     navigate(`/postdetail/${postId}`);
   };
+
   const handleCommentEditSave = (updatedComment) => {
     setComments((prevComments) =>
-      prevComments.map((comment) =>
-        comment.id === updatedComment.id ? updatedComment : comment
-      )
+      Array.isArray(prevComments)
+        ? prevComments.map((comment) =>
+            comment.id === updatedComment.id ? updatedComment : comment
+          )
+        : [updatedComment]
     );
     closeCommentEditModal();
     navigate(`/postdetail/${postId}`);
@@ -112,12 +116,18 @@ const PostDetail = () => {
 
   const handleDeleteComment = (deletedCommentId) => {
     setComments((prevComments) =>
-      prevComments.filter((comment) => comment.id !== deletedCommentId)
+      Array.isArray(prevComments)
+        ? prevComments.filter((comment) => comment.id !== deletedCommentId)
+        : []
     );
-    setPost((prevPost) => ({
-      ...prevPost,
-      totalCommentCount: prevPost.totalCommentCount - 1,
-    }));
+    setPost((prevPost) =>
+      prevPost
+        ? {
+            ...prevPost,
+            totalCommentCount: prevPost.totalCommentCount - 1,
+          }
+        : null
+    );
   };
 
   const loadMoreComments = () => {
@@ -209,43 +219,48 @@ const PostDetail = () => {
       <div className="comments-section">
         <p>댓글 {post.totalCommentCount}</p> {/* 댓글 개수 표시 */}
         <div className="first-section-divider"></div>
-        <ul className="comments-list">
-          {comments.map((comment, index) => (
-            <li key={index} className="comment-item">
-              <div className="comment-header">
-                <span className="comment-user">{comment.nickname}</span>
-                <span className="comment-date">
-                  {new Date(comment.createdAt)
-                    .toISOString()
-                    .slice(2, 16)
-                    .replace("T", " ")}
-                </span>
-              </div>
-              <div className="comment-actions">
-                <p className="comment-text">{comment.content}</p>
-                <div className="comment-Icon">
-                  <img
-                    src={editIcon}
-                    alt="edit Icon"
-                    className="comment-edit-icon"
-                    onClick={() => openCommentEditModal(comment.id)}
-                  />
-                  <img
-                    src={deleteIcon}
-                    alt="delete Icon"
-                    className="comment-delete-icon"
-                    onClick={() => openCommentDeleteModal(comment.id)}
-                  />
+        {Array.isArray(comments) && comments.length > 0 ? (
+          <ul className="comments-list">
+            {comments.map((comment, index) => (
+              <li key={index} className="comment-item">
+                <div className="comment-header">
+                  <span className="comment-user">{comment.nickname}</span>
+                  <span className="comment-date">
+                    {new Date(comment.createdAt)
+                      .toISOString()
+                      .slice(2, 16)
+                      .replace("T", " ")}
+                  </span>
                 </div>
-              </div>
-              <div className="comment-divider"></div> {/* Divider */}
-            </li>
-          ))}
-        </ul>
+                <div className="comment-actions">
+                  <p className="comment-text">{comment.content}</p>
+                  <div className="comment-Icon">
+                    <img
+                      src={editIcon}
+                      alt="edit Icon"
+                      className="comment-edit-icon"
+                      onClick={() => openCommentEditModal(comment.id)}
+                    />
+                    <img
+                      src={deleteIcon}
+                      alt="delete Icon"
+                      className="comment-delete-icon"
+                      onClick={() => openCommentDeleteModal(comment.id)}
+                    />
+                  </div>
+                </div>
+                <div className="comment-divider"></div> {/* Divider */}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No comments available.</p> // No comments message
+        )}
         {currentPage < totalPages && (
           <Button onClick={loadMoreComments}>댓글 더보기</Button>
         )}
       </div>
+
       {/* 모달 컴포넌트들 */}
       {isEditModalOpen && (
         <EditPost

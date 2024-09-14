@@ -10,6 +10,6 @@
   padding: 10px 10px 10px 40px; /* 왼쪽 여백 추가로 아이콘 공간 확보 */
   border: 1px solid #ccc;
   background-color: #f4f4f4; /* 배경색 설정 */
-  color: #b8b8b8; /* 글자 색깔 */
+  color: #282828; /* 글자 색깔 */
   border-radius: 4px;
 }
