@@ -77,6 +77,7 @@ router.route('/:id')
     //게시글 삭제
     .delete(async (req,res)=>{
         const post = await Post.findOne({id:req.params.id});
+        const comment = await Comment.findOne({id:req.params.id});
         if (!post) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
@@ -96,16 +97,27 @@ router.route('/:id')
                         console.error(err);
                     }
                  });
+                 fs.unlink('./public'+comment.imageUrl,(err)=>{
+                    if(err){
+                        console.error(err);
+                    }
+                 });
                 await Post.deleteOne({ id: req.params.id });
                 // 게시글에 관련된 댓글 삭제
                 await Comment.deleteMany({ postId: req.params.id });
                  // MySQL에서 그룹의 salt 정보 삭제
                  const deleteSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
+                 const deleteCommentSaltSql = `DELETE FROM CommentSalt WHERE id = ?`;
                  mysqldb.query(deleteSaltSql, [post.id], (err) => {
                      if (err) {
                          console.error("MySQL salt 삭제 오류:", err);
                      } 
                  });
+                 mysqldb.query(deleteCommentSaltSql, [post.id], (err) => {
+                    if (err) {
+                        console.error("MySQL salt 삭제 오류:", err);
+                    } 
+                });
                 res.status(200).json({message : "게시글 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
