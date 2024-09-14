@@ -11,6 +11,7 @@ import EditPost from "../components/EditPost";
 import Button from "../components/FormButton";
 import PostComment from "../components/PostComment"; // Ensure you have PostComment modal component
 import "./PostDetail.css";
+import { useNavigate } from "react-router-dom";
 
 const PostDetail = () => {
   const { postId } = useParams(); // get postId from URL
@@ -27,7 +28,8 @@ const PostDetail = () => {
   const [currentPage, setCurrentPage] = useState(1); // track current page for pagination
   const [totalPages, setTotalPages] = useState(1); // Total pages for comments
   const [selectedCommentId, setSelectedCommentId] = useState(null); // 선택된 commentId 저장
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -46,29 +48,22 @@ const PostDetail = () => {
     fetchPostData();
   }, [postId]);
 
-  const fetchComments = async () => {
-    try {
-      const response = await fetch(
-        `/api/posts/${postId}/comments?page=${currentPage}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch comments");
-      }
-      const data = await response.json();
-      setComments(data.data);
-      setTotalPages(data.totalPages);
-      setPost((prevPost) => ({
-        ...prevPost,
-        totalCommentCount: data.totalCommentCount, // totalCommentCount 업데이트
-      }));
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
   useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`/api/posts/${postId}/comments`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch comments");
+        }
+        const data = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+  
     fetchComments();
-  }, [postId, currentPage]);
+  }, [postId]);
 
   const openEditModal = () => setIsEditModalOpen(true); // Open edit modal
   const closeEditModal = () => setIsEditModalOpen(false); // Close edit modal
@@ -87,34 +82,24 @@ const PostDetail = () => {
   };
   const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment delete modal
 
-  const handleCommentSubmit = async (newComment) => {
-    try {
-      const response = await fetch(`/api/posts/${postId}/comments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit comment");
-      }
-
-      const savedComment = await response.json();
-
-      // 댓글이 성공적으로 추가되면, 기존 댓글 리스트에 새 댓글을 추가하고
-      // 총 댓글 개수도 업데이트합니다.
-      setComments((prevComments) => [...prevComments, savedComment]);
-      setPost((prevPost) => ({
-        ...prevPost,
-        totalCommentCount: prevPost.totalCommentCount + 1, // 댓글 개수 업데이트
-      }));
-
-      closeCommentModal(); // 모달 닫기
+  const handleCommentSubmit = (newComment) => {
+    try{
+    // 새로운 댓글을 받아서 목록에 추가
+    setComments((prevComments) => [...prevComments, newComment]);
+  
+    // 댓글 등록 모달 닫기
+    closeCommentModal();
+    navigate(`/postdetail/${postId}`); // 현재 페이지를 유지하면서 새로고침 없이 이동
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
+  const handlePostEditSave = (updatedPost) => {
+    setPost(updatedPost); // 수정된 추억 상태를 반영
+    closeEditModal(); // 모달 닫기
+    // 페이지를 다시 로드하여 변경된 상태 반영
+    navigate(`/postdetail/${postId}`);
+  };
   const handleCommentEditSave = (updatedComment) => {
     setComments((prevComments) =>
       prevComments.map((comment) =>
@@ -122,6 +107,7 @@ const PostDetail = () => {
       )
     );
     closeCommentEditModal();
+    navigate(`/postdetail/${postId}`);
   };
 
   const handleDeleteComment = (deletedCommentId) => {
@@ -267,6 +253,7 @@ const PostDetail = () => {
           onClose={closeEditModal}
           groupId={post.groupId}
           postId={postId}
+          onSave={handlePostEditSave}
         />
       )}
       {isDeleteModalOpen && (

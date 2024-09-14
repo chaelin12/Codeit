@@ -45,6 +45,7 @@ const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
 
       // Call the callback to add the comment to the list
       onSubmit(result); // Changed to onSubmit
+      navigate(`/postdetail/${postId}`);
       onClose(); // Close the modal after successful submission
     } catch (error) {
       console.error("Error submitting comment:", error.message);
