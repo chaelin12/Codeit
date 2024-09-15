@@ -28,6 +28,7 @@ const PostDetail = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPostData = async () => {
       try {
@@ -57,8 +58,8 @@ const PostDetail = () => {
       setTotalPages(data.totalPages || 1); // 'totalPages' 설정
       setPost((prevPost) => ({
         ...prevPost,
-        totalCommentCount: data.totalCommentCount || 0,
-      })); // 'totalCommentCount' 업데이트
+        totalCommentCount: data.data.length || 0, // 'totalCommentCount' 업데이트 (댓글 배열의 길이로 계산)
+      }));
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -89,6 +90,10 @@ const PostDetail = () => {
     setComments((prevComments) =>
       Array.isArray(prevComments) ? [...prevComments, newComment] : [newComment]
     );
+    setPost((prevPost) => ({
+      ...prevPost,
+      totalCommentCount: prevPost.totalCommentCount + 1, // 댓글 등록 시 totalCommentCount 증가
+    }));
     closeCommentModal();
   };
 
@@ -116,14 +121,10 @@ const PostDetail = () => {
         ? prevComments.filter((comment) => comment.id !== deletedCommentId)
         : []
     );
-    setPost((prevPost) =>
-      prevPost
-        ? {
-            ...prevPost,
-            totalCommentCount: prevPost.totalCommentCount - 1,
-          }
-        : null
-    );
+    setPost((prevPost) => ({
+      ...prevPost,
+      totalCommentCount: prevPost.totalCommentCount - 1, // 댓글 삭제 시 totalCommentCount 감소
+    }));
   };
 
   const loadMoreComments = async () => {

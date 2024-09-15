@@ -14,12 +14,12 @@ function GroupCard({
   isPublic,
   onClick,
 }) {
-  const [daysPassed, setDaysPassed] = useState(0);
+  const [daysPassed, setDaysPassed] = useState(null);
   const navigate = useNavigate();
 
   const calculateDaysPassed = () => {
     if (!createdAt) {
-      console.error("createdAt is not provided or is invalid.");
+      console.warn("createdAt is not provided.");
       return;
     }
 
@@ -35,42 +35,40 @@ function GroupCard({
   };
 
   useEffect(() => {
-    calculateDaysPassed(); // 초기 계산
-
-    const intervalId = setInterval(() => {
-      calculateDaysPassed();
-    }, 1000); // 1초마다 호출
-
-    // 컴포넌트 언마운트 시 interval 정리
-    return () => clearInterval(intervalId);
+    calculateDaysPassed(); // Calculate on mount and when createdAt changes
   }, [createdAt]);
 
   const handleGroupCardClick = () => {
-    // 그룹 ID를 포함하여 GroupDetail 페이지로 이동
     navigate(`/GroupDetail/${id}`);
   };
 
   return (
-    <div className="group-card" onClick={onClick}>
+    <div className="group-card" onClick={onClick || handleGroupCardClick}>
       <div className="group-card-header">
-        {imageUrl && (
+        {isPublic && imageUrl && (
           <img src={imageUrl} alt="group" className="group-card-image" />
         )}
         <div className="group-info">
           <div className="group-date">
-            <span className="date">D+{daysPassed}</span>
-            <span className="separator"> | </span>
+            {daysPassed !== null && (
+              <>
+                <span className="date">D+{daysPassed}</span>
+                <span className="separator"> | </span>
+              </>
+            )}
             <span className="group-card-public-status">
               {isPublic ? "공개" : "비공개"}
             </span>
           </div>
-          <div className="group-title" onClick={() => handleGroupCardClick(id)}>
-            {name}
+          <div className="group-title" onClick={handleGroupCardClick}>
+            {name} {/* 항상 보이도록 수정 */}
           </div>
-          <div className="group-introduction">{introduction}</div>
+          {isPublic && <div className="group-introduction">{introduction}</div>}
         </div>
         <div className="group-stats">
-          <span className="group-badge">획득 배지 {badgeCount}</span>
+          {isPublic && (
+            <span className="group-badges">획득 배지 {badgeCount}</span>
+          )}
           <span className="group-memories">추억 {postCount}</span>
           <span className="group-likes">공감 {likeCount}</span>
         </div>

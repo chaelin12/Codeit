@@ -25,9 +25,15 @@ function PublicGroup() {
       try {
         const response = await axios.get(`/api/groups?page=${pageNum}`);
 
-        const fetchedGroups = Array.isArray(response.data.data)
-          ? response.data.data
-          : [];
+        // Fetch group details including isPublic
+        const fetchedGroups = await Promise.all(
+          response.data.data.map(async (group) => {
+            const isPublicResponse = await axios.get(
+              `/api/groups/${group.id}/is-public`
+            );
+            return { ...group, isPublic: isPublicResponse.data.isPublic };
+          })
+        );
 
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
@@ -52,8 +58,10 @@ function PublicGroup() {
   // 검색 쿼리에 따라 그룹 목록을 필터링
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase(); // 검색어를 소문자로 변환
-    const filtered = groups.filter((group) =>
-      group.name.toLowerCase().includes(lowercasedQuery)
+    const filtered = groups.filter(
+      (group) =>
+        group.isPublic && // Only include public groups
+        group.name.toLowerCase().includes(lowercasedQuery)
     );
     setFilteredGroups(filtered);
   }, [searchQuery, groups]);
@@ -97,7 +105,10 @@ function PublicGroup() {
           onPublicClick={handlePublicClick}
           onPrivateClick={handlePrivateClick}
         />
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar
+          onSearch={handleSearch}
+          placeholder="그룹명을 검색해 주세요"
+        />
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
       {filteredGroups.length === 0 ? (
@@ -105,23 +116,20 @@ function PublicGroup() {
       ) : (
         <>
           <div className="group-list">
-            {filteredGroups.map(
-              (group) =>
-                group.isPublic && (
-                  <GroupCard
-                    key={group.id} // 중복 방지를 위한 key 사용
-                    id={group.id}
-                    name={group.name}
-                    imageUrl={group.imageUrl}
-                    isPublic={group.isPublic}
-                    likeCount={group.likeCount}
-                    badgeCount={group.badges}
-                    postCount={group.postCount}
-                    createdAt={group.createdAt}
-                    introduction={group.introduction}
-                  />
-                )
-            )}
+            {filteredGroups.map((group) => (
+              <GroupCard
+                key={group.id} // 중복 방지를 위한 key 사용
+                id={group.id}
+                name={group.name}
+                imageUrl={group.imageUrl}
+                isPublic={group.isPublic}
+                likeCount={group.likeCount}
+                badgeCount={group.badges}
+                postCount={group.postCount}
+                createdAt={group.createdAt}
+                introduction={group.introduction}
+              />
+            ))}
           </div>
           <div className="load-more-container">
             {hasMore ? (

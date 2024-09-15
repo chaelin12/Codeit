@@ -15,14 +15,16 @@ function GroupDetail() {
   const [groupDetail, setGroupDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("public");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [Posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -31,14 +33,15 @@ function GroupDetail() {
         console.log("Group Detail Response:", response.data);
         setGroupDetail(response.data);
 
-        const PostsResponse = await axios.get(`/api/groups/${groupId}/posts`);
-        console.log("Posts Response:", PostsResponse.data);
-        setPosts(PostsResponse.data.data || []); // 데이터 배열을 안전하게 처리
+        const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
+        console.log("Posts Response:", postsResponse.data);
+        setPosts(postsResponse.data.data || []);
+        setFilteredPosts(postsResponse.data.data || []);
 
         // 클라이언트에서 postCount 설정
         setGroupDetail((prevDetail) => ({
           ...prevDetail,
-          postCount: PostsResponse.data.data.length, // 게시글 개수로 postCount 설정
+          postCount: postsResponse.data.data.length,
         }));
 
         setLoading(false);
@@ -83,6 +86,51 @@ function GroupDetail() {
     setGroupDetail({ ...groupDetail, ...updatedDetails });
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+  };
+
+  const handleLoadMore = () => {
+    // 추가 로직 구현 필요
+  };
+
+  const handleUploadPostClick = () => {
+    navigate(`/uploadPost/${groupId}`);
+  };
+
+  const handlePublicClick = () => {
+    setActiveButton("public");
+    const publicPosts = posts.filter((post) => post.isPublic); // Filter posts where isPublic is true
+    setFilteredPosts(publicPosts);
+    console.log("공개 그룹 보기");
+  };
+
+  const handlePrivateClick = () => {
+    setActiveButton("private");
+    const privatePosts = posts.filter((post) => !post.isPublic); // Filter posts where isPublic is false
+    setFilteredPosts(privatePosts);
+    console.log("비공개 그룹 보기");
+  };
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredPosts(posts);
+    } else {
+      const filtered = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.tags.some((tag) =>
+            tag.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+      );
+      setFilteredPosts(filtered);
+    }
+  }, [searchQuery, posts]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -99,35 +147,10 @@ function GroupDetail() {
     (new Date() - new Date(groupDetail.createdAt)) / (1000 * 60 * 60 * 24)
   );
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
-
-  const handleFilterChange = (selectedFilter) => {
-    setFilter(selectedFilter);
-  };
-
-  const handleLoadMore = () => {};
-
-  const handleUploadPostClick = () => {
-    navigate(`/uploadPost/${groupId}`);
-  };
-
-  const handlePublicClick = () => {
-    setActiveButton("public");
-    console.log("공개 그룹 보기");
-  };
-
-  const handlePrivateClick = () => {
-    setActiveButton("private");
-    navigate("/GroupDetail");
-  };
-
   return (
     <div className="group-detail-page">
       <div className="group-header">
         <div className="group-image">
-          {/* 이미지가 있을 때만 렌더링 */}
           {groupDetail.imageUrl && (
             <img src={groupDetail.imageUrl} alt={groupDetail.name} />
           )}
@@ -159,24 +182,26 @@ function GroupDetail() {
             </div>
           </div>
           <div className="introduction">{groupDetail.introduction}</div>
-          <div className="group-badges">
-            {groupDetail.badges.length > 0 ? (
-              groupDetail.badges.map((badge, index) => (
-                <span key={index} className="badge">
-                  {badge}
-                </span>
-              ))
-            ) : (
-              <span>획득한 배지가 없습니다.</span>
-            )}
-          </div>
-          <div className="sendempathy">
-            <button
-              className="like-button"
-              onClick={() => console.log("공감 보내기")}
-            >
-              공감 보내기
-            </button>
+          <div className="group-badges-actions">
+            <div className="group-badges">
+              {groupDetail.badges.length > 0 ? (
+                groupDetail.badges.map((badge, index) => (
+                  <span key={index} className="badge">
+                    {badge}
+                  </span>
+                ))
+              ) : (
+                <span>획득한 배지가 없습니다.</span>
+              )}
+            </div>
+            <div className="sendempathy">
+              <button
+                className="like-button"
+                onClick={() => console.log("공감 보내기")}
+              >
+                공감 보내기
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -213,13 +238,16 @@ function GroupDetail() {
             onPublicClick={handlePublicClick}
             onPrivateClick={handlePrivateClick}
           />
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="태그 혹은 제목을 입력해 주세요"
+          />
           <FilterSelect onFilterChange={handleFilterChange} />
         </div>
 
         <div className="memory-cards">
-          {Array.isArray(Posts) && Posts.length > 0 ? (
-            Posts.map((post) => (
+          {Array.isArray(filteredPosts) && filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
                 id={post.id}
@@ -231,16 +259,14 @@ function GroupDetail() {
                 location={post.location}
                 moment={post.moment}
                 isPublic={post.isPublic}
-                likeCount={post.likeCount}
-                commentCount={post.commentCount}
               />
             ))
           ) : (
-            <div>게시물이 없습니다.</div>
+            <p>등록된 추억이 없습니다.</p>
           )}
         </div>
 
-        <LoadMoreButton onClick={handleLoadMore} />
+        <LoadMoreButton onLoadMore={handleLoadMore} />
       </div>
     </div>
   );
