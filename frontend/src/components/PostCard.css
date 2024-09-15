@@ -26,10 +26,10 @@
 
 .post-info {
   flex-grow: 1; /* Left align text */
-  font-size: 15px;
+  font-size: 14px;
 }
 .post-card-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   margin-top: 15px;
 }
@@ -68,10 +68,10 @@
   text-align: right;
 }
 
-.post-stats img {
-  width: 20px; /* 아이콘 크기 조정 */
-  height: 20px; /* 아이콘 크기 조정 */
-  margin-right: 5px; /* 아이콘과 숫자 간의 간격 */
+.post-card-stats img {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
 }
 
 .post-card-likeCount {

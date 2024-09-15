@@ -35,13 +35,17 @@ function GroupDetail() {
 
         const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
         console.log("Posts Response:", postsResponse.data);
-        setPosts(postsResponse.data.data || []);
-        setFilteredPosts(postsResponse.data.data || []);
+        const fetchedPosts = postsResponse.data.data || [];
+        setPosts(fetchedPosts);
+
+        // Set only public posts by default
+        const publicPosts = fetchedPosts.filter((post) => post.isPublic);
+        setFilteredPosts(publicPosts);
 
         // 클라이언트에서 postCount 설정
         setGroupDetail((prevDetail) => ({
           ...prevDetail,
-          postCount: postsResponse.data.data.length,
+          postCount: publicPosts.length,
         }));
 
         setLoading(false);
@@ -118,7 +122,7 @@ function GroupDetail() {
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
-      setFilteredPosts(posts);
+      setFilteredPosts(posts.filter((post) => post.isPublic)); // Ensure it only searches public posts
     } else {
       const filtered = posts.filter(
         (post) =>
@@ -259,6 +263,8 @@ function GroupDetail() {
                 tags={post.tags}
                 location={post.location}
                 moment={post.moment}
+                likeCount={post.likeCount}
+                commentCount={post.commentCount}
                 isPublic={post.isPublic}
               />
             ))}

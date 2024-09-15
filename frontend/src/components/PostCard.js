@@ -35,7 +35,11 @@ function PostCard({
   }, [id]);
 
   const handleTitleClick = () => {
-    navigate(`/PostDetail/${id}`);
+    if (isPublic) {
+      navigate(`/PostDetail/${id}`);
+    } else {
+      navigate(`/accessPrivatepost/${id}`); // Redirect to AccessPrivate page for private posts
+    }
   };
 
   return (

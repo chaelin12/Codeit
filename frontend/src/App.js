@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 import AccessPrivate from "./pages/AccessPrivate";
+import AccessPrivatePost from "./pages/AccessPrivatePost";
 import CreateGroup from "./pages/CreateGroup";
 import GroupDetail from "./pages/GroupDetail";
 import PostDetail from "./pages/PostDetail";
@@ -22,8 +23,6 @@ function App() {
       <nav>
         <Link to="/">PublicGroup</Link> |{" "}
         <Link to="/privateGroup">PrivateGroup</Link> |{" "}
-        <Link to="/accessPrivate">AccessPrivate</Link> |{" "}
-        <Link to="/uploadPost">UploadPost</Link> |{" "}
       </nav>
 
       <Routes>
@@ -31,6 +30,10 @@ function App() {
         <Route path="/creategroup" element={<CreateGroup />} />
         <Route path="/privateGroup" element={<PrivateGroup />} />
         <Route path="/accessPrivate/:groupId" element={<AccessPrivate />} />
+        <Route
+          path="/accessPrivatepost/:postId"
+          element={<AccessPrivatePost />}
+        />
         <Route path="/groupdetail/:groupId" element={<GroupDetail />} />
         <Route path="/uploadPost/:groupId" element={<UploadPost />} />
         <Route path="/postdetail/:postId" element={<PostDetail />} />

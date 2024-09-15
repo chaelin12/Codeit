@@ -42,15 +42,15 @@
 }
 
 .group-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   margin-top: 15px;
 }
 
 .group-introduction {
-  font-size: 14px;
+  font-size: 17px;
   color: #282828;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 /* Stats Section */
