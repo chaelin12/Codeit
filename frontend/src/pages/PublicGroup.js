@@ -97,7 +97,10 @@ function PublicGroup() {
           onPublicClick={handlePublicClick}
           onPrivateClick={handlePrivateClick}
         />
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar
+          onSearch={handleSearch}
+          placeholder="그룹명을 검색해 주세요"
+        />
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
       {filteredGroups.length === 0 ? (

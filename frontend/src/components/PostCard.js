@@ -13,7 +13,7 @@ function PostCard({
   location,
   moment,
   likeCount,
-  commentCount,
+  commentCount, // commentCount prop added here
   isPublic,
   createdAt,
 }) {
@@ -57,10 +57,11 @@ function PostCard({
             </span>
           </div>
           <div className="post-card-stats">
-            <img src={flower}></img>
+            <img src={flower} alt="like-icon" />
             <span className="post-card-likeCount"> {likeCount}</span>
-            <img src={bubble}></img>
-            <span className="post-card-commentCount">{commentCount}</span>
+            <img src={bubble} alt="comment-icon" />
+            <span className="post-card-commentCount">{commentCount}</span>{" "}
+            {/* Added comment count here */}
           </div>
         </div>
       </div>

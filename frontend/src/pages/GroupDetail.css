@@ -8,7 +8,8 @@
 
 .group-header {
   display: flex;
-  align-items: flex-start; /* 아이템들이 상단에 맞춰 정렬 */
+  align-items: flex-start;
+  justify-content: space-between; /* Ensures content is distributed between image/info and empathy button */
   margin-bottom: 30px;
 }
 
@@ -20,7 +21,8 @@
 }
 
 .group-info {
-  flex: 1;
+  flex: 1; /* Allows the group info to take up remaining space */
+  padding-right: 20px; /* Adds some padding between the group info and the empathy button */
 }
 
 .group-date-actions {
@@ -76,21 +78,21 @@
   text-align: left;
 }
 
-.group-badges {
-  margin: 10px 0;
+.group-badges-actions {
+  display: flex;
+  justify-content: space-between; /* 배지는 왼쪽, 공감 버튼은 오른쪽 */
+  align-items: center; /* 배지와 버튼을 수직으로 가운데 정렬 */
+  margin-top: 20px; /* 필요한 경우 여백 조정 */
 }
 
-.badge {
-  background-color: #f0f0f0;
-  padding: 5px 10px;
-  border-radius: 20px;
-  margin-right: 5px;
+.group-badges {
+  display: flex;
+  gap: 10px; /* 배지 간 간격을 설정 */
 }
 
 .sendempathy {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
 }
 
 .like-button {
@@ -99,6 +101,7 @@
   background-color: #fafafa;
   padding: 10px 20px;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .groupedit {
