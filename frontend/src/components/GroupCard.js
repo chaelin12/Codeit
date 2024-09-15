@@ -40,7 +40,11 @@ function GroupCard({
   }, [createdAt]);
 
   const handleGroupCardClick = () => {
-    navigate(`/GroupDetail/${id}`);
+    if (isPublic) {
+      navigate(`/GroupDetail/${id}`);
+    } else {
+      navigate(`/AccessPrivate/${id}`);
+    }
   };
 
   return (

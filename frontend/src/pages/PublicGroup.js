@@ -112,7 +112,7 @@ function PublicGroup() {
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
       {filteredGroups.length === 0 ? (
-        <NoGroup onCreateGroup={handleCreateGroup} />
+        <NoGroup type="public" onCreateGroup={handleCreateGroup} />
       ) : (
         <>
           <div className="group-list">

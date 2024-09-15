@@ -17,8 +17,6 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
 }
 
 /* 버튼이 활성화되었을 때 */

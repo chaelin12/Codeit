@@ -6,6 +6,7 @@ import DeleteGroup from "../components/DeleteGroup";
 import EditGroup from "../components/EditGroup";
 import FilterSelect from "../components/FilterSelect";
 import LoadMoreButton from "../components/LoadMoreButton";
+import NoPost from "../components/NoPost"; // Import NoPost component
 import PostCard from "../components/PostCard";
 import SearchBar from "../components/SearchBar";
 import "./GroupDetail.css";
@@ -243,10 +244,11 @@ function GroupDetail() {
           />
           <FilterSelect onFilterChange={handleFilterChange} />
         </div>
-
-        <div className="memory-cards">
-          {Array.isArray(filteredPosts) && filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
+        {filteredPosts.length === 0 ? (
+          <NoPost type="group" /> // Pass the "group" type prop here
+        ) : (
+          <div className="memory-cards">
+            {filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
                 id={post.id}
@@ -259,12 +261,9 @@ function GroupDetail() {
                 moment={post.moment}
                 isPublic={post.isPublic}
               />
-            ))
-          ) : (
-            <p>등록된 추억이 없습니다.</p>
-          )}
-        </div>
-
+            ))}
+          </div>
+        )}
         <LoadMoreButton onLoadMore={handleLoadMore} />
       </div>
     </div>

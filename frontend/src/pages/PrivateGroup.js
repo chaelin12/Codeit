@@ -6,6 +6,7 @@ import CreateGroupButton from "../components/CreateGroupButton";
 import FilterSelect from "../components/FilterSelect";
 import GroupCard from "../components/GroupCard";
 import LoadMoreButton from "../components/LoadMoreButton";
+import NoGroup from "../components/NoGroup";
 import SearchBar from "../components/SearchBar";
 import "./PrivateGroup.css";
 
@@ -116,33 +117,35 @@ function PrivateGroup() {
         <SearchBar onSearch={handleSearch} />
         <FilterSelect onFilterChange={handleFilterChange} />
       </div>
-      <div className="group-list">
-        {filteredGroups.length === 0 ? (
-          <p>비공개 그룹이 없습니다.</p>
-        ) : (
-          filteredGroups.map((group) => (
-            <GroupCard
-              key={group.id}
-              id={group.id}
-              name={group.name}
-              imageUrl={group.imageUrl}
-              likeCount={group.likeCount}
-              badgeCount={group.badgeCount}
-              postCount={group.postCount}
-              createdAt={group.createdAt}
-              introduction={group.introduction}
-              isPublic={group.isPublic}
-            />
-          ))
-        )}
-      </div>
-      <div className="load-more-container">
-        {hasMore ? (
-          <LoadMoreButton onClick={handleLoadMore} />
-        ) : (
-          <p>더 이상 그룹이 없습니다.</p>
-        )}
-      </div>
+      {filteredGroups.length === 0 ? (
+        <NoGroup type="private" onCreateGroup={handleCreateGroup} /> // Pass the "private" type prop here
+      ) : (
+        <>
+          <div className="group-list">
+            {filteredGroups.map((group) => (
+              <GroupCard
+                key={group.id}
+                id={group.id}
+                name={group.name}
+                imageUrl={group.imageUrl}
+                likeCount={group.likeCount}
+                badgeCount={group.badgeCount}
+                postCount={group.postCount}
+                createdAt={group.createdAt}
+                introduction={group.introduction}
+                isPublic={group.isPublic}
+              />
+            ))}
+          </div>
+          <div className="load-more-container">
+            {hasMore ? (
+              <LoadMoreButton onClick={handleLoadMore} />
+            ) : (
+              <p>더 이상 그룹이 없습니다.</p>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
