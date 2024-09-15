@@ -124,7 +124,7 @@ function PublicGroup() {
                 imageUrl={group.imageUrl}
                 isPublic={group.isPublic}
                 likeCount={group.likeCount}
-                badgeCount={group.badges}
+                badgeCount={group.badges.length}
                 postCount={group.postCount}
                 createdAt={group.createdAt}
                 introduction={group.introduction}
