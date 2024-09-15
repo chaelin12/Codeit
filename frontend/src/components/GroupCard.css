@@ -5,7 +5,7 @@
   border-radius: 12px;
   display: flex;
   flex-direction: column;
-  max-width: 300px; /* optional: control card width */
+  max-width: 300px;
 }
 
 .group-card-header {
@@ -14,10 +14,10 @@
 }
 
 .group-card-image {
-  width: 100%; /* Make the image take up full card width */
-  height: auto; /* Maintain the aspect ratio */
+  width: 100%;
+  height: auto;
   margin-bottom: 15px;
-  border-radius: 8px; /* Optional: Add a slight border radius to the image */
+  border-radius: 8px;
   object-fit: cover;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .date {
-  color: #282828; /* D+날짜 검정색 */
+  color: #282828;
 }
 
 .separator {
@@ -38,7 +38,7 @@
 }
 
 .group-card-public-status {
-  color: #8d8d8d; /* 공개/비공개 회색 */
+  color: #8d8d8d;
 }
 
 .group-title {
@@ -49,14 +49,41 @@
 
 .group-introduction {
   font-size: 14px;
-  color: #282828; /* 소개 텍스트 색상 */
-  margin-top: 5px; /* 간격 추가 */
+  color: #282828;
+  margin-top: 5px;
 }
 
+/* Stats Section */
 .group-stats {
   display: flex;
-  color: #b8b8b8;
-  font-size: 14px;
+  gap: 30px;
   margin-top: 15px;
-  gap: 10px;
+  text-align: left;
+}
+
+.group-stats-item .label {
+  font-size: 12px;
+  color: #b8b8b8;
+}
+.group-stats-item {
+  text-align: left; /* Align text to the left */
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start */
+}
+
+.group-stats-item .count {
+  font-size: 16px;
+  color: #282828;
+  font-weight: 300;
+  margin-top: 5px;
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Align items vertically */
+}
+
+.group-stats-item .count img {
+  margin-right: 5px; /* Space between icon and count */
+  height: 20px; /* Adjust the icon size as needed */
+  width: auto; /* Maintain aspect ratio */
 }

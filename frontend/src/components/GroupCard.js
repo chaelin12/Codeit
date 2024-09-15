@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import flower from "../assets/pictures/flower.png";
 import "./GroupCard.css";
 
 function GroupCard({
@@ -35,7 +36,7 @@ function GroupCard({
   };
 
   useEffect(() => {
-    calculateDaysPassed(); // Calculate on mount and when createdAt changes
+    calculateDaysPassed();
   }, [createdAt]);
 
   const handleGroupCardClick = () => {
@@ -61,16 +62,27 @@ function GroupCard({
             </span>
           </div>
           <div className="group-title" onClick={handleGroupCardClick}>
-            {name} {/* 항상 보이도록 수정 */}
+            {name}
           </div>
           {isPublic && <div className="group-introduction">{introduction}</div>}
         </div>
+
         <div className="group-stats">
-          {isPublic && (
-            <span className="group-badges">획득 배지 {badgeCount}</span>
-          )}
-          <span className="group-memories">추억 {postCount}</span>
-          <span className="group-likes">공감 {likeCount}</span>
+          <div className="group-stats-item">
+            <span className="label">획득 배지</span>
+            <span className="count">{badgeCount}</span>
+          </div>
+          <div className="group-stats-item">
+            <span className="label">추억</span>
+            <span className="count">{postCount}</span>
+          </div>
+          <div className="group-stats-item">
+            <span className="label">공감</span>
+            <span className="count">
+              <img src={flower} alt="like-icon" />
+              {likeCount}
+            </span>
+          </div>
         </div>
       </div>
     </div>

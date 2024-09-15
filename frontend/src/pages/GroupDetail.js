@@ -18,11 +18,10 @@ function GroupDetail() {
   const [activeButton, setActiveButton] = useState("public");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
-  const [groups, setGroups] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -104,15 +103,15 @@ function GroupDetail() {
 
   const handlePublicClick = () => {
     setActiveButton("public");
-    const publicPosts = posts.filter((post) => post.isPublic); // Filter posts where isPublic is true
-    setFilteredPosts(publicPosts);
+    // Only show public posts when the "공개" button is clicked
+    setFilteredPosts(posts.filter((post) => post.isPublic));
     console.log("공개 그룹 보기");
   };
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    const privatePosts = posts.filter((post) => !post.isPublic); // Filter posts where isPublic is false
-    setFilteredPosts(privatePosts);
+    // Only show private posts when the "비공개" button is clicked
+    setFilteredPosts(posts.filter((post) => !post.isPublic));
     console.log("비공개 그룹 보기");
   };
 
