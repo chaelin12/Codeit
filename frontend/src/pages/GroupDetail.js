@@ -16,13 +16,13 @@ function GroupDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeButton, setActiveButton] = useState("public");
-  const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+  const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("공감순");
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]); // 검색 결과를 위한 상태 추가
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ function GroupDetail() {
         const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
         console.log("Posts Response:", postsResponse.data);
         setPosts(postsResponse.data.data || []);
-        setFilteredPosts(postsResponse.data.data || []); // 초기 검색 결과로 전체 포스트를 설정
+        setFilteredPosts(postsResponse.data.data || []);
 
         // 클라이언트에서 postCount 설정
         setGroupDetail((prevDetail) => ({
@@ -87,7 +87,7 @@ function GroupDetail() {
   };
 
   const handleSearch = (query) => {
-    setSearchQuery(query); // 검색어 업데이트
+    setSearchQuery(query);
   };
 
   const handleFilterChange = (selectedFilter) => {
@@ -104,21 +104,22 @@ function GroupDetail() {
 
   const handlePublicClick = () => {
     setActiveButton("public");
+    const publicPosts = posts.filter((post) => post.isPublic); // Filter posts where isPublic is true
+    setFilteredPosts(publicPosts);
     console.log("공개 그룹 보기");
   };
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    navigate("/GroupDetail");
+    const privatePosts = posts.filter((post) => !post.isPublic); // Filter posts where isPublic is false
+    setFilteredPosts(privatePosts);
+    console.log("비공개 그룹 보기");
   };
 
-  // 검색어가 변경될 때마다 필터링된 포스트를 업데이트
   useEffect(() => {
     if (searchQuery.trim() === "") {
-      // 검색어가 없으면 전체 포스트를 보여줌
       setFilteredPosts(posts);
     } else {
-      // 검색어가 있으면 검색어에 맞는 포스트를 필터링
       const filtered = posts.filter(
         (post) =>
           post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -258,16 +259,14 @@ function GroupDetail() {
                 location={post.location}
                 moment={post.moment}
                 isPublic={post.isPublic}
-                likeCount={post.likeCount}
-                commentCount={post.commentCount}
               />
             ))
           ) : (
-            <div>게시물이 없습니다.</div>
+            <p>등록된 추억이 없습니다.</p>
           )}
         </div>
 
-        <LoadMoreButton onClick={handleLoadMore} />
+        <LoadMoreButton onLoadMore={handleLoadMore} />
       </div>
     </div>
   );
