@@ -59,7 +59,7 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
       if (updateResponse.ok) {
         await onSave(updatedGroup);
         closeModal();
-        navigate("/");
+        navigate(`/groupdetail/${groupId}`);
       } else if (updateResponse.status === 400) {
         setErrorMessage("잘못된 요청입니다.");
       } else if (updateResponse.status === 403) {

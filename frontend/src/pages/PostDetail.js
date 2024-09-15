@@ -111,8 +111,8 @@ const PostDetail = () => {
           )
         : [updatedComment]
     );
+    fetchComments();
     closeCommentEditModal();
-    navigate(`/postdetail/${postId}`);
   };
 
   const handleDeleteComment = (deletedCommentId) => {
