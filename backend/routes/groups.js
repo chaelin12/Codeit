@@ -335,6 +335,7 @@ router.route('/:id/posts')
                     moment: req.body.moment,
                     isPublic: req.body.isPublic
                 });
+                
                 const sql = `INSERT INTO postsalt(id, salt, group_id) VALUES (?, ?, ?)`;
                 //id는 자동생성 값이므로 post.id로 사용해야함 req.body X
                 mysqldb.query(sql, [post.id, salt, post.groupId], (err, rows, fields) => {
@@ -342,6 +343,9 @@ router.route('/:id/posts')
                     console.log(err);
                   } 
                 });
+                const group = await Group.findOne({id : req.params.id});
+                group.postCount+=1;
+                await group.save();
                 // 응답으로 보낼 데이터 형식 조정
                 const response = {
                     id: post.id,

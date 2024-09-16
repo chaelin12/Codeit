@@ -218,6 +218,8 @@ router.route('/:id/comments')
                     console.log(err);
                   }
                 });
+                post.commentCount += 1;
+                await post.save();
                 // 응답으로 보낼 데이터 형식 조정
                 const response = {
                     id: comment.id,
