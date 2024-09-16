@@ -23,7 +23,7 @@ function GroupDetail() {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const fetchGroups = async () => {
@@ -173,7 +173,7 @@ function GroupDetail() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Like response:", data);
+        setMessage("그룹 공감하기 성공");
 
         // 공감 보내기 성공, 서버에서 반환된 likeCount로 업데이트
         setGroupDetail((prevDetail) => ({
@@ -181,9 +181,9 @@ function GroupDetail() {
           likeCount: data.likeCount, // 서버에서 받은 최신 likeCount
         }));
       } else if (response.status === 404) {
-        console.error("Group not found.");
-        alert("존재하지 않는 그룹입니다."); // 알림창으로 사용자에게 그룹 없음 알림
+        setMessage("존재하지 않습니다");
       } else {
+        setMessage("오류가 발생했습니다.");
         console.error("Error sending like:", response.statusText);
       }
     } catch (error) {
