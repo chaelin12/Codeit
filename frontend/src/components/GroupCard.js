@@ -72,10 +72,12 @@ function GroupCard({
         </div>
 
         <div className="group-stats">
-          <div className="group-stats-item">
-            <span className="label">획득 배지</span>
-            <span className="count">{badgeCount}</span>
-          </div>
+          {isPublic && (
+            <div className="group-stats-item">
+              <span className="label">획득 배지</span>
+              <span className="count">{badgeCount}</span>
+            </div>
+          )}
           <div className="group-stats-item">
             <span className="label">추억</span>
             <span className="count">{postCount}</span>

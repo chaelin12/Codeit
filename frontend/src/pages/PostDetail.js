@@ -98,6 +98,7 @@ const PostDetail = () => {
       ...prevPost,
       totalCommentCount: prevPost.totalCommentCount + 1, // 댓글 등록 시 totalCommentCount 증가
     }));
+
     fetchComments();
     closeCommentModal();
   };
