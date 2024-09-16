@@ -7,5 +7,9 @@
 #filter-select {
   padding: 10px;
   border: 1px solid #282828;
+  background-color: #fafafa;
   border-radius: 4px;
+  cursor: pointer; /* 마우스 커서 변경 */
+  width: 130px; /* 고정 너비 설정 */
+  text-align: center;
 }

@@ -11,7 +11,6 @@
 
 #load-more-btn {
   width: 100%; /* 버튼이 컨테이너의 너비에 맞춤 */
-  max-width: 300px; /* 버튼의 최대 너비 설정 (컨테이너가 더 넓으면 버튼도 넓어짐) */
   padding: 10px; /* 버튼 패딩 */
   border: 1px solid #282828;
   border-radius: 4px;

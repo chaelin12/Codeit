@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import AccessPrivate from "./pages/AccessPrivate";
 import AccessPrivatePost from "./pages/AccessPrivatePost";
@@ -14,17 +14,14 @@ import "./App.css";
 import logo from "./assets/pictures/logo.png";
 
 function App() {
+  const location = useLocation();
   return (
     <div className="App">
-      <div className="logo-container">
-        <img src={logo} alt="Logo" className="logo" />
-      </div>
-
-      <nav>
-        <Link to="/">PublicGroup</Link> |{" "}
-        <Link to="/privateGroup">PrivateGroup</Link> |{" "}
-      </nav>
-
+      {location.pathname !== "/" && location.pathname !== "/PrivateGroup" && (
+        <div className="logo-container">
+          <img src={logo} alt="Logo" className="logo" />
+        </div>
+      )}
       <Routes>
         <Route path="/" element={<PublicGroup />} />
         <Route path="/creategroup" element={<CreateGroup />} />

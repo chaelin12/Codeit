@@ -66,7 +66,7 @@
 
 .group-stats-sum {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 700;
   color: #282828;
   display: flex;
   gap: 20px;
@@ -94,7 +94,7 @@
   display: flex;
   align-items: center;
   padding: 10px 20px; /* 배지 내부 여백 */
-  border-radius: 50px; /* 둥근 사각형 */
+  border-radius: 30px; /* 둥근 사각형 */
   background-color: #f4f4f4; /* 배지의 기본 배경색 */
   font-size: 14px;
   font-weight: 500;
@@ -108,14 +108,24 @@
 }
 
 .like-button {
+  position: relative;
   border: 1px solid #282828;
   color: #282828;
   background-color: #fafafa;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
+.flower-icon {
+  width: 20px;
+  height: 20px;
+}
 .groupedit {
   color: #282828;
 }
@@ -127,7 +137,7 @@
 .create-memory-button-container {
   font-weight: 700;
   position: absolute;
-  right: 40px; /* 우측 끝에 배치 */
+  right: 20px; /* 우측 끝에 배치 */
   margin-bottom: 10px;
 }
 
@@ -154,6 +164,7 @@
   padding: 10px 20px;
   border: none;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .section-divider {
@@ -171,17 +182,13 @@
   display: flex;
   justify-content: space-between; /* 제목과 버튼을 양 끝에 배치 */
   align-items: center; /* 세로 정렬 */
-  margin-bottom: 20px; /* 제목과 카드 사이 간격 */
+  margin-bottom: 10px; /* 제목과 카드 사이 간격 */
   width: 100%;
 }
 
 .memory-title h1 {
   flex: 1; /* h1을 중앙에 정렬되게 만듦 */
   text-align: center; /* h1 텍스트 중앙 정렬 */
-}
-
-.create-memory-button-container {
-  margin-left: 20px;
 }
 
 .memory-cards {

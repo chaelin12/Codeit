@@ -103,12 +103,18 @@
 }
 
 .post-like-button {
+  position: relative;
   border: 1px solid #282828;
-  text-align: right;
   color: #282828;
   background-color: #fafafa;
   padding: 10px 20px;
   border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .post-image {

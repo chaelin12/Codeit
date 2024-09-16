@@ -108,7 +108,6 @@ const PostDetail = () => {
     fetchPostData();
     fetchComments();
     closeEditModal();
-    
   };
 
   const handleCommentEditSave = (updatedComment) => {
@@ -248,6 +247,7 @@ const PostDetail = () => {
           </div>
           <div className="post-sendempathy">
             <button className="post-like-button" onClick={handlePostLikeClick}>
+              <img src={flower} alt="like-post-icon" className="flower-icon" />
               공감 보내기
             </button>
           </div>

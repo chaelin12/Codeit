@@ -12,11 +12,9 @@
   height: 40px; /* 버튼의 높이를 고정하여 일관된 크기 유지 */
   border: 1px solid #fff;
   border-radius: 20px;
-  background-color: transparent; /* 기본 상태: 투명 배경 */
   color: #282828;
   font-size: 13px;
   font-weight: 700;
-  cursor: pointer;
 }
 
 /* 버튼이 활성화되었을 때 */

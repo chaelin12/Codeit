@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/pictures/logo.png";
 import ButtonGroup from "../components/ButtonGroup";
 import CreateGroupButton from "../components/CreateGroupButton";
 import FilterSelect from "../components/FilterSelect";
@@ -105,8 +106,11 @@ function PrivateGroup() {
 
   return (
     <div className="private-group-container">
-      <div className="create-group-button-container">
-        <CreateGroupButton onClick={handleCreateGroup} />
+      <div className="logo-group-container">
+        <img src={logo} alt="Logo" className="group-logo" />
+        <div className="button-container">
+          <CreateGroupButton onClick={handleCreateGroup} />
+        </div>
       </div>
       <div className="top-bar">
         <ButtonGroup

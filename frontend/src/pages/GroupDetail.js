@@ -1,6 +1,7 @@
 import axios from "axios";
 import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import flower from "../assets/pictures/flower.png";
 import ButtonGroup from "../components/ButtonGroup";
 import DeleteGroup from "../components/DeleteGroup";
 import EditGroup from "../components/EditGroup";
@@ -25,6 +26,8 @@ function GroupDetail() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [page, setPage] = useState(1); // Add page state for pagination
+  const [hasMorePosts, setHasMorePosts] = useState(true);
 
   const fetchGroups = async () => {
     try {
@@ -149,8 +152,27 @@ function GroupDetail() {
     setFilteredPosts(sortedPosts); // Set the sorted public posts to the state
   };
 
-  const handleLoadMore = () => {
-    // 추가 로직 구현 필요
+  const handleLoadMore = async () => {
+    try {
+      const nextPage = page + 1; // Increment the page
+      const postsResponse = await axios.get(
+        `/api/groups/${groupId}/posts?page=${nextPage}`
+      );
+      const morePosts = postsResponse.data.data || [];
+
+      if (morePosts.length > 0) {
+        setPosts((prevPosts) => [...prevPosts, ...morePosts]); // Append new posts to existing ones
+        setFilteredPosts((prevPosts) => [
+          ...prevPosts,
+          ...morePosts.filter((post) => post.isPublic),
+        ]);
+        setPage(nextPage); // Update the page number
+      }
+
+      setHasMorePosts(postsResponse.data.hasMore); // Update if there are more posts to load
+    } catch (error) {
+      console.error("Error loading more posts:", error.message);
+    }
   };
 
   const handleUploadPostClick = () => {
@@ -161,14 +183,14 @@ function GroupDetail() {
     setActiveButton("public");
     // Only show public posts when the "공개" button is clicked
     setFilteredPosts(posts.filter((post) => post.isPublic));
-    console.log("공개 그룹 보기");
+    console.log("공개 추억 보기");
   };
 
   const handlePrivateClick = () => {
     setActiveButton("private");
     // Only show private posts when the "비공개" button is clicked
     setFilteredPosts(posts.filter((post) => !post.isPublic));
-    console.log("비공개 그룹 보기");
+    console.log("비공개 추억 보기");
   };
 
   useEffect(() => {
@@ -293,6 +315,11 @@ function GroupDetail() {
             </div>
             <div className="sendempathy">
               <button className="like-button" onClick={handleLikeClick}>
+                <img
+                  src={flower}
+                  alt="like-post-icon"
+                  className="flower-icon"
+                />
                 공감 보내기
               </button>
             </div>
@@ -360,7 +387,13 @@ function GroupDetail() {
             ))}
           </div>
         )}
-        <LoadMoreButton onLoadMore={handleLoadMore} />
+        <div className="load-more-container">
+          {hasMorePosts ? (
+            <LoadMoreButton onClick={handleLoadMore} />
+          ) : (
+            <p>더 이상 추억이 없습니다.</p>
+          )}
+        </div>
       </div>
     </div>
   );
