@@ -105,8 +105,10 @@ const PostDetail = () => {
 
   const handlePostEditSave = (updatedPost) => {
     setPost(updatedPost);
+    fetchPostData();
+    fetchComments();
     closeEditModal();
-    navigate(`/postdetail/${postId}`);
+    
   };
 
   const handleCommentEditSave = (updatedComment) => {
