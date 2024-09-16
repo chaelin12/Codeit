@@ -46,6 +46,7 @@ function GroupDetail() {
         ...prevDetail,
         postCount: publicPosts.length,
       }));
+      console.log(filteredPosts.map((post) => post.commentCount));
 
       setLoading(false);
     } catch (error) {

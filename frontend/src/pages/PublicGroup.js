@@ -34,7 +34,12 @@ function PublicGroup() {
             return { ...group, isPublic: isPublicResponse.data.isPublic };
           })
         );
-
+        console.log(
+          fetchedGroups.map((group) => ({
+            name: group.name,
+            postCount: group.postCount,
+          }))
+        );
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
           const newGroups = fetchedGroups.filter(
@@ -72,7 +77,32 @@ function PublicGroup() {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
-    // 필터에 따른 정렬 로직 추가 가능
+
+    // Filter only public groups before applying sorting
+    let publicGroups = groups.filter((group) => group.isPublic); // Only include public groups
+
+    let sortedGroups = [...publicGroups]; // Make a copy of the public groups array
+
+    switch (selectedFilter) {
+      case "공감순":
+        sortedGroups.sort((a, b) => b.likeCount - a.likeCount); // Sort by most likes
+        break;
+      case "최신순":
+        sortedGroups.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        ); // Sort by newest
+        break;
+      case "게시글 많은순":
+        sortedGroups.sort((a, b) => b.postCount - a.postCount); // Sort by most posts
+        break;
+      case "획득 배지순":
+        sortedGroups.sort((a, b) => b.badges.length - a.badges.length); // Sort by most badges
+        break;
+      default:
+        break;
+    }
+
+    setFilteredGroups(sortedGroups); // Set the sorted public groups to the state
   };
 
   const handleLoadMore = () => {
