@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ButtonGroup from "../components/ButtonGroup";
 import DeleteGroup from "../components/DeleteGroup";
 import EditGroup from "../components/EditGroup";
-import FilterSelect from "../components/FilterSelect";
+import FilterSelect from "../components/FilterPostSelect";
 import LoadMoreButton from "../components/LoadMoreButton";
 import NoPost from "../components/NoPost"; // Import NoPost component
 import PostCard from "../components/PostCard";
@@ -124,6 +124,29 @@ function GroupDetail() {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
+
+    // Filter only public posts before applying sorting
+    let publicPosts = posts.filter((post) => post.isPublic); // Only include public posts
+
+    let sortedPosts = [...publicPosts]; // Make a copy of the public posts array
+
+    switch (selectedFilter) {
+      case "최신순":
+        sortedPosts.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        ); // Sort by newest
+        break;
+      case "공감순":
+        sortedPosts.sort((a, b) => b.likeCount - a.likeCount); // Sort by most likes
+        break;
+      case "댓글순":
+        sortedPosts.sort((a, b) => b.commentCount - a.commentCount); // Sort by most comments
+        break;
+      default:
+        break;
+    }
+
+    setFilteredPosts(sortedPosts); // Set the sorted public posts to the state
   };
 
   const handleLoadMore = () => {

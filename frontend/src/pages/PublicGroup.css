@@ -7,8 +7,8 @@
 .create-group-button-container {
   font-weight: 700;
   position: absolute;
-  top: 20px; /* 화면의 맨 상단에 위치시킴 */
-  right: 40px; /* 우측 끝에 배치 */
+  top: 20px; /* Position the button at the top of the page */
+  right: 40px; /* Align to the right */
 }
 
 .top-bar {
@@ -16,17 +16,23 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  margin: 0 auto; /* 가운데 정렬 */
+  width: 100%; /* Ensure the top-bar spans the full width */
   box-sizing: border-box;
 }
 
+.button-group {
+  display: flex;
+  gap: 10px; /* Add space between 공개/비공개 버튼 */
+}
+
 .search-bar {
-  flex-grow: 1; /* 검색 바가 가능한 넓게 확장되도록 설정 */
-  margin: 20px;
+  flex-grow: 2; /* Make the search bar take up more space */
+  margin-right: 20px; /* Add margin between the search bar and filter */
 }
 
 .filter-select {
-  margin-left: auto; /* 오른쪽 끝에 위치하도록 설정 */
+  flex-grow: 0; /* Make sure it doesn't expand */
+  margin-left: 20px; /* Add space between the filter and search bar */
 }
 
 .group-list {
