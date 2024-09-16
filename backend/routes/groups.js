@@ -288,10 +288,13 @@ router.post('/:id/verify-password', async(req,res)=>{
 //그룹 공감하기
 router.post('/:id/like', async(req,res)=>{
     try{
+        console.log(req.params.id);
+        const group = await Group.findOne({ id: req.params.id });
+        const newlikeCount = group.likeCount+1;
         await Group.updateOne({
            id:req.params.id,//업데이트 대상 검색
         },{
-            likeCount : (likeCount+1),
+            likeCount : newlikeCount,
         });
         res.status(200).json({message : "그룹 공감하기 성공"});
     }catch(err){
