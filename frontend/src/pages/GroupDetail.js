@@ -233,9 +233,10 @@ function GroupDetail() {
   );
 
   const sevenDayPostStreak = checkSevenDayStreak(posts); // 7일 연속 게시물 확인
-  const groupLikesBadge = groupDetail.likeCount >= 10000;
-  const memoryLikesBadge =
-    posts.reduce((acc, post) => acc + post.likeCount, 0) >= 10000;
+  const groupLikesBadge = groupDetail.likeCount >= 10;
+  const memoryLikesBadge = posts.some((post) => post.likeCount >= 10);
+  const twentyMemoriesBadge = groupDetail.postCount >= 2;
+  const oneYearAnniversaryBadge = daysPassed >= 365;
 
   return (
     <div className="group-detail-page">
@@ -275,13 +276,19 @@ function GroupDetail() {
           <div className="group-badges-actions">
             <div className="group-badges">
               {sevenDayPostStreak && (
-                <span className="badge">👾 7일 연속 게시물 등록</span>
+                <span className="badge">👾 7일 연속 추억 등록</span>
               )}
               {groupLikesBadge && (
                 <span className="badge">🌼 그룹 공감 1만 개 이상 받기</span>
               )}
               {memoryLikesBadge && (
                 <span className="badge">💖 추억 공감 1만 개 이상 받기</span>
+              )}
+              {twentyMemoriesBadge && (
+                <span className="badge">🍀 추억 수 20개 이상 등록</span>
+              )}
+              {oneYearAnniversaryBadge && (
+                <span className="badge">🌟 그룹 생성 후 1년 달성</span>
               )}
             </div>
             <div className="sendempathy">
