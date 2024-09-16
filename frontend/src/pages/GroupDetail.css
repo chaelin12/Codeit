@@ -88,6 +88,8 @@
 .group-badges {
   display: flex;
   gap: 10px; /* 배지 간 간격을 설정 */
+  background-color: #f4f4f4;
+  border-radius: 50px;
 }
 
 .sendempathy {

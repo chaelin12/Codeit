@@ -62,6 +62,33 @@ function GroupDetail() {
     fetchGroups();
   }, [groupId]);
 
+  const checkSevenDayStreak = (posts) => {
+    const postDates = posts
+      .map((post) => new Date(post.createdAt)) // 게시물 등록 날짜를 Date 객체로 변환
+      .sort((a, b) => a - b); // 날짜 순으로 정렬
+
+    let streak = 1;
+    for (let i = 1; i < postDates.length; i++) {
+      const diffInTime = postDates[i] - postDates[i - 1]; // 이전 게시물과의 시간 차이
+      const diffInDays = diffInTime / (1000 * 60 * 60 * 24); // 일 단위로 변환
+
+      if (diffInDays === 1) {
+        // 두 게시물 간의 차이가 1일이면 연속 게시물로 간주
+        streak++;
+      } else if (diffInDays > 1) {
+        // 차이가 1일 이상이면 연속성이 끊어짐
+        streak = 1;
+      }
+
+      if (streak === 7) {
+        // 7일 연속 게시물이 등록된 경우
+        return true;
+      }
+    }
+
+    return false; // 7일 연속 게시물이 등록되지 않은 경우
+  };
+
   const handleDelete = async (password) => {
     try {
       await axios.delete(`/api/groups/${groupId}`, {
@@ -135,6 +162,26 @@ function GroupDetail() {
     }
   }, [searchQuery, posts]);
 
+  const handleLikeClick = async () => {
+    try {
+      const response = await axios.post(`/api/groups/${groupId}/like`);
+      console.log("Like response:", response.data);
+
+      // 공감 수를 업데이트
+      if (response.data.success) {
+        setGroupDetail((prevDetail) => ({
+          ...prevDetail,
+          likeCount: prevDetail.likeCount + 1,
+        }));
+      }
+    } catch (error) {
+      console.error("Error sending like:", error.message);
+      if (error.response) {
+        console.error("Server Response Error Data:", error.response.data);
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -150,6 +197,11 @@ function GroupDetail() {
   const daysPassed = Math.floor(
     (new Date() - new Date(groupDetail.createdAt)) / (1000 * 60 * 60 * 24)
   );
+
+  const sevenDayPostStreak = checkSevenDayStreak(posts); // 7일 연속 게시물 확인
+  const groupLikesBadge = groupDetail.likeCount >= 10000;
+  const memoryLikesBadge =
+    posts.reduce((acc, post) => acc + post.likeCount, 0) >= 10000;
 
   return (
     <div className="group-detail-page">
@@ -188,21 +240,18 @@ function GroupDetail() {
           <div className="introduction">{groupDetail.introduction}</div>
           <div className="group-badges-actions">
             <div className="group-badges">
-              {groupDetail.badges.length > 0 ? (
-                groupDetail.badges.map((badge, index) => (
-                  <span key={index} className="badge">
-                    {badge}
-                  </span>
-                ))
-              ) : (
-                <span>획득한 배지가 없습니다.</span>
+              {sevenDayPostStreak && (
+                <span className="badge">👾 7일 연속 게시물 등록</span>
+              )}
+              {groupLikesBadge && (
+                <span className="badge">🌼 그룹 공감 1만 개 이상 받기</span>
+              )}
+              {memoryLikesBadge && (
+                <span className="badge">💖 추억 공감 1만 개 이상 받기</span>
               )}
             </div>
             <div className="sendempathy">
-              <button
-                className="like-button"
-                onClick={() => console.log("공감 보내기")}
-              >
+              <button className="like-button" onClick={handleLikeClick}>
                 공감 보내기
               </button>
             </div>
