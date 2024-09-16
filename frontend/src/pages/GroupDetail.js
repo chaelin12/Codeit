@@ -26,39 +26,39 @@ function GroupDetail() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const response = await axios.get(`/api/groups/${groupId}`);
-        console.log("Group Detail Response:", response.data);
-        setGroupDetail(response.data);
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(`/api/groups/${groupId}`);
+      console.log("Group Detail Response:", response.data);
+      setGroupDetail(response.data);
 
-        const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
-        console.log("Posts Response:", postsResponse.data);
-        const fetchedPosts = postsResponse.data.data || [];
-        setPosts(fetchedPosts);
+      const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
+      console.log("Posts Response:", postsResponse.data);
+      const fetchedPosts = postsResponse.data.data || [];
+      setPosts(fetchedPosts);
 
-        // Set only public posts by default
-        const publicPosts = fetchedPosts.filter((post) => post.isPublic);
-        setFilteredPosts(publicPosts);
+      // Set only public posts by default
+      const publicPosts = fetchedPosts.filter((post) => post.isPublic);
+      setFilteredPosts(publicPosts);
 
-        // 클라이언트에서 postCount 설정
-        setGroupDetail((prevDetail) => ({
-          ...prevDetail,
-          postCount: publicPosts.length,
-        }));
+      // 클라이언트에서 postCount 설정
+      setGroupDetail((prevDetail) => ({
+        ...prevDetail,
+        postCount: publicPosts.length,
+      }));
 
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching group details:", error.message);
-        if (error.response) {
-          console.error("Server Response Error Data:", error.response.data);
-        }
-        setError(error.response?.data?.message || error.message);
-        setLoading(false);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching group details:", error.message);
+      if (error.response) {
+        console.error("Server Response Error Data:", error.response.data);
       }
-    };
+      setError(error.response?.data?.message || error.message);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchGroups();
   }, [groupId]);
 
@@ -164,22 +164,32 @@ function GroupDetail() {
 
   const handleLikeClick = async () => {
     try {
-      const response = await axios.post(`/api/groups/${groupId}/like`);
-      console.log("Like response:", response.data);
+      const response = await fetch(`/api/groups/${groupId}/like`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      // 공감 수를 업데이트
-      if (response.data.success) {
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Like response:", data);
+
+        // 공감 보내기 성공, 서버에서 반환된 likeCount로 업데이트
         setGroupDetail((prevDetail) => ({
           ...prevDetail,
-          likeCount: prevDetail.likeCount + 1,
+          likeCount: data.likeCount, // 서버에서 받은 최신 likeCount
         }));
+      } else if (response.status === 404) {
+        console.error("Group not found.");
+        alert("존재하지 않는 그룹입니다."); // 알림창으로 사용자에게 그룹 없음 알림
+      } else {
+        console.error("Error sending like:", response.statusText);
       }
     } catch (error) {
       console.error("Error sending like:", error.message);
-      if (error.response) {
-        console.error("Server Response Error Data:", error.response.data);
-      }
     }
+    fetchGroups();
   };
 
   if (loading) {
