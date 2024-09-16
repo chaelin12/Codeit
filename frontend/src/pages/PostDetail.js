@@ -13,37 +13,39 @@ import PostComment from "../components/PostComment"; // Ensure you have PostComm
 import "./PostDetail.css";
 
 const PostDetail = () => {
-  const { postId } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const { postId } = useParams(); // get postId from URL
+  const [post, setPost] = useState(null); // to store the post data
+  const [loading, setLoading] = useState(true); // to manage loading state
+  const [error, setError] = useState(null); // to manage error state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false); // State for comment modal
   const [isCommentEditModalOpen, setIsCommentEditModalOpen] = useState(false);
   const [isCommentDeleteModalOpen, setIsCommentDeleteModalOpen] =
     useState(false);
-  const [comments, setComments] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [selectedCommentId, setSelectedCommentId] = useState(null);
+  const [comments, setComments] = useState([]); // store comments
+  const [currentPage, setCurrentPage] = useState(1); // track current page for pagination
+  const [totalPages, setTotalPages] = useState(1); // Total pages for comments
+  const [selectedCommentId, setSelectedCommentId] = useState(null); // 선택된 commentId 저장
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+
+  const fetchPostData = async () => {
+    try {
+      const response = await fetch(`/api/posts/${postId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      setPost(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const response = await fetch(`/api/posts/${postId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch post data");
-        }
-        const data = await response.json();
-        setPost(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPostData();
   }, [postId]);
 
@@ -54,12 +56,7 @@ const PostDetail = () => {
         throw new Error("Failed to fetch comments");
       }
       const data = await response.json();
-      setComments(data.data || []); // 'data'가 실제 댓글 배열
-      setTotalPages(data.totalPages || 1); // 'totalPages' 설정
-      setPost((prevPost) => ({
-        ...prevPost,
-        totalCommentCount: data.data.length || 0, // 'totalCommentCount' 업데이트 (댓글 배열의 길이로 계산)
-      }));
+      setComments(data);
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -69,83 +66,93 @@ const PostDetail = () => {
     fetchComments();
   }, [postId]);
 
-  const openEditModal = () => setIsEditModalOpen(true);
-  const closeEditModal = () => setIsEditModalOpen(false);
-  const openDeleteModal = () => setIsDeleteModalOpen(true);
-  const closeDeleteModal = () => setIsDeleteModalOpen(false);
-  const openCommentModal = () => setIsCommentModalOpen(true);
-  const closeCommentModal = () => setIsCommentModalOpen(false);
+  const openEditModal = () => setIsEditModalOpen(true); // Open edit modal
+  const closeEditModal = () => setIsEditModalOpen(false); // Close edit modal
+  const openDeleteModal = () => setIsDeleteModalOpen(true); // Open delete modal
+  const closeDeleteModal = () => setIsDeleteModalOpen(false); // Close delete modal
+  const openCommentModal = () => setIsCommentModalOpen(true); // Open comment modal
+  const closeCommentModal = () => setIsCommentModalOpen(false); // Close comment modal
   const openCommentEditModal = (commentId) => {
-    setSelectedCommentId(commentId);
-    setIsCommentEditModalOpen(true);
+    setSelectedCommentId(commentId); // 선택한 댓글의 commentId 저장
+    setIsCommentEditModalOpen(true); // Open comment edit modal
   };
-  const closeCommentEditModal = () => setIsCommentEditModalOpen(false);
+  const closeCommentEditModal = () => setIsCommentEditModalOpen(false); // Close comment edit modal
   const openCommentDeleteModal = (commentId) => {
-    setSelectedCommentId(commentId);
-    setIsCommentDeleteModalOpen(true);
+    setSelectedCommentId(commentId); // 선택한 댓글의 commentId 저장
+    setIsCommentDeleteModalOpen(true); // Open comment delete modal
   };
-  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false);
+  const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false); // Close comment delete modal
 
   const handleCommentSubmit = (newComment) => {
-    setComments((prevComments) =>
-      Array.isArray(prevComments) ? [...prevComments, newComment] : [newComment]
-    );
-    setPost((prevPost) => ({
-      ...prevPost,
-      totalCommentCount: prevPost.totalCommentCount + 1, // 댓글 등록 시 totalCommentCount 증가
-    }));
-    closeCommentModal();
-  };
+    try {
+      // 새로운 댓글을 받아서 목록에 추가
+      setComments((prevComments) =>
+        Array.isArray(prevComments)
+          ? [...prevComments, newComment]
+          : [newComment]
+      );
 
+      // 댓글 등록 모달 닫기
+      closeCommentModal();
+      navigate(`/postdetail/${postId}`); // 현재 페이지를 유지하면서 새로고침 없이 이동
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   const handlePostEditSave = (updatedPost) => {
-    setPost(updatedPost);
-    closeEditModal();
+    setPost(updatedPost); // 수정된 추억 상태를 반영
+    closeEditModal(); // 모달 닫기
+    // 페이지를 다시 로드하여 변경된 상태 반영
     navigate(`/postdetail/${postId}`);
   };
-
   const handleCommentEditSave = (updatedComment) => {
     setComments((prevComments) =>
-      Array.isArray(prevComments)
-        ? prevComments.map((comment) =>
-            comment.id === updatedComment.id ? updatedComment : comment
-          )
-        : [updatedComment]
+      prevComments.map((comment) =>
+        comment.id === updatedComment.id ? updatedComment : comment
+      )
     );
-    fetchComments();
     closeCommentEditModal();
+    navigate(`/postdetail/${postId}`);
   };
 
   const handleDeleteComment = (deletedCommentId) => {
     setComments((prevComments) =>
-      Array.isArray(prevComments)
-        ? prevComments.filter((comment) => comment.id !== deletedCommentId)
-        : []
+      prevComments.filter((comment) => comment.id !== deletedCommentId)
     );
     setPost((prevPost) => ({
       ...prevPost,
-      totalCommentCount: prevPost.totalCommentCount - 1, // 댓글 삭제 시 totalCommentCount 감소
+      totalCommentCount: prevPost.totalCommentCount - 1,
     }));
+    closeCommentDeleteModal();
   };
 
-  const loadMoreComments = async () => {
+  const loadMoreComments = () => {
+    setCurrentPage((prevPage) => prevPage + 1); // Increment page to load more comments
+  };
+
+  const handlePostLikeClick = async () => {
     try {
-      const response = await fetch(
-        `/api/posts/${postId}/comments?page=${currentPage + 1}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch more comments");
-      }
-      const data = await response.json();
-      if (Array.isArray(data.data)) {
-        setComments((prevComments) => [...prevComments, ...data.data]); // 'data.data'가 댓글 배열
+      const response = await fetch(`/api/posts/${postId}/like`, {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessage("게시글 공감하기 성공");
+        setPost((prevPost) => ({
+          ...prevPost,
+          likeCount: prevPost.likeCount, // 공감 수를 즉시 업데이트
+        }));
+      } else if (response.status === 404) {
+        setMessage("존재하지 않습니다");
       } else {
-        console.error("Error: Comments data is not an array");
+        setMessage("공감 전송 실패");
       }
-      setCurrentPage((prevPage) => prevPage + 1);
-      setTotalPages(data.totalPages || 1);
     } catch (error) {
-      console.error("Error loading more comments:", error);
+      setMessage("오류가 발생했습니다.");
+      console.error("Error sending empathy:", error);
     }
+    fetchPostData();
   };
 
   if (loading) {
@@ -203,21 +210,23 @@ const PostDetail = () => {
             <img src={flower} alt="like-icon" />
             <span className="post-likeCount"> {post.likeCount}</span>
             <img src={bubble} alt="comment-icon" />
-            <span className="post-commentCount">{post.totalCommentCount}</span>
+            <span className="post-commentCount">{post.commentCount}</span>
           </div>
           <div className="post-sendempathy">
-            <button
-              className="post-like-button"
-              onClick={() => console.log("Send Empathy")}
-            >
+            <button className="post-like-button" onClick={handlePostLikeClick}>
               공감 보내기
             </button>
           </div>
         </div>
       </div>
       <div className="section-divider"></div>
+      {/* 이미지가 있을 때만 렌더링 */}
       {post.imageUrl && (
-        <img src={post.imageUrl} alt={post.title} className="post-image" />
+        <img
+          src={post.imageUrl} // image fetched from server
+          alt={post.title}
+          className="post-image"
+        />
       )}
       <div className="post-content">{post.content}</div>
 
@@ -226,7 +235,7 @@ const PostDetail = () => {
       </Button>
 
       <div className="comments-section">
-        <p>댓글 {post.totalCommentCount}</p>
+        <p>댓글 {post.totalCommentCount}</p> {/* 댓글 개수 표시 */}
         <div className="first-section-divider"></div>
         {Array.isArray(comments) && comments.length > 0 ? (
           <ul className="comments-list">
@@ -258,18 +267,19 @@ const PostDetail = () => {
                     />
                   </div>
                 </div>
-                <div className="comment-divider"></div>
+                <div className="comment-divider"></div> {/* Divider */}
               </li>
             ))}
           </ul>
         ) : (
-          <p>No comments available.</p>
+          <p>No comments available.</p> // No comments message
         )}
         {currentPage < totalPages && (
           <Button onClick={loadMoreComments}>댓글 더보기</Button>
         )}
       </div>
 
+      {/* 모달 컴포넌트들 */}
       {isEditModalOpen && (
         <EditPost
           isOpen={isEditModalOpen}
@@ -301,7 +311,7 @@ const PostDetail = () => {
           onClose={closeCommentEditModal}
           postId={postId}
           commentId={selectedCommentId}
-          onSave={handleCommentEditSave}
+          onSave={handleCommentEditSave} // onSave 콜백 전달
         />
       )}
       {isCommentDeleteModalOpen && (
@@ -309,7 +319,7 @@ const PostDetail = () => {
           isOpen={isCommentDeleteModalOpen}
           onClose={closeCommentDeleteModal}
           postId={postId}
-          commentId={selectedCommentId}
+          commentId={selectedCommentId} // 전달된 commentId 사용
           onDelete={handleDeleteComment}
         />
       )}
