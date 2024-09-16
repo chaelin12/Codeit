@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* 아이템들이 상단에 맞춰 정렬 */
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   text-align: left;
 }
 
@@ -72,23 +72,34 @@
   justify-content: space-between;
   margin-top: 20px;
   gap: 20px;
+  width: 100%;
 }
-.post-num {
-  color: #282828;
-  font-weight: bold;
-  margin-right: 15px;
+
+.post-stats-icon {
+  display: flex;
+  align-items: center;
+  gap: 30px; /* Adjusts space between location/date and icons */
 }
+
+.location-moment {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  gap: 10px; /* Adjusts space between location and date */
+}
+
 .post-icon {
   display: flex;
   align-items: center;
   color: #8d8d8d;
+  gap: 3px; /* Adjusts space between icons */
 }
 .post-likeCount {
   margin-right: 10px;
 }
-.post-stats img {
-  width: 20px; /* 아이콘 크기 조정 */
-  height: 20px;
+.post-sendempathy {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .post-like-button {
