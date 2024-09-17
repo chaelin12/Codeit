@@ -1,0 +1,140 @@
+.create-group-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+}
+
+.title1 {
+  text-align: center;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 40px;
+}
+
+.form-group label {
+  display: flex;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-size: 12px;
+  height: 45px;
+  transition: border-color 0.2s;
+  line-height: 21px;
+}
+
+.form-group textarea {
+  height: 120px !important;
+  align-items: center;
+  resize: none;
+}
+
+/* 플레이스홀더 스타일 통일 */
+textarea::placeholder,
+input::placeholder {
+  color: #b8b8b8;
+  font-size: 12px;
+}
+
+.image-upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.form-group-image {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.image-placeholder {
+  flex-grow: 1;
+  text-align: left;
+  outline: none;
+  margin-right: 10px;
+  color: #b8b8b8;
+  max-width: 290px;
+}
+
+.file-upload-button {
+  display: flex;
+  flex-shrink: 0;
+  font-size: 12px;
+  width: 100px;
+  padding: 8px 12px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  height: 45px;
+  box-sizing: border-box;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-container p {
+  margin: 0;
+  margin-right: 12px;
+  font-size: 14px;
+}
+
+.toggle-switch {
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 25px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-switch.active {
+  background-color: #333;
+}
+
+.switch-handle {
+  width: 23px;
+  height: 23px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: left 0.3s;
+}
+
+.toggle-switch.active .switch-handle {
+  left: 26px;
+}
+
+.error-border {
+  border-color: red !important; /* 실시간으로 빨간 테두리 적용 */
+  border-width: 2px !important; /* 테두리 두께 조정 */
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  text-align: left;
+  margin-top: 10px;
+}

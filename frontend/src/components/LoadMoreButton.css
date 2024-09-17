@@ -1,0 +1,22 @@
+/* LoadMoreButton.css */
+.load-more-container {
+  display: flex;
+  justify-content: center; /* 버튼을 중앙에 배치 */
+  width: 100%; /* 컨테이너 너비에 맞춤 */
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 10px 0; /* 위아래 여백 */
+  box-sizing: border-box;
+}
+
+#load-more-btn {
+  width: 100%; /* 버튼이 컨테이너의 너비에 맞춤 */
+  padding: 10px; /* 버튼 패딩 */
+  border: 1px solid #282828;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+}

@@ -1,0 +1,5 @@
+.private-group-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative; /* Center the container horizontally */
+}

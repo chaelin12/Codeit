@@ -1,0 +1,12 @@
+/* CreateGroupButton.css */
+.create-group-button {
+  padding: 13px 50px;
+  background-color: #282828; /* 버튼 배경색 */
+  color: #ffffff; /* 버튼 글자색 */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px; /* 버튼 글자 크기 */
+  font-weight: 700;
+  margin: 0;
+}

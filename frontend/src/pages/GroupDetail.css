@@ -1,0 +1,202 @@
+.group-detail-page {
+  max-width: 1200px; /* 공개 그룹 페이지와 동일한 최대 너비 */
+  margin: 0 auto; /* 양 옆 균등한 공간으로 가운데 정렬 */
+  padding: 20px;
+  position: relative;
+  background-color: #fafafa;
+}
+
+.group-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between; /* Ensures content is distributed between image/info and empathy button */
+  margin-bottom: 30px;
+}
+
+.group-image img {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.group-info {
+  flex: 1; /* Allows the group info to take up remaining space */
+  padding-right: 20px; /* Adds some padding between the group info and the empathy button */
+}
+
+.group-date-actions {
+  display: flex;
+  justify-content: space-between; /* date와 actions를 양 끝에 배치 */
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.9em; /* 글자 크기 통일 (작게 설정) */
+}
+
+.group-date {
+  color: gray;
+  display: flex;
+  align-items: center; /* D+0 | 공개를 한 줄에 배치 */
+  gap: 5px;
+}
+
+.group-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 수정/삭제 버튼 간 간격 */
+}
+
+.group-actions div {
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.group-name-stats {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.group-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 20px;
+}
+
+.group-stats-sum {
+  font-size: 14px;
+  font-weight: 700;
+  color: #282828;
+  display: flex;
+  gap: 20px;
+}
+
+.introduction {
+  margin-bottom: 5px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.group-badges-actions {
+  display: flex;
+  justify-content: space-between; /* 배지는 왼쪽, 공감 버튼은 오른쪽 */
+  align-items: center; /* 배지와 버튼을 수직으로 가운데 정렬 */
+  margin-top: 20px; /* 필요한 경우 여백 조정 */
+}
+
+.group-badges {
+  display: flex;
+  gap: 10px; /* 배지 간 간격 설정 */
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px; /* 배지 내부 여백 */
+  border-radius: 30px; /* 둥근 사각형 */
+  background-color: #f4f4f4; /* 배지의 기본 배경색 */
+  font-size: 14px;
+  font-weight: 500;
+  color: #282828;
+  gap: 8px; /* 아이콘과 텍스트 간격 */
+}
+
+.sendempathy {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.like-button {
+  position: relative;
+  border: 1px solid #282828;
+  color: #282828;
+  background-color: #fafafa;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.flower-icon {
+  width: 20px;
+  height: 20px;
+}
+.groupedit {
+  color: #282828;
+}
+
+.groupdelete {
+  color: #8d8d8d;
+}
+
+.create-memory-button-container {
+  font-weight: 700;
+  position: absolute;
+  right: 20px; /* 우측 끝에 배치 */
+  margin-bottom: 10px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.memory-create-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.memory-create-button {
+  margin-right: 10px;
+  font-weight: bold;
+  background-color: #282828;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.section-divider {
+  height: 1px;
+  background-color: #ddd;
+  width: 100%;
+
+  margin: 0; /* Remove side margins to ensure full width */
+}
+.memory-list-section {
+  margin-top: 20px;
+}
+
+.memory-title {
+  display: flex;
+  justify-content: space-between; /* 제목과 버튼을 양 끝에 배치 */
+  align-items: center; /* 세로 정렬 */
+  margin-bottom: 10px; /* 제목과 카드 사이 간격 */
+  width: 100%;
+}
+
+.memory-title h1 {
+  flex: 1; /* h1을 중앙에 정렬되게 만듦 */
+  text-align: center; /* h1 텍스트 중앙 정렬 */
+}
+
+.memory-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Dynamically fills the row */
+  gap: 15px; /* Space between cards */
+  max-width: 1560px; /* Maximum container width */
+  margin: 0 auto; /* Center the grid */
+  padding: 10px; /* Add padding to the container if needed */
+  box-sizing: border-box;
+}

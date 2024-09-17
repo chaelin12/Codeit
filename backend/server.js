@@ -1,23 +1,44 @@
 const dotenv = require("dotenv").config();
 const setup = require("./db_setup");
+const path = require('path');
 const express = require("express");
-
 const app = express();
 
-app.use(express.static("public")); //static 미들웨어 설정
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:3000' // 프론트엔드 서버의 주소
+}));
 
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-
-//라우팅 
-app.get("/", (req, res) => {
-  res.render("index.html");
+///////////// session 설정
+const session = require("express-session");
+app.use(
+  session({
+    secret: "암호화키",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 15 } // 세션 유효 기간 (15분)
+  })
+);
+// 정적 파일 제공 설정
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+// 모든 요청에 대해 index.html 제공
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 //라우팅 포함하는 코드
-app.use('/', require('./routes/groups.js')); 
-app.use('/', require('./routes/posts.js'));
+const imagesRouter = require('./routes/images.js');
+const groupsRouter = require('./routes/groups.js');
+const postsRouter = require('./routes/posts.js');
+const commentsRouter = require('./routes/comments.js');
+
+app.use('/api/image', imagesRouter);
+app.use('/api/groups', groupsRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/comments', commentsRouter);
 
 app.listen(process.env.WEB_PORT, async () => {
   await setup();

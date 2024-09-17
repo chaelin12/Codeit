@@ -1,0 +1,15 @@
+.search-container {
+  width: 100%;
+  margin-left: 20px;
+  margin-right: 40px;
+  margin-bottom: 20px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px 10px 10px 40px; /* 왼쪽 여백 추가로 아이콘 공간 확보 */
+  border: 1px solid #ccc;
+  background-color: #f4f4f4; /* 배경색 설정 */
+  color: #282828; /* 글자 색깔 */
+  border-radius: 4px;
+}

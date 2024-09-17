@@ -1,0 +1,79 @@
+.post-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-card-header {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.post-card-public-status {
+  color: #8d8d8d;
+}
+
+.post-card-image {
+  width: 100%; /* Make the image take up full card width */
+  height: auto; /* Maintain the aspect ratio */
+  margin-bottom: 15px;
+  border-radius: 8px; /* Optional: Add a slight border radius to the image */
+  object-fit: cover;
+}
+
+.post-info {
+  flex-grow: 1; /* Left align text */
+  font-size: 14px;
+}
+.post-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.post-card-tags {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post-card-tag {
+  padding: 5px 5px;
+  font-size: 0.875rem;
+  color: #b8b8b8;
+}
+
+.post-card-more {
+  display: flex;
+  justify-content: space-between; /* 시간과 공감/댓글을 양 끝에 배치 */
+  align-items: center; /* 세로로 가운데 정렬 */
+  margin-top: 15px;
+}
+
+.post-card-time {
+  font-size: 15px;
+  color: #282828;
+  text-align: left;
+  display: flex;
+  align-items: center; /* 시간, 위치를 수평 정렬 */
+}
+
+.post-card-stats {
+  display: flex;
+  align-items: center; /* 공감과 댓글을 수평 정렬 */
+  color: #666;
+  text-align: right;
+}
+
+.post-card-stats img {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+}
+
+.post-card-likeCount {
+  margin-right: 10px; /* 공감과 댓글 사이의 간격 추가 */
+}

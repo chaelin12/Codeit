@@ -1,0 +1,89 @@
+.group-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+}
+
+.group-card-header {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.group-card-image {
+  width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.group-info {
+  flex-grow: 1;
+}
+
+.group-date {
+  font-size: 14px;
+}
+
+.date {
+  color: #282828;
+}
+
+.separator {
+  color: #b8b8b8;
+}
+
+.group-card-public-status {
+  color: #8d8d8d;
+}
+
+.group-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.group-introduction {
+  font-size: 17px;
+  color: #282828;
+  margin-top: 10px;
+}
+
+/* Stats Section */
+.group-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 15px;
+  text-align: left;
+}
+
+.group-stats-item .label {
+  font-size: 12px;
+  color: #b8b8b8;
+}
+.group-stats-item {
+  text-align: left; /* Align text to the left */
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start */
+}
+
+.group-stats-item .count {
+  font-size: 16px;
+  color: #282828;
+  font-weight: 300;
+  margin-top: 5px;
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Align items vertically */
+}
+
+.group-stats-item .count img {
+  margin-right: 5px; /* Space between icon and count */
+  height: 20px; /* Adjust the icon size as needed */
+  width: auto; /* Maintain aspect ratio */
+}
