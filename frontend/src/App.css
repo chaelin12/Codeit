@@ -39,8 +39,8 @@
 
 .logo-container {
   display: flex;
-  margin-top: 40px; /* 상단 여백 */
-  margin-bottom: 20px;
+  margin-top: 30px; /* 상단 여백 */
+  margin-bottom: 30px;
   align-items: center;
   justify-content: space-between;
   position: relative;

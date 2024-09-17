@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom"; // Link 추가
 
 import AccessPrivate from "./pages/AccessPrivate";
 import AccessPrivatePost from "./pages/AccessPrivatePost";
@@ -19,7 +19,10 @@ function App() {
     <div className="App">
       {location.pathname !== "/" && location.pathname !== "/PrivateGroup" && (
         <div className="logo-container">
-          <img src={logo} alt="Logo" className="logo" />
+          {/* Link를 사용해 로고 클릭 시 "/" 경로로 이동 */}
+          <Link to="/">
+            <img src={logo} alt="Logo" className="logo" />
+          </Link>
         </div>
       )}
       <Routes>
