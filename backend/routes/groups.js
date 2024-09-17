@@ -95,7 +95,6 @@ router.route('/')
                     }
 
                     const badgeCount = badges.length; // 배지 카운트
-                    console.log(group.id);
                     await Group.updateOne({
                         id:group.id,//업데이트 대상 검색
                      },{
