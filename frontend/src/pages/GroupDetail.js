@@ -35,6 +35,17 @@ function GroupDetail() {
       console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
 
+      const badges = Array.isArray(response.data.badges)
+        ? response.data.badges
+        : [];
+      if (badges.length > 0) {
+        badges.forEach((badge) => {
+          console.log("Badge:", badge); // 각 배지를 출력
+        });
+      } else {
+        console.log("No badges found.");
+      }
+
       const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
       console.log("Posts Response:", postsResponse.data);
       const fetchedPosts = postsResponse.data.data || [];
@@ -65,33 +76,6 @@ function GroupDetail() {
   useEffect(() => {
     fetchGroups();
   }, [groupId]);
-
-  const checkSevenDayStreak = (posts) => {
-    const postDates = posts
-      .map((post) => new Date(post.createdAt)) // 게시물 등록 날짜를 Date 객체로 변환
-      .sort((a, b) => a - b); // 날짜 순으로 정렬
-
-    let streak = 1;
-    for (let i = 1; i < postDates.length; i++) {
-      const diffInTime = postDates[i] - postDates[i - 1]; // 이전 게시물과의 시간 차이
-      const diffInDays = diffInTime / (1000 * 60 * 60 * 24); // 일 단위로 변환
-
-      if (diffInDays === 1) {
-        // 두 게시물 간의 차이가 1일이면 연속 게시물로 간주
-        streak++;
-      } else if (diffInDays > 1) {
-        // 차이가 1일 이상이면 연속성이 끊어짐
-        streak = 1;
-      }
-
-      if (streak === 7) {
-        // 7일 연속 게시물이 등록된 경우
-        return true;
-      }
-    }
-
-    return false; // 7일 연속 게시물이 등록되지 않은 경우
-  };
 
   const handleDelete = async (password) => {
     try {
@@ -254,12 +238,6 @@ function GroupDetail() {
     (new Date() - new Date(groupDetail.createdAt)) / (1000 * 60 * 60 * 24)
   );
 
-  const sevenDayPostStreak = checkSevenDayStreak(posts); // 7일 연속 게시물 확인
-  const groupLikesBadge = groupDetail.likeCount >= 10;
-  const memoryLikesBadge = posts.some((post) => post.likeCount >= 10);
-  const twentyMemoriesBadge = groupDetail.postCount >= 2;
-  const oneYearAnniversaryBadge = daysPassed >= 365;
-
   return (
     <div className="group-detail-page">
       <div className="group-header">
@@ -297,22 +275,23 @@ function GroupDetail() {
           <div className="introduction">{groupDetail.introduction}</div>
           <div className="group-badges-actions">
             <div className="group-badges">
-              {sevenDayPostStreak && (
+              {groupDetail?.badges?.includes("7 Day Post Streak") && (
                 <span className="badge">👾 7일 연속 추억 등록</span>
               )}
-              {groupLikesBadge && (
-                <span className="badge">🌼 그룹 공감 1만 개 이상 받기</span>
+              {groupDetail?.badges?.includes("10+ Group Likes") && (
+                <span className="badge">🌼 그룹 공감 10회 이상 받기</span>
               )}
-              {memoryLikesBadge && (
-                <span className="badge">💖 추억 공감 1만 개 이상 받기</span>
+              {groupDetail?.badges?.includes("10+ Memory Likes") && (
+                <span className="badge">💖 추억 공감 10회 이상 받기</span>
               )}
-              {twentyMemoriesBadge && (
-                <span className="badge">🍀 추억 수 20개 이상 등록</span>
+              {groupDetail?.badges?.includes("20+ Memories") && (
+                <span className="badge">🍀 추억 20개 이상 등록</span>
               )}
-              {oneYearAnniversaryBadge && (
-                <span className="badge">🌟 그룹 생성 후 1년 달성</span>
+              {groupDetail?.badges?.includes("1 Year Anniversary") && (
+                <span className="badge">🌟 그룹 생성 1년 달성</span>
               )}
             </div>
+
             <div className="sendempathy">
               <button className="like-button" onClick={handleLikeClick}>
                 <img
