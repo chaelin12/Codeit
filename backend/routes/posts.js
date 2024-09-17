@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
+const Group = require('../schemas/group');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const fs = require('fs');
@@ -74,50 +75,66 @@ router.route('/:id')
             }
         })
     })
-    //게시글 삭제
-    .delete(async (req,res)=>{
-        const post = await Post.findOne({id:req.params.id});
-        const comment = await Comment.findOne({id:req.params.id});
+    // 게시글 삭제
+    .delete(async (req, res) => {
+        const post = await Post.findOne({ id: req.params.id });
+        
         if (!post) {
-            return res.status(404).json({ success: false, message: "존재하지 않습니다" });
+            return res.status(404).json({ success: false, message: "존재하지 않는 게시글입니다." });
         }
-         //비밀번호 검증
-         const { mysqldb } = await setup();
-         const sql = `SELECT salt FROM PostSalt WHERE id=?`;
-         mysqldb.query(sql, [post.id], async (err, rows) => {
-         if (err || rows.length === 0) {
-             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
-         }
-         try {
-             const salt = rows[0].salt;
-             const hashPw = sha(req.body.postPassword + salt);
-             if (post.postPassword == hashPw){
-                fs.unlink('./public'+post.imageUrl,(err)=>{
-                    if(err){
-                        console.error(err);
-                    }
-                 });
-                 
-                await Post.deleteOne({ id: req.params.id });
-                // 게시글에 관련된 댓글 삭제
-                await Comment.deleteMany({ postId: req.params.id });
-                 // MySQL에서 그룹의 salt 정보 삭제
-                 const deleteSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
-                 mysqldb.query(deleteSaltSql, [post.id], (err) => {
-                     if (err) {
-                         console.error("MySQL salt 삭제 오류:", err);
-                     } 
-                 });
-                 
-                res.status(200).json({message : "게시글 삭제 성공"});
-            }else{
-                res.status(403).json({message : "비밀번호가 틀렸습니다"})
+
+        // 비밀번호 검증
+        const { mysqldb } = await setup();
+        const sql = `SELECT salt FROM PostSalt WHERE id=?`;
+        mysqldb.query(sql, [post.id], async (err, rows) => {
+            if (err || rows.length === 0) {
+                return res.status(400).json({ success: false, message: "잘못된 요청입니다." });
             }
-        }catch(err){
-            res.status(400).json({message : "잘못된 요청입니다"});
-        }
+
+            try {
+                const salt = rows[0].salt;
+                const hashPw = sha(req.body.postPassword + salt);
+                
+                if (post.postPassword === hashPw) {
+                    // 이미지 파일 삭제
+                    fs.unlink('./public' + post.imageUrl, (err) => {
+                        if (err) {
+                            console.error("이미지 삭제 오류:", err);
+                        }
+                    });
+
+                    // 게시글 삭제
+                    await Post.deleteOne({ id: req.params.id });
+
+                    // 게시글에 관련된 댓글 삭제
+                    await Comment.deleteMany({ postId: req.params.id });
+
+                    // MySQL에서 그룹의 salt 정보 삭제
+                    const deleteSaltSql = `DELETE FROM PostSalt WHERE id = ?`;
+                    mysqldb.query(deleteSaltSql, [post.id], (err) => {
+                        if (err) {
+                            console.error("MySQL salt 삭제 오류:", err);
+                        }
+                    });
+
+                    // 그룹의 postCount 업데이트
+                    await Group.updateOne({
+                        id: post.groupId // 업데이트 대상 검색
+                    }, {
+                        $inc: { postCount: -1 } // postCount를 1 감소시킴
+                    });
+
+                    res.status(200).json({ message: "게시글 삭제 성공" });
+                } else {
+                    res.status(403).json({ message: "비밀번호가 틀렸습니다." });
+                }
+            } catch (err) {
+                console.error("오류:", err);
+                res.status(400).json({ message: "잘못된 요청입니다." });
+            }
+        });
     })
-    })
+
     //게시글 상세 정보 조회
     .get(async (req,res)=>{
         try{

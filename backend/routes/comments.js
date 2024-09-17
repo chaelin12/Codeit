@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const setup = require("../db_setup");
 const sha = require("sha256");
+const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 
 
@@ -88,6 +89,12 @@ router.route('/:id')
                          console.error("MySQL salt 삭제 오류:", err);
                      }
                  });
+                 // CommentCount 업데이트
+                 await Post.updateOne({
+                    id: comment.postId // 업데이트 대상 검색
+                }, {
+                    $inc: { commentCount: -1 } // postCount를 1 감소시킴
+                });
                 res.status(200).json({message : "게시글 삭제 성공"});
             }else{
                 res.status(403).json({message : "비밀번호가 틀렸습니다"})
