@@ -6,7 +6,6 @@ const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const fs = require('fs');
 const path = require('path');
-// 배지 확인 함수 외부로 추출
 const checkSevenDayStreak = (posts) => {
     if (!posts || !Array.isArray(posts)) return false;
 
@@ -76,8 +75,10 @@ router.route('/')
                     const twentyMemoriesBadge = group.postCount >= 20;
                     const oneYearAnniversaryBadge = checkOneYearAnniversary(group.createdAt);
 
-                    // 배지 목록 및 배지 카운트 생성
-                    const badges = group.badges || []; // 기존 배지가 있으면 유지
+                    // 배지 목록 관리
+                    let badges = group.badges || [];
+
+                    // 배지 추가
                     if (sevenDayPostStreak && !badges.includes('7 Day Post Streak')) {
                         badges.push('7 Day Post Streak');
                     }
@@ -94,13 +95,32 @@ router.route('/')
                         badges.push('1 Year Anniversary');
                     }
 
+                    // 배지 삭제 처리
+                    badges = badges.filter((badge) => {
+                        if (badge === '7 Day Post Streak') {
+                            return sevenDayPostStreak;
+                        } else if (badge === '10+ Group Likes') {
+                            return groupLikesBadge;
+                        } else if (badge === '10+ Memory Likes') {
+                            return memoryLikesBadge;
+                        } else if (badge === '20+ Memories') {
+                            return twentyMemoriesBadge;
+                        } else if (badge === '1 Year Anniversary') {
+                            return oneYearAnniversaryBadge;
+                        }
+                        return true; // 그 외 배지는 유지
+                    });
+
                     const badgeCount = badges.length; // 배지 카운트
+
+                    // 배지 및 배지 카운트 업데이트
                     await Group.updateOne({
-                        id:group.id,//업데이트 대상 검색
-                     },{
-                         badges,
-                         badgeCount,
-                     });
+                        id: group.id, // 업데이트 대상 검색
+                    }, {
+                        badges,
+                        badgeCount,
+                    });
+
                     // 업데이트된 그룹 정보 반환
                     return {
                         id: group.id,
@@ -115,7 +135,6 @@ router.route('/')
                         introduction: group.introduction
                     };
                 }))
-                
             };
             res.status(200).json(response);
 
