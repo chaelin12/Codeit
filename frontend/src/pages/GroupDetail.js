@@ -34,23 +34,18 @@ function GroupDetail() {
       const response = await axios.get(`/api/groups/${groupId}`);
       console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
-
+  
       const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
       console.log("Posts Response:", postsResponse.data);
       const fetchedPosts = postsResponse.data.data || [];
       setPosts(fetchedPosts);
-
+  
       // Set only public posts by default
       const publicPosts = fetchedPosts.filter((post) => post.isPublic);
       setFilteredPosts(publicPosts);
-
-      // 클라이언트에서 postCount 설정
-      setGroupDetail((prevDetail) => ({
-        ...prevDetail,
-        postCount: publicPosts.length,
-      }));
+  
       console.log(filteredPosts.map((post) => post.commentCount));
-
+  
       setLoading(false);
     } catch (error) {
       console.error("Error fetching group details:", error.message);
@@ -61,6 +56,7 @@ function GroupDetail() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchGroups();
