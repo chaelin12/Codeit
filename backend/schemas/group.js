@@ -10,16 +10,12 @@ const groupSchema = new Schema({
     introduction: { type: String, required: true },
     likeCount: { type: Number, default: 0 },
     badges: { type: [String], default: [] }, 
-    badgeCount: { type: Number, default: 0 }, // badgeCount 추가, 자동 계산됨
+    badgeCount: { type: Number, default: 0 }, // badgeCount 추가
     postCount: { type: Number, default: 0 }, 
     createdAt: { type: Date, default: Date.now }, 
 });
 
-// badges가 변경될 때마다 badgeCount를 업데이트
-groupSchema.pre('save', function(next) {
-    this.badgeCount = this.badges.length;
-    next();
-});
+
 // 그룹 저장 전에 자동으로 ID를 증가시키는 미들웨어
 groupSchema.pre('save', async function (next) {
     const doc = this;

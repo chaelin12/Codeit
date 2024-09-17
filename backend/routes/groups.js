@@ -6,18 +6,36 @@ const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const fs = require('fs');
 const path = require('path');
+// 배지 확인 함수 외부로 추출
+const checkSevenDayStreak = (posts) => {
+    if (!posts || !Array.isArray(posts)) return false;
+
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
+    const postsInLastSevenDays = posts.filter(post => new Date(post.createdAt) >= sevenDaysAgo);
+    return postsInLastSevenDays.length >= 7;
+};
+
+const checkOneYearAnniversary = (createdAt) => {
+    const today = new Date();
+    const daysPassed = Math.floor((today - new Date(createdAt)) / (1000 * 60 * 60 * 24));
+    return daysPassed >= 365;
+};
+
+// 그룹 목록 조회
 router.route('/')
-    //그룹 목록 조회
-    .get(async (req,res)=>{
+    .get(async (req, res) => {
         const page = parseInt(req.query.page, 10) || 1;
         const pageSize = parseInt(req.query.pageSize, 10) || 10;
         const skip = (page - 1) * pageSize;
         const sortBy = req.query.sortBy || 'latest';
         const keyword = req.query.keyword || '';
         const isPublic = req.query.isPublic; // 공개/비공개 여부를 쿼리 파라미터로 받음
-    
+
         let sortOption = { createdAt: -1 };
-    
+
         if (sortBy === 'mostPosted') {
             sortOption = { postCount: -1 };
         } else if (sortBy === 'mostLiked') {
@@ -25,42 +43,74 @@ router.route('/')
         } else if (sortBy === 'mostBadge') {
             sortOption = { badgeCount: -1 };
         }
-    
+
         try {
             let filter = {};
             if (keyword) {
                 filter.name = { $regex: keyword, $options: 'i' };
             }
-    
+
             if (isPublic !== undefined) {
                 filter.isPublic = isPublic === 'true'; // 'true'는 boolean true로 변환
             }
-    
+
             const totalGroupCount = await Group.countDocuments(filter);
-    
             const groups = await Group.find(filter)
                 .sort(sortOption)
                 .skip(skip)
                 .limit(pageSize);
 
-            // 응답으로 보낼 데이터 형식 조정
+            // 각 그룹에 대한 배지 조건 처리
             const response = {
                 currentPage: page,
                 totalPages: Math.ceil(totalGroupCount / pageSize),
                 totalGroupCount: totalGroupCount,
-                data: groups.map(group => ({
-                    id: group.id,
-                    name: group.name,
-                    imageUrl: group.imageUrl,
-                    isPublic: group.isPublic,
-                    likeCount: group.likeCount,
-                    badges: group.badges,
-                    postCount: group.postCount,
-                    createdAt: group.createdAt.toISOString(),
-                    introduction: group.introduction
+                data: await Promise.all(groups.map(async (group) => {
+                    // 게시물 조회
+                    const posts = await Post.find({ groupId: group.id }); // 여러 개의 게시물 조회
+
+                    // 배지 조건 처리
+                    const sevenDayPostStreak = checkSevenDayStreak(posts); // 7일 연속 게시물 확인
+                    const groupLikesBadge = group.likeCount >= 10;
+                    const memoryLikesBadge = posts.some((post) => post.likeCount >= 10);
+                    const twentyMemoriesBadge = group.postCount >= 2;
+                    const oneYearAnniversaryBadge = checkOneYearAnniversary(group.createdAt);
+
+                    // 배지 목록 및 배지 카운트 생성
+                    const badges = group.badges || []; // 기존 배지가 있으면 유지
+                    if (sevenDayPostStreak && !badges.includes('7 Day Post Streak')) {
+                        badges.push('7 Day Post Streak');
+                    }
+                    if (groupLikesBadge && !badges.includes('10+ Group Likes')) {
+                        badges.push('10+ Group Likes');
+                    }
+                    if (memoryLikesBadge && !badges.includes('10+ Memory Likes')) {
+                        badges.push('10+ Memory Likes');
+                    }
+                    if (twentyMemoriesBadge && !badges.includes('20+ Memories')) {
+                        badges.push('20+ Memories');
+                    }
+                    if (oneYearAnniversaryBadge && !badges.includes('1 Year Anniversary')) {
+                        badges.push('1 Year Anniversary');
+                    }
+
+                    const badgeCount = badges.length; // 배지 카운트
+                    console.log(badges,badgeCount);
+                    return {
+                        id: group.id,
+                        name: group.name,
+                        imageUrl: group.imageUrl,
+                        isPublic: group.isPublic,
+                        likeCount: group.likeCount,
+                        badges, // 배지 추가
+                        badgeCount, // 배지 카운트 추가
+                        postCount: group.postCount,
+                        createdAt: group.createdAt.toISOString(),
+                        introduction: group.introduction
+                    };
                 }))
             };
-            // 응답 보내기
+
             res.status(200).json(response);
 
         } catch (err) {
@@ -68,6 +118,8 @@ router.route('/')
             res.status(500).json({ error: '서버 오류' });
         }
     })
+
+
     //그룹 등록
     .post(async (req,res)=>{
         if(req.session){
