@@ -34,18 +34,18 @@ function GroupDetail() {
       const response = await axios.get(`/api/groups/${groupId}`);
       console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
-  
+
       const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
       console.log("Posts Response:", postsResponse.data);
       const fetchedPosts = postsResponse.data.data || [];
       setPosts(fetchedPosts);
-  
+
       // Set only public posts by default
       const publicPosts = fetchedPosts.filter((post) => post.isPublic);
       setFilteredPosts(publicPosts);
-  
+
       console.log(filteredPosts.map((post) => post.commentCount));
-  
+
       setLoading(false);
     } catch (error) {
       console.error("Error fetching group details:", error.message);
@@ -56,7 +56,6 @@ function GroupDetail() {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchGroups();
@@ -96,29 +95,31 @@ function GroupDetail() {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
+    filterAndSortPosts(posts, activeButton, selectedFilter);
+  };
+  const filterAndSortPosts = (posts, buttonState, selectedFilter) => {
+    // 버튼 상태에 따라 공개/비공개 필터링
+    let filtered =
+      buttonState === "public"
+        ? posts.filter((post) => post.isPublic)
+        : posts.filter((post) => !post.isPublic);
 
-    // Filter only public posts before applying sorting
-    let publicPosts = posts.filter((post) => post.isPublic); // Only include public posts
-
-    let sortedPosts = [...publicPosts]; // Make a copy of the public posts array
-
+    // 선택한 필터에 따라 정렬
     switch (selectedFilter) {
       case "최신순":
-        sortedPosts.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        ); // Sort by newest
-        break;
-      case "공감순":
-        sortedPosts.sort((a, b) => b.likeCount - a.likeCount); // Sort by most likes
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
       case "댓글순":
-        sortedPosts.sort((a, b) => b.commentCount - a.commentCount); // Sort by most comments
+        filtered.sort((a, b) => b.commentCount - a.commentCount);
+        break;
+      case "공감순":
+        filtered.sort((a, b) => b.likeCount - a.likeCount);
         break;
       default:
         break;
     }
 
-    setFilteredPosts(sortedPosts); // Set the sorted public posts to the state
+    setFilteredPosts(filtered);
   };
 
   const handleLoadMore = async () => {
@@ -150,32 +151,14 @@ function GroupDetail() {
 
   const handlePublicClick = () => {
     setActiveButton("public");
-    // Only show public posts when the "공개" button is clicked
-    setFilteredPosts(posts.filter((post) => post.isPublic));
+    filterAndSortPosts(posts, "public", filter);
     console.log("공개 추억 보기");
   };
 
   const handlePrivateClick = () => {
     setActiveButton("private");
-    // Only show private posts when the "비공개" button is clicked
-    setFilteredPosts(posts.filter((post) => !post.isPublic));
-    console.log("비공개 추억 보기");
+    filterAndSortPosts(posts, "private", filter);
   };
-
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredPosts(posts.filter((post) => post.isPublic)); // Ensure it only searches public posts
-    } else {
-      const filtered = posts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          post.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-      );
-      setFilteredPosts(filtered);
-    }
-  }, [searchQuery, posts]);
 
   const handleLikeClick = async () => {
     try {

@@ -1,7 +1,7 @@
 import React from "react";
 import "./FilterSelect.css";
 
-function FilterPost({ onFilterChange }) {
+function FilterPostSelect({ onFilterChange }) {
   return (
     <div className="filter-container">
       <select
@@ -9,11 +9,11 @@ function FilterPost({ onFilterChange }) {
         onChange={(e) => onFilterChange(e.target.value)}
       >
         <option value="최신순">최신순</option>
-        <option value=" 댓글순"> 댓글순</option>
+        <option value="댓글순">댓글순</option>
         <option value="공감순">공감순</option>
       </select>
     </div>
   );
 }
 
-export default FilterPost;
+export default FilterPostSelect;
