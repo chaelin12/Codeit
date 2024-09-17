@@ -273,7 +273,9 @@ const PostDetail = () => {
                 <div className="comment-header">
                   <span className="comment-user">{comment.nickname}</span>
                   <span className="comment-date">
-                    {new Date(comment.createdAt)
+                    {new Date(
+                      new Date(comment.createdAt).getTime() + 9 * 60 * 60 * 1000 // UTC에 +9시간
+                    )
                       .toISOString()
                       .slice(2, 16)
                       .replace("T", " ")}
