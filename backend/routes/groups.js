@@ -73,7 +73,7 @@ router.route('/')
                     const sevenDayPostStreak = checkSevenDayStreak(posts); // 7일 연속 게시물 확인
                     const groupLikesBadge = group.likeCount >= 10;
                     const memoryLikesBadge = posts.some((post) => post.likeCount >= 10);
-                    const twentyMemoriesBadge = group.postCount >= 2;
+                    const twentyMemoriesBadge = group.postCount >= 20;
                     const oneYearAnniversaryBadge = checkOneYearAnniversary(group.createdAt);
 
                     // 배지 목록 및 배지 카운트 생성
@@ -95,7 +95,14 @@ router.route('/')
                     }
 
                     const badgeCount = badges.length; // 배지 카운트
-                    console.log(badges,badgeCount);
+                    console.log(group.id);
+                    await Group.updateOne({
+                        id:group.id,//업데이트 대상 검색
+                     },{
+                         badges,
+                         badgeCount,
+                     });
+                    // 업데이트된 그룹 정보 반환
                     return {
                         id: group.id,
                         name: group.name,
@@ -109,8 +116,9 @@ router.route('/')
                         introduction: group.introduction
                     };
                 }))
+                
             };
-
+            console.log(response);
             res.status(200).json(response);
 
         } catch (err) {
@@ -118,6 +126,7 @@ router.route('/')
             res.status(500).json({ error: '서버 오류' });
         }
     })
+
 
 
     //그룹 등록
