@@ -118,7 +118,6 @@ router.route('/')
                 }))
                 
             };
-            console.log(response);
             res.status(200).json(response);
 
         } catch (err) {
