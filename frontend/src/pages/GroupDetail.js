@@ -35,17 +35,6 @@ function GroupDetail() {
       console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
 
-      const badges = Array.isArray(response.data.badges)
-        ? response.data.badges
-        : [];
-      if (badges.length > 0) {
-        badges.forEach((badge) => {
-          console.log("Badge:", badge); // 각 배지를 출력
-        });
-      } else {
-        console.log("No badges found.");
-      }
-
       const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
       console.log("Posts Response:", postsResponse.data);
       const fetchedPosts = postsResponse.data.data || [];
