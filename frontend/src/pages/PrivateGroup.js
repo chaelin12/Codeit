@@ -82,6 +82,34 @@ function PrivateGroup() {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
+
+    // Filter only private groups before applying sorting
+    let privateGroups = groups.filter((group) => !group.isPublic); // Only include private groups (isPublic is false)
+
+    let sortedGroups = [...privateGroups]; // Make a copy of the private groups array
+
+    switch (selectedFilter) {
+      case "공감순":
+        sortedGroups.sort((a, b) => b.likeCount - a.likeCount); // Sort by most likes
+        break;
+      case "최신순":
+        sortedGroups.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        ); // Sort by newest
+        break;
+      case "게시글 많은순":
+        sortedGroups.sort((a, b) => b.postCount - a.postCount); // Sort by most posts
+        break;
+      case "획득 배지순":
+        sortedGroups.sort(
+          (a, b) => (b.badges?.length || 0) - (a.badges?.length || 0)
+        ); // Sort by most badges, ensuring `badges` is an array
+        break;
+      default:
+        break;
+    }
+
+    setFilteredGroups(sortedGroups); // Set the sorted private groups to the state
   };
 
   const handleLoadMore = () => {
