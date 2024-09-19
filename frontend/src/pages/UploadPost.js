@@ -78,14 +78,15 @@ function UploadPost() {
       if (image) {
         const imageFormData = new FormData();
         imageFormData.append("image", image);
-
         const imageUploadResponse = await axios.post(
-          "/api/image",
+          `${process.env.REACT_APP_USER}/api/image`,
           imageFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
           }
         );
+        
 
         imageUrl = imageUploadResponse.data.imageUrl;
       }
@@ -104,8 +105,9 @@ function UploadPost() {
       };
 
       const response = await axios.post(
-        `/api/groups/${groupId}/posts`,
-        formData
+        `${process.env.REACT_APP_작명}/api/groups/${groupId}/posts`, formData{ 
+          withCredentials: true,
+        }
       );
 
       console.log("Response status:", response.status);
