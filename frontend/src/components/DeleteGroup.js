@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
@@ -15,15 +16,16 @@ const DeleteGroup = ({ onClose, groupId }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/groups/${groupId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }), // 비밀번호를 서버에 전송
-      });
-
-      const data = await response.json(); // 서버에서 반환한 데이터
+      const response = await axios.delete(
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        {
+          data: {
+            password, // 비밀번호를 서버로 전송
+          },
+          withCredentials: true, // 자격 증명을 포함
+        }
+      );
+      const data = response.data; // 서버에서 반환한 데이터
 
       if (response.ok) {
         navigate("/"); // 삭제 성공 시 PublicGroup 페이지로 이동

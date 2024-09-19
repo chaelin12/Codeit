@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import Button from "../components/FormButton";
 
@@ -15,16 +16,19 @@ const DeleteComment = ({ isOpen, onClose, commentId, postId, onDelete }) => {
       // 사용자 토큰이 필요한 경우 가져옵니다. (예시: localStorage에서 가져오기)
       const token = localStorage.getItem("authToken"); // 인증 토큰이 필요할 경우 추가
 
-      const response = await fetch(`/api/comments/${commentId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가 (필요할 경우)
-        },
-        body: JSON.stringify({ password }), // 비밀번호 전송
-      });
-
-      const data = await response.json(); // 서버에서 반환한 데이터를 받아옵니다.
+      const response = await axios.delete(
+        `${process.env.REACT_APP_USER}/api/comments/${commentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가
+          },
+          data: {
+            password, // 비밀번호를 data에 추가
+          },
+          withCredentials: true, // 자격 증명을 포함
+        }
+      );
+      const data = response.data; // 서버에서 반환한 데이터를 받아옵니다.
 
       if (response.ok) {
         onDelete(commentId); // 삭제 성공 시 전달받은 commentId를 삭제 처리
