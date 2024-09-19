@@ -28,8 +28,11 @@ function AccessPrivate() {
 
     try {
       const response = await axios.post(
-        `/api/groups/${groupId}/verify-password`,
-        { password }
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}/verify-password`,
+        { password },
+        {
+          withCredentials: true, // 자격 증명을 포함
+        }
       );
 
       if (response.status === 200) {

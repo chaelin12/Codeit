@@ -25,7 +25,12 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axios.get(`/api/posts/${postId}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_USER}/api/posts/${postId}`,
+          {
+            withCredentials: true,
+          }
+        );
         const data = response.data;
 
         // Set state with post data
@@ -109,12 +114,12 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
         const imageFormData = new FormData();
         imageFormData.append("image", image);
 
-        // Upload new image
         const imageUploadResponse = await axios.post(
-          "/api/image",
+          `${process.env.REACT_APP_USER}/api/image`,
           imageFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
           }
         );
 
@@ -134,8 +139,13 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
         isPublic,
       };
 
-      // Send update request
-      const response = await axios.put(`/api/posts/${postId}`, updatedPost);
+      const response = await axios.put(
+        `${process.env.REACT_USER}/api/posts/${postId}`,
+        updatedPost,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 200) {
         // Redirect to group detail page after successful update

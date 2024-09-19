@@ -31,11 +31,17 @@ function GroupDetail() {
 
   const fetchGroups = async () => {
     try {
-      const response = await axios.get(`/api/groups/${groupId}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        { withCredentials: true }
+      );
       console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
 
-      const postsResponse = await axios.get(`/api/groups/${groupId}/posts`);
+      const postsResponse = await axios.get(
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}/posts`,
+        { withCredentials: true }
+      );
       console.log("Posts Response:", postsResponse.data);
       const fetchedPosts = postsResponse.data.data || [];
       setPosts(fetchedPosts);
@@ -63,9 +69,13 @@ function GroupDetail() {
 
   const handleDelete = async (password) => {
     try {
-      await axios.delete(`/api/groups/${groupId}`, {
-        data: { password },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        {
+          data: { password },
+          withCredentials: true,
+        }
+      );
       console.log("Group deleted successfully");
       navigate("/groups");
     } catch (error) {
@@ -126,8 +136,10 @@ function GroupDetail() {
     try {
       const nextPage = page + 1; // Increment the page
       const postsResponse = await axios.get(
-        `/api/groups/${groupId}/posts?page=${nextPage}`
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}/posts?page=${nextPage}`,
+        { withCredentials: true } // Include credentials if needed
       );
+
       const morePosts = postsResponse.data.data || [];
 
       if (morePosts.length > 0) {
@@ -162,12 +174,16 @@ function GroupDetail() {
 
   const handleLikeClick = async () => {
     try {
-      const response = await fetch(`/api/groups/${groupId}/like`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(
+        `${process.env.REACT_USER}/groups/${groupId}/like`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

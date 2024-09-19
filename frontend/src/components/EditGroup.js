@@ -24,14 +24,12 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
         const imageFormData = new FormData();
         imageFormData.append("image", newImageFile);
 
-        // 이미지 업로드 요청
         const imageUploadResponse = await axios.post(
-          "/api/image",
+          `${process.env.REACT_APP_USER}/api/image`,
           imageFormData,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
           }
         );
 
@@ -47,14 +45,16 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
         password: groupPassword,
       };
 
-      // 그룹 정보 업데이트 요청
-      const updateResponse = await fetch(`/api/groups/${groupId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedGroup),
-      });
+      const updateResponse = await axios.put(
+        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        updatedGroup,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
       if (updateResponse.ok) {
         await onSave(updatedGroup);

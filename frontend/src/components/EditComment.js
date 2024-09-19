@@ -16,7 +16,13 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
 
     const fetchCommentData = async () => {
       try {
-        const response = await axios.get(`/api/comments/${commentId}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_USER}/api/comments/${commentId}`,
+          {
+            withCredentials: true, // 자격 증명이 필요할 경우 추가
+          }
+        );
+
         const data = response.data;
 
         // Populate fields with fetched comment data
@@ -48,9 +54,13 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
 
     try {
       const response = await axios.put(
-        `/api/comments/${commentId}`,
-        updatedComment
+        `${process.env.REACT_APP_USER}/api/comments/${commentId}`,
+        updatedComment,
+        {
+          withCredentials: true, // 자격 증명이 필요할 경우 추가
+        }
       );
+
       if (response.status === 200) {
         onSave(updatedComment); // Callback after successful update
         navigate(`/postdetail/${postId}`);

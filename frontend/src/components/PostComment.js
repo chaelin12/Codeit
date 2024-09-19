@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
@@ -20,13 +21,16 @@ const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
     };
 
     try {
-      const response = await fetch(`/api/posts/${postId}/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(commentData),
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_USER}/api/posts/${postId}/comments`,
+        commentData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         navigate(`/postdetail/${postId}`);

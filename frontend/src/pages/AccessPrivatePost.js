@@ -26,10 +26,12 @@ function AccessPrivatePost() {
     setError("");
 
     try {
-      console.log("Submitting password:", password); // Debug log
       const response = await axios.post(
-        `/api/posts/${postId}/verify-password`,
-        { password }
+        `${process.env.REACT_APP_USER}/api/posts/${postId}/verify-password`,
+        { password },
+        {
+          withCredentials: true, // 자격 증명을 포함
+        }
       );
 
       console.log("Server response:", response); // Debug log

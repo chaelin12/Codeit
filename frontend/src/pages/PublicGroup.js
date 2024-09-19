@@ -24,11 +24,16 @@ function PublicGroup() {
   useEffect(() => {
     const fetchGroups = async (pageNum) => {
       try {
-        const response = await axios.get(`/api/groups?page=${pageNum}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_USER}/api/groups?page=${pageNum}`,
+          { withCredentials: true }
+        );
+
         const fetchedGroups = await Promise.all(
           response.data.data.map(async (group) => {
             const isPublicResponse = await axios.get(
-              `/api/groups/${group.id}/is-public`
+              `${process.env.REACT_APP_USER}/api/groups/${group.id}/is-public`,
+              { withCredentials: true }
             );
             return { ...group, isPublic: isPublicResponse.data.isPublic };
           })

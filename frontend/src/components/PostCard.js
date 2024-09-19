@@ -25,7 +25,13 @@ function PostCard({
   useEffect(() => {
     const fetchIsPublic = async () => {
       try {
-        const response = await axios.get(`/api/posts/${id}/is-public`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_USER}/posts/${id}/is-public`,
+          {
+            withCredentials: true,
+          }
+        );
+
         setIsPublic(response.data.isPublic); // Update the state with the fetched value
       } catch (error) {
         console.error("Failed to fetch post visibility:", error);
