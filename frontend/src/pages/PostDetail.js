@@ -97,6 +97,13 @@ const PostDetail = () => {
   };
   const closeCommentDeleteModal = () => setIsCommentDeleteModalOpen(false);
 
+  const handlePostEditSave = (updatedPost) => {
+    setPost(updatedPost);
+    fetchPostData();
+    fetchComments();
+    closeEditModal();
+  };
+
   const handleCommentSubmit = (newComment) => {
     setComments((prevComments) =>
       Array.isArray(prevComments) ? [...prevComments, newComment] : [newComment]
@@ -108,13 +115,6 @@ const PostDetail = () => {
 
     fetchComments();
     closeCommentModal();
-  };
-
-  const handlePostEditSave = (updatedPost) => {
-    setPost(updatedPost);
-    fetchPostData();
-    fetchComments();
-    closeEditModal();
   };
 
   const handleCommentEditSave = (updatedComment) => {
@@ -170,7 +170,7 @@ const PostDetail = () => {
   const handlePostLikeClick = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_USER}/posts/${postId}/like`,
+        `${process.env.REACT_APP_USER}/posts/${postId}/like`,
         {},
         {
           headers: {
