@@ -5,9 +5,7 @@ const express = require("express");
 const app = express();
 
 const cors = require('cors');
-app.use(cors({
-  origin: 'http://localhost:3000' // 프론트엔드 서버의 주소
-}));
+app.use(cors());
 
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
