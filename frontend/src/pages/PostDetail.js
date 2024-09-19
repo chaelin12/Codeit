@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
@@ -33,7 +34,10 @@ const PostDetail = () => {
   // Move this function outside of useEffect so it can be reused
   const fetchPostData = async () => {
     try {
-      const response = await fetch(`/api/posts/${postId}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_USER}/api/posts/${postId}`,
+        { withCredentials: true }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch post data");
       }
@@ -53,7 +57,10 @@ const PostDetail = () => {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/posts/${postId}/comments`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_USER}/api/posts/${postId}/comments`,
+        { withCredentials: true }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch comments");
       }
@@ -137,8 +144,12 @@ const PostDetail = () => {
 
   const loadMoreComments = async () => {
     try {
-      const response = await fetch(
-        `/api/posts/${postId}/comments?page=${currentPage + 1}`
+      const response = await axios.get(
+        `${process.env.REACT_APP_USER}/api/posts/${postId}/comments`,
+        {
+          params: { page: currentPage + 1 },
+          withCredentials: true,
+        }
       );
       if (!response.ok) {
         throw new Error("Failed to fetch more comments");
@@ -158,12 +169,16 @@ const PostDetail = () => {
 
   const handlePostLikeClick = async () => {
     try {
-      const response = await fetch(`/api/posts/${postId}/like`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(
+        `${process.env.REACT_USER}/posts/${postId}/like`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

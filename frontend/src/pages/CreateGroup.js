@@ -75,12 +75,11 @@ function CreateGroup() {
         imageFormData.append("image", image);
 
         const imageUploadResponse = await axios.post(
-          "/api/image",
+          `${process.env.REACT_APP_USER}/api/image`,
           imageFormData,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true,
           }
         );
 
@@ -97,7 +96,13 @@ function CreateGroup() {
         password,
       };
 
-      const response = await axios.post("/api/groups", formData);
+      const response = await axios.post(
+        `${process.env.REACT_USER}/api/groups`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 201) {
         setModalInfo({

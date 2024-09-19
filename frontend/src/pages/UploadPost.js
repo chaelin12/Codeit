@@ -86,7 +86,6 @@ function UploadPost() {
             withCredentials: true,
           }
         );
-        
 
         imageUrl = imageUploadResponse.data.imageUrl;
       }
@@ -105,7 +104,9 @@ function UploadPost() {
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_작명}/api/groups/${groupId}/posts`, formData{ 
+        `${process.env.REACT_USER}/groups/${groupId}/posts`,
+        formData,
+        {
           withCredentials: true,
         }
       );
