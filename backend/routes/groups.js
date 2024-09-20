@@ -193,158 +193,154 @@ router.route('/')
                 res.status(400).json({err: '잘못된 요청입니다.'});
             }
 });
-
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() }); // 메모리 스토리지 사용
 router.route('/:id')
     //그룹 수정
-    .put(async (req, res) => {
+    .put(upload.single('image'), async (req, res) => {
     try {
         const groupId = req.params.id;
         const group = await Group.findOne({ id: groupId });
         if (!group) {
-        return res.status(404).json({ success: false, message: "존재하지 않습니다" });
+            return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
 
         const { mysqldb } = await setup();
 
         const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
         mysqldb.query(sql, [group.id], async (err, rows) => {
-        if (err || rows.length === 0) {
-            return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
-        }
-
-        try {
-            const salt = rows[0].salt;
-            const hashPw = sha(req.body.password + salt);
-            if (group.password === hashPw) {
-            const s3 = new AWS.S3();
-            // 같은 Key로 새 이미지를 업로드하면 자동으로 기존 이미지가 덮어씌워짐
-            const imageKey = group.imageUrl.split('/').pop();
-            const params = {
-                Bucket: process.env.AWS_BUCKET_NAME,
-                Key: imageKey, // 동일한 Key로 업로드
-                Body: req.body.image,
-                ContentType: 'image/jpeg', // 예시로 설정
-            };
-
-            s3.upload(params, async (err, data) => {
-                if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
-
-                // 그룹 정보 업데이트
-                await Group.updateOne({ id: groupId }, {
-                name: req.body.name,
-                imageUrl: data.Location, // 새로운 URL로 교체
-                isPublic: req.body.isPublic,
-                introduction: req.body.introduction,
-                });
-
-                const updatedGroup = await Group.findOne({ id: groupId });
-
-                res.status(200).json({
-                id: updatedGroup.id,
-                name: updatedGroup.name,
-                imageUrl: updatedGroup.imageUrl,
-                isPublic: updatedGroup.isPublic,
-                likeCount: updatedGroup.likeCount,
-                badges: updatedGroup.badges,
-                postCount: updatedGroup.postCount,
-                createdAt: updatedGroup.createdAt.toISOString(),
-                introduction: updatedGroup.introduction
-                });
-            });
-            } else {
-            res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+            if (err || rows.length === 0) {
+                return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
             }
-        } catch (err) {
-            console.error(err);
-            res.status(400).json({ message: "잘못된 요청입니다" });
-        }
+
+            try {
+                const salt = rows[0].salt;
+                const hashPw = sha(req.body.password + salt);
+                if (group.password === hashPw) {
+                    const s3 = new AWS.S3();
+                    const imageKey = group.imageUrl.split('/').pop(); // 기존 이미지 키 가져오기
+                    const params = {
+                        Bucket: process.env.AWS_BUCKET_NAME,
+                        Key: imageKey, // 동일한 Key로 업로드
+                        Body: req.file.buffer, // req.file.buffer에서 이미지 데이터 가져오기
+                        ContentType: req.file.mimetype || 'image/jpeg', // 파일 MIME 타입
+                    };
+
+                    s3.upload(params, async (err, data) => {
+                        if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
+
+                        // 그룹 정보 업데이트
+                        await Group.updateOne({ id: groupId }, {
+                            name: req.body.name,
+                            imageUrl: data.Location, // 새로운 URL로 교체
+                            isPublic: req.body.isPublic,
+                            introduction: req.body.introduction,
+                        });
+
+                        const updatedGroup = await Group.findOne({ id: groupId });
+
+                        res.status(200).json({
+                            id: updatedGroup.id,
+                            name: updatedGroup.name,
+                            imageUrl: updatedGroup.imageUrl,
+                            isPublic: updatedGroup.isPublic,
+                            likeCount: updatedGroup.likeCount,
+                            badges: updatedGroup.badges,
+                            postCount: updatedGroup.postCount,
+                            createdAt: updatedGroup.createdAt.toISOString(),
+                            introduction: updatedGroup.introduction
+                        });
+                    });
+                } else {
+                    res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+                }
+            } catch (err) {
+                console.error(err);
+                res.status(400).json({ message: "잘못된 요청입니다" });
+            }
         });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "서버 오류가 발생했습니다" });
     }
-    })
+})
+
 
   
-    
     //그룹 삭제
-    .delete(async(req,res)=>{ 
+    .delete(async (req, res) => { 
         try {
             const group = await Group.findOne({ id: req.params.id });
             if (!group) {
-              return res.status(404).json({ success: false, message: "존재하지 않습니다" });
+                return res.status(404).json({ success: false, message: "존재하지 않습니다" });
             }
-        
+
             // 비밀번호 검증
             const { mysqldb } = await setup();
             const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
             mysqldb.query(sql, [group.id], async (err, rows) => {
-              if (err || rows.length === 0) {
-                return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
-              }
-        
-              try {
-                const salt = rows[0].salt;
-                const hashPw = sha(req.body.password + salt);
-                if (group.password == hashPw) {
-                    const s3 = new AWS.S3();
-                  // 그룹 이미지 삭제 (S3에서)
-                  const imageKey = group.imageUrl.split('/').pop(); // S3의 Key 추출
-                  const deleteParams = {
-                    Bucket: process.env.AWS_BUCKET_NAME,
-                    Key: imageKey
-                  };
-                  s3.deleteObject(deleteParams, (err, data) => {
-                    if (err) {
-                      console.error("S3 이미지 삭제 오류:", err);
-                    }
-                  });
-        
-                  // 그룹에 관련된 게시글 조회 및 삭제
-                  const posts = await Post.find({ groupId: req.params.id });
-                  for (const post of posts) {
-                    // 게시글 이미지 삭제 (S3에서)
-                    if (post.imageUrl) {
-                      const postImageKey = post.imageUrl.split('/').pop(); // S3의 Key 추출
-                      const postDeleteParams = {
-                        Bucket: process.env.AWS_BUCKET_NAME,
-                        Key: postImageKey
-                      };
-                      s3.deleteObject(postDeleteParams, (err, data) => {
-                        if (err) {
-                          console.error("S3 게시글 이미지 삭제 오류:", err);
-                        }
-                      });
-                    }
-                  }
-        
-                  // 그룹 삭제
-                  await Group.deleteOne({ id: req.params.id });
-        
-                  // 그룹에 관련된 게시글 및 댓글 삭제
-                  await Post.deleteMany({ groupId: req.params.id });
-                  await Comment.deleteMany({ groupId: req.params.id });
-        
-                  // MySQL에서 그룹의 salt 정보 삭제
-                  const deleteSaltSql = `DELETE FROM GroupSalt WHERE id = ?`;
-                  mysqldb.query(deleteSaltSql, [group.id], (err, result) => {
-                    if (err) {
-                      console.error("MySQL salt 삭제 오류:", err);
-                    }
-                  });
-        
-                  res.status(200).json({ message: "그룹 삭제 성공" });
-                } else {
-                  res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+                if (err || rows.length === 0) {
+                    return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
                 }
-              } catch (err) {
-                res.status(400).json({ message: "잘못된 요청입니다" });
-              }
+
+                try {
+                    const salt = rows[0].salt;
+                    const hashPw = sha(req.body.password + salt);
+                    if (group.password === hashPw) {
+                        const s3 = new AWS.S3();
+                        const imageKey = group.imageUrl.split('/').pop(); // S3의 Key 추출
+
+                        // 그룹 이미지 삭제
+                        const deleteParams = {
+                            Bucket: process.env.AWS_BUCKET_NAME,
+                            Key: imageKey
+                        };
+                        
+                        await s3.deleteObject(deleteParams).promise(); // 비동기 삭제
+
+                        // 그룹에 관련된 게시글 조회 및 삭제
+                        const posts = await Post.find({ groupId: req.params.id });
+                        for (const post of posts) {
+                            if (post.imageUrl) {
+                                const postImageKey = post.imageUrl.split('/').pop(); // S3의 Key 추출
+                                const postDeleteParams = {
+                                    Bucket: process.env.AWS_BUCKET_NAME,
+                                    Key: postImageKey
+                                };
+                                await s3.deleteObject(postDeleteParams).promise(); // 비동기 삭제
+                            }
+                        }
+
+                        // 그룹 삭제
+                        await Group.deleteOne({ id: req.params.id });
+
+                        // 그룹에 관련된 게시글 및 댓글 삭제
+                        await Post.deleteMany({ groupId: req.params.id });
+                        await Comment.deleteMany({ groupId: req.params.id });
+
+                        // MySQL에서 그룹의 salt 정보 삭제
+                        const deleteSaltSql = `DELETE FROM GroupSalt WHERE id = ?`;
+                        mysqldb.query(deleteSaltSql, [group.id], (err) => {
+                            if (err) {
+                                console.error("MySQL salt 삭제 오류:", err);
+                            }
+                        });
+
+                        res.status(200).json({ message: "그룹 삭제 성공" });
+                    } else {
+                        res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    res.status(400).json({ message: "잘못된 요청입니다" });
+                }
             });
-          } catch (err) {
+        } catch (err) {
+            console.error(err);
             res.status(500).json({ message: "서버 오류가 발생했습니다" });
-          }
-        })
+        }
+    })
+
     //그룹 상세 정보 확인
     .get(async(req,res)=>{
         try{
