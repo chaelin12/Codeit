@@ -39,12 +39,10 @@ function AccessPrivate() {
           }
         );
 
-        console.log("Server response:", response); // Debug log
         if (response.status === 200) {
           navigate(`/GroupDetail/${groupId}`);
         }
       } catch (error) {
-        console.error("Error during password verification:", error); // Debug log
         if (error.response && error.response.status === 401) {
           setError("비밀번호가 틀렸습니다");
         } else {
