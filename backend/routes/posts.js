@@ -39,10 +39,14 @@ router.route('/:id')
 
                         // 새로운 이미지 업로드
                         let newImageUrl = post.imageUrl;
+                        // 고유한 파일명을 위해 랜덤 해시값을 파일명에 추가
+                        const uniqueSuffix = crypto.randomBytes(16).toString('hex');
+                        const extension = req.file.originalname.split('.').pop(); // 파일 확장자
+                        const fileName = `${uniqueSuffix}.${extension}`; // 고유한 파일명 생성
                         if (req.file) { // 새 이미지가 업로드되었을 경우
                             const uploadParams = {
                                 Bucket: AWS_S3_BUCKET_NAME, // S3 버킷 이름
-                                Key: `${Date.now()}_${req.file.originalname}`, // 고유한 파일명 생성
+                                Key: fileName, // 고유한 파일명 생성
                                 Body: req.file.buffer,
                                 ContentType: req.file.mimetype,
                             };

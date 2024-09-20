@@ -56,7 +56,7 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
         }
       );
 
-      if (updateResponse.ok) {
+      if (updateResponse.status===200) {
         await onSave(updatedGroup);
         closeModal();
         navigate(`/groupdetail/${groupId}`);

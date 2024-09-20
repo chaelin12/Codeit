@@ -196,79 +196,94 @@ router.route('/')
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() }); // 메모리 스토리지 사용
 router.route('/:id')
-    //그룹 수정
+    // 그룹 수정
     .put(upload.single('image'), async (req, res) => {
-    try {
-        const groupId = req.params.id;
-        const group = await Group.findOne({ id: groupId });
-        if (!group) {
-            return res.status(404).json({ success: false, message: "존재하지 않습니다" });
-        }
-
-        const { mysqldb } = await setup();
-
-        const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
-        mysqldb.query(sql, [group.id], async (err, rows) => {
-            if (err || rows.length === 0) {
-                return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
+        try {
+            const groupId = req.params.id;
+            const group = await Group.findOne({ id: groupId });
+            if (!group) {
+                return res.status(404).json({ success: false, message: "존재하지 않습니다" });
             }
 
-            try {
-                const salt = rows[0].salt;
-                const hashPw = sha(req.body.password + salt);
-                if (group.password === hashPw) {
-                    // AWS S3 설정
-                    const s3 = new AWS.S3({
-                        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-                        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-                        region: process.env.AWS_REGION // S3 버킷이 위치한 리전
-                    });
-                    const imageKey = group.imageUrl.split('/').pop(); // 기존 이미지 키 가져오기
-                    const params = {
-                        Bucket: process.env.AWS_S3_BUCKET_NAME,
-                        Key: imageKey, // 동일한 Key로 업로드
-                        Body: req.file.buffer, // req.file.buffer에서 이미지 데이터 가져오기
-                        ContentType: req.file.mimetype || 'image/jpeg', // 파일 MIME 타입
-                    };
-
-                    s3.upload(params, async (err, data) => {
-                        if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
-
-                        // 그룹 정보 업데이트
-                        await Group.updateOne({ id: groupId }, {
-                            name: req.body.name,
-                            imageUrl: data.Location, // 새로운 URL로 교체
-                            isPublic: req.body.isPublic,
-                            introduction: req.body.introduction,
-                        });
-
-                        const updatedGroup = await Group.findOne({ id: groupId });
-
-                        res.status(200).json({
-                            id: updatedGroup.id,
-                            name: updatedGroup.name,
-                            imageUrl: updatedGroup.imageUrl,
-                            isPublic: updatedGroup.isPublic,
-                            likeCount: updatedGroup.likeCount,
-                            badges: updatedGroup.badges,
-                            postCount: updatedGroup.postCount,
-                            createdAt: updatedGroup.createdAt.toISOString(),
-                            introduction: updatedGroup.introduction
-                        });
-                    });
-                } else {
-                    res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+            const { mysqldb } = await setup();
+            const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
+            mysqldb.query(sql, [group.id], async (err, rows) => {
+                if (err || rows.length === 0) {
+                    return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
                 }
-            } catch (err) {
-                console.error(err);
-                res.status(400).json({ message: "잘못된 요청입니다" });
-            }
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "서버 오류가 발생했습니다" });
-    }
-})
+
+                try {
+                    const salt = rows[0].salt;
+                    const hashPw = sha(req.body.password + salt);
+                    if (group.password === hashPw) {
+                        // AWS S3 설정
+                        const s3 = new AWS.S3({
+                            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                            region: process.env.AWS_REGION // S3 버킷이 위치한 리전
+                        });
+
+                        // 기존 이미지 삭제
+                        const imageKey = group.imageUrl.split('/').pop(); // 기존 이미지 키 가져오기
+                        const deleteParams = {
+                            Bucket: process.env.AWS_S3_BUCKET_NAME,
+                            Key: imageKey
+                        };
+
+                        await s3.deleteObject(deleteParams).promise(); // 기존 이미지 삭제
+
+                        // 새로운 고유한 파일명 생성
+                        const uniqueSuffix = crypto.randomBytes(16).toString('hex');
+                        const extension = req.file.originalname.split('.').pop(); // 파일 확장자
+                        const fileName = `${uniqueSuffix}.${extension}`; // 고유한 파일명 생성
+
+                        // 새로운 이미지 업로드
+                        const uploadParams = {
+                            Bucket: process.env.AWS_S3_BUCKET_NAME,
+                            Key: fileName, // 고유한 파일명으로 Key 설정
+                            Body: req.file.buffer, // req.file.buffer에서 이미지 데이터 가져오기
+                            ContentType: req.file.mimetype || 'image/jpeg', // 파일 MIME 타입
+                        };
+
+                        s3.upload(uploadParams, async (err, data) => {
+                            if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
+
+                            // 그룹 정보 업데이트
+                            await Group.updateOne({ id: groupId }, {
+                                name: req.body.name,
+                                imageUrl: data.Location, // 새로운 URL로 교체
+                                isPublic: req.body.isPublic,
+                                introduction: req.body.introduction,
+                            });
+
+                            const updatedGroup = await Group.findOne({ id: groupId });
+
+                            res.status(200).json({
+                                id: updatedGroup.id,
+                                name: updatedGroup.name,
+                                imageUrl: updatedGroup.imageUrl,
+                                isPublic: updatedGroup.isPublic,
+                                likeCount: updatedGroup.likeCount,
+                                badges: updatedGroup.badges,
+                                postCount: updatedGroup.postCount,
+                                createdAt: updatedGroup.createdAt.toISOString(),
+                                introduction: updatedGroup.introduction
+                            });
+                        });
+                    } else {
+                        res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    res.status(400).json({ message: "잘못된 요청입니다" });
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: "서버 오류가 발생했습니다" });
+        }
+    })
+
 
 
   
