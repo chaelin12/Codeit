@@ -28,7 +28,6 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
           `${process.env.REACT_APP_USER}/image`,
           imageFormData,
           {
-            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );
