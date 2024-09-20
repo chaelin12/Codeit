@@ -35,6 +35,9 @@ function AccessPrivate() {
         }
       );
 
+      console.log("API Base URL: ", process.env.REACT_APP_USER);
+      console.log("API Response: ", response);
+
       if (response.status === 200) {
         navigate(`/GroupDetail/${groupId}`);
       }
