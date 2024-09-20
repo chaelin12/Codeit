@@ -296,7 +296,7 @@ router.route('/:id')
                             Key: imageKey
                         };
                         
-                        await s3.deleteObject(deleteParams).promise(); // 비동기 삭제
+                        await s3.DeleteObject(deleteParams).promise(); // 비동기 삭제
 
                         // 그룹에 관련된 게시글 조회 및 삭제
                         const posts = await Post.find({ groupId: req.params.id });
@@ -307,7 +307,7 @@ router.route('/:id')
                                     Bucket: process.env.AWS_BUCKET_NAME,
                                     Key: postImageKey
                                 };
-                                await s3.deleteObject(postDeleteParams).promise(); // 비동기 삭제
+                                await s3.DeleteObject(postDeleteParams).promise(); // 비동기 삭제
                             }
                         }
 
