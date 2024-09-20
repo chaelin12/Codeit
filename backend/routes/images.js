@@ -34,7 +34,6 @@ router.post('/', upload.single('image'), (req, res) => {
       Key: fileName, // S3에 저장될 파일명
       Body: req.file.buffer, // 파일 데이터 (buffer)
       ContentType: req.file.mimetype, // 파일 MIME 타입
-      ACL: 'public-read' // 파일을 공개적으로 읽을 수 있도록 설정 (옵션)
     };
 
     // S3에 파일 업로드
