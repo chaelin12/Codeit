@@ -28,6 +28,7 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
           `${process.env.REACT_APP_USER}/image`,
           imageFormData,
           {
+            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true,
           }
         );
@@ -55,7 +56,7 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
         }
       );
 
-      if (updateResponse.status === 200) {
+      if (updateResponse.ok) {
         await onSave(updatedGroup);
         closeModal();
         navigate(`/groupdetail/${groupId}`);
