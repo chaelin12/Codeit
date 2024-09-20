@@ -21,38 +21,39 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
 
   const navigate = useNavigate();
 
-  // Load post data when modal is opened and postId is provided
-  useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_USER}/posts/${postId}`,
-          {
-            withCredentials: true,
-          }
-        );
-        const data = response.data;
-
-        // Set state with post data
-        setPost(data);
-        setNickname(data.nickname || ""); // Fallback to empty string if null
-        setTitle(data.title || "");
-        setContent(data.content || "");
-        setTags(data.tags || []);
-        setLocation(data.location || "");
-        setMoment(new Date(data.moment).toISOString().slice(0, 10)); // Set moment as 'YYYY-MM-DD'
-        setIsPublic(data.isPublic); // Boolean flag
-        setCurrentImageUrl(data.imageUrl || ""); // Handle current image URL
-      } catch (error) {
-        console.error("Error fetching post data:", error);
-        setErrorMessage("포스트 데이터를 불러오는 중 오류가 발생했습니다.");
+// fetchPostData 함수 정의 (컴포넌트 내부에서 사용 가능한 상태 접근)
+const fetchPostData = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_USER}/posts/${postId}`,
+      {
+        withCredentials: true,
       }
-    };
+    );
+    const data = response.data;
 
-    if (postId && isOpen) {
-      fetchPostData(); // Only fetch data when the modal is open and postId is available
-    }
-  }, [postId, isOpen]);
+    // 상태 설정
+    setPost(data);
+    setNickname(data.nickname || ""); // Fallback to empty string if null
+    setTitle(data.title || "");
+    setContent(data.content || "");
+    setTags(data.tags || []);
+    setLocation(data.location || "");
+    setMoment(new Date(data.moment).toISOString().slice(0, 10)); // Set moment as 'YYYY-MM-DD'
+    setIsPublic(data.isPublic); // Boolean flag
+    setCurrentImageUrl(data.imageUrl || ""); // Handle current image URL
+  } catch (error) {
+    console.error("Error fetching post data:", error);
+    setErrorMessage("포스트 데이터를 불러오는 중 오류가 발생했습니다.");
+  }
+};
+
+// 컴포넌트 내부 useEffect
+useEffect(() => {
+  if (postId && isOpen) {
+    fetchPostData(); // 상태는 내부에서 처리하므로 간단히 호출
+  }
+}, [postId, isOpen]); // postId와 isOpen이 변경될 때만 fetchPostData 호출
 
   // Trigger file input to select an image
   const triggerFileInput = () => {

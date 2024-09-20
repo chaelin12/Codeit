@@ -10,38 +10,38 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Load comment data when modal opens
-  useEffect(() => {
-    console.log("commentId:", commentId); // Log the commentId for debugging
-
-    const fetchCommentData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_USER}/comments/${commentId}`,
-          {
-            withCredentials: true, // 자격 증명이 필요할 경우 추가
-          }
-        );
-
-        const data = response.data;
-
-        // Populate fields with fetched comment data
-        setNickname(data.nickname || "");
-        setContent(data.content || "");
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setErrorMessage("해당 댓글을 찾을 수 없습니다.");
-        } else {
-          console.error("Error fetching comment data:", error);
-          setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
-        }
+// fetchCommentData 함수 정의 (컴포넌트 내부 상태 접근)
+const fetchCommentData = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_USER}/comments/${commentId}`,
+      {
+        withCredentials: true, // 자격 증명이 필요할 경우 추가
       }
-    };
+    );
 
-    if (commentId && isOpen) {
-      fetchCommentData();
+    const data = response.data;
+
+    // 상태 설정
+    setNickname(data.nickname || "");
+    setContent(data.content || "");
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      setErrorMessage("해당 댓글을 찾을 수 없습니다.");
+    } else {
+      console.error("Error fetching comment data:", error);
+      setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
     }
-  }, [commentId, isOpen]);
+  }
+};
+
+// useEffect 내부에서 fetchCommentData 호출
+useEffect(() => {
+  if (commentId && isOpen) {
+    fetchCommentData(); // 상태는 내부에서 처리하므로 간단히 호출
+  }
+}, [commentId, isOpen]); // commentId와 isOpen이 변경될 때만 fetchCommentData 호출
+
 
   // Handle Save
   const handleSave = async () => {

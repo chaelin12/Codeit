@@ -35,14 +35,12 @@ function GroupDetail() {
         `${process.env.REACT_APP_USER}/groups/${groupId}`,
         { withCredentials: true }
       );
-      console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
 
       const postsResponse = await axios.get(
         `${process.env.REACT_APP_USER}/groups/${groupId}/posts`,
         { withCredentials: true }
       );
-      console.log("Posts Response:", postsResponse.data);
       const fetchedPosts = postsResponse.data.data || [];
       setPosts(fetchedPosts);
 
@@ -50,7 +48,6 @@ function GroupDetail() {
       const publicPosts = fetchedPosts.filter((post) => post.isPublic);
       setFilteredPosts(publicPosts);
 
-      console.log(filteredPosts.map((post) => post.commentCount));
 
       setLoading(false);
     } catch (error) {
@@ -73,7 +70,6 @@ function GroupDetail() {
         data: { password },
         withCredentials: true,
       });
-      console.log("Group deleted successfully");
       navigate("/groups");
     } catch (error) {
       console.error("Error deleting group:", error.message);
@@ -92,7 +88,6 @@ function GroupDetail() {
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
   const handleSave = (updatedDetails) => {
-    console.log("Updated Group Details:", updatedDetails);
     setGroupDetail({ ...groupDetail, ...updatedDetails });
   };
 
@@ -161,7 +156,6 @@ function GroupDetail() {
   const handlePublicClick = () => {
     setActiveButton("public");
     filterAndSortPosts(posts, "public", filter);
-    console.log("공개 추억 보기");
   };
 
   const handlePrivateClick = () => {

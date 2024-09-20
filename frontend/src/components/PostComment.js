@@ -45,7 +45,6 @@ const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
       }
 
       const result = await response.json();
-      console.log("Comment submitted:", result);
 
       // Call the callback to add the comment to the list
       onSubmit(result); // Changed to onSubmit

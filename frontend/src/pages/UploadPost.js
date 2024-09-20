@@ -111,8 +111,6 @@ function UploadPost() {
         }
       );
 
-      console.log("Response status:", response.status);
-      console.log("Response data:", response.data);
 
       if (response.status === 200 || response.status === 201) {
         setModalInfo({

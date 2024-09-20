@@ -24,14 +24,13 @@ function PublicGroup() {
   useEffect(() => {
     const fetchGroups = async (pageNum) => {
       try {
-        console.log(`Fetching groups for page ${pageNum}...`); // 로그 추가: 페이지 번호 출력
+     
 
         const response = await axios.get(
           `${process.env.REACT_APP_USER}/groups?page=${pageNum}`,
           { withCredentials: true }
         );
-        console.log("API Base URL: ", process.env.REACT_APP_USER);
-        console.log("API Response: ", response); // 로그 추가: API 응답 확인
+    
 
         const groupData = response.data.data;
         if (!groupData) {
@@ -39,12 +38,12 @@ function PublicGroup() {
           return;
         }
 
-        console.log("Fetched Groups Data: ", groupData); // 로그 추가: 가져온 그룹 데이터 확인
+    
 
         const fetchedGroups = await Promise.all(
           (groupData || []).map(async (group) => {
             const groupId = group.id;
-            console.log(`Fetching isPublic status for group ${groupId}`); // 로그 추가: 각 그룹의 isPublic 상태 요청
+     
 
             try {
               const isPublicResponse = await axios.get(
@@ -62,19 +61,19 @@ function PublicGroup() {
           })
         );
 
-        console.log("Final Fetched Groups with isPublic: ", fetchedGroups); // 로그 추가: isPublic 상태를 포함한 최종 그룹 데이터
+  
 
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
           const newGroups = fetchedGroups.filter(
             (group) => !existingGroupIds.has(group.id)
           );
-          console.log("New Groups to Add: ", newGroups); // 로그 추가: 새로 추가될 그룹들
+       
           return [...prevGroups, ...newGroups];
         });
 
         if (fetchedGroups.length === 0) {
-          console.log("No more groups to fetch"); // 로그 추가: 더 이상 가져올 그룹이 없을 때
+        
           setHasMore(false);
         }
       } catch (error) {

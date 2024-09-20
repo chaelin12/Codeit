@@ -46,9 +46,6 @@ function CreateGroup() {
       ...input,
       [id]: inputValue,
     });
-
-    // 입력값을 콘솔에 출력
-    console.log(`Field ID: ${id}, Value:`, inputValue);
   };
 
   const handleToggle = () => {
@@ -57,8 +54,6 @@ function CreateGroup() {
       isPublic: !isPublic,
     });
 
-    // 공개 여부를 콘솔에 출력
-    console.log(`isPublic: ${!isPublic}`);
   };
 
   const handleSubmit = async (e) => {
@@ -81,7 +76,7 @@ function CreateGroup() {
         );
 
         imageUrl = imageUploadResponse.data.imageUrl; // 서버에서 반환한 이미지 URL 사용
-        console.log("Uploaded Image URL:", imageUrl);
+
       }
 
       // 2. 그룹 생성 요청
