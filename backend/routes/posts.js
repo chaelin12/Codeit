@@ -8,77 +8,100 @@ const fs = require('fs');
 const path = require('path');
 router.route('/:id')
     //게시글 수정
-    .put(async (req,res)=>{
-        const post = await Post.findOne({id:req.params.id});
+    .put(async (req, res) => {
+        const post = await Post.findOne({ id: req.params.id });
         if (!post) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
         }
-        //비밀번호 검증
+
+        // 비밀번호 검증
         const { mysqldb } = await setup();
         const sql = `SELECT salt FROM PostSalt WHERE id=?`;
         mysqldb.query(sql, [post.id], async (err, rows) => {
-        if (err || rows.length === 0) {
-            return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
-        }
-        try {
-            const salt = rows[0].salt;
-            const hashPw = sha(req.body.postPassword + salt);
-            if (post.postPassword === hashPw) {
-                try{
-                    const oldImageUrl = path.join(__dirname, '../public', post.imageUrl);
-                    await Post.updateOne({
-                        id:req.params.id,//업데이트 대상 검색
-                    },{
-                        nickname: req.body.nickname,
-                        title : req.body.title,
-                        content : req.body.content,
-                        imageUrl: req.body.imageUrl,
-                        tags: req.body.tags,
-                        location: req.body.location,
-                        moment: req.body.moment,
-                        isPublic: req.body.isPublic
-                    });
-                    // 업데이트된 그룹 정보 가져오기
-                    const updatedPost = await Post.findOne({ id: req.params.id });
-                    //이미지 새 이미지로 로컬에서 교체
-                    fs.rename(oldImageUrl,('./public/'+post.imageUrl),(err)=>{
-                        if(err){
-                            console.error(err);
-                        }
-                    });
-            
-                    // 응답으로 보낼 데이터 형식 조정
-                    const response = {
-                        id: updatedPost.id,
-                        groupId: updatedPost.groupId,
-                        nickname: updatedPost.nickname,
-                        title: updatedPost.title,
-                        content: updatedPost.content,
-                        imageUrl: updatedPost.imageUrl,
-                        tags: updatedPost.tags,
-                        location: updatedPost.location,
-                        moment: updatedPost.moment,
-                        isPublic: updatedPost.isPublic,
-                        likeCount: updatedPost.likeCount,
-                        commentCount: updatedPost.commentCount,
-                        createdAt: updatedPost.createdAt.toISOString() // ISO 형식으로 변환
-                    };
-                    res.status(200).json(response);
-                }catch(err){
-                    console.error(err);
-                }
-        }else{
-            res.status(403).json({message : "비밀번호가 틀렸습니다"})
-        }
-        }catch(err){
-                res.status(400).json({message : "잘못된 요청입니다"});
+            if (err || rows.length === 0) {
+                return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
             }
-        })
+            try {
+                const salt = rows[0].salt;
+                const hashPw = sha(req.body.postPassword + salt);
+                if (post.postPassword === hashPw) {
+                    try {
+                        const s3 = new AWS.S3();
+
+                        // 기존 이미지 삭제
+                        if (post.imageUrl) {
+                            const oldImageKey = post.imageUrl.split('/').pop(); // 기존 이미지의 S3 키 추출
+                            const deleteParams = {
+                                Bucket: 'your-s3-bucket-name', // S3 버킷 이름
+                                Key: oldImageKey,
+                            };
+                            await s3.deleteObject(deleteParams).promise();
+                        }
+
+                        // 새로운 이미지 업로드
+                        let newImageUrl = post.imageUrl;
+                        if (req.file) { // 새 이미지가 업로드되었을 경우
+                            const uploadParams = {
+                                Bucket: 'your-s3-bucket-name', // S3 버킷 이름
+                                Key: `${Date.now()}_${req.file.originalname}`, // 고유한 파일명 생성
+                                Body: req.file.buffer,
+                                ContentType: req.file.mimetype,
+                            };
+                            const uploadResult = await s3.upload(uploadParams).promise();
+                            newImageUrl = uploadResult.Location; // 새 이미지의 S3 URL
+                        }
+
+                        // 게시글 업데이트
+                        await Post.updateOne({
+                            id: req.params.id, // 업데이트 대상 검색
+                        }, {
+                            nickname: req.body.nickname,
+                            title: req.body.title,
+                            content: req.body.content,
+                            imageUrl: newImageUrl, // 업데이트된 이미지 URL 저장
+                            tags: req.body.tags,
+                            location: req.body.location,
+                            moment: req.body.moment,
+                            isPublic: req.body.isPublic,
+                        });
+
+                        // 업데이트된 게시글 정보 가져오기
+                        const updatedPost = await Post.findOne({ id: req.params.id });
+
+                        // 응답으로 보낼 데이터 형식 조정
+                        const response = {
+                            id: updatedPost.id,
+                            groupId: updatedPost.groupId,
+                            nickname: updatedPost.nickname,
+                            title: updatedPost.title,
+                            content: updatedPost.content,
+                            imageUrl: updatedPost.imageUrl, // S3 URL로 업데이트된 이미지 URL 반환
+                            tags: updatedPost.tags,
+                            location: updatedPost.location,
+                            moment: updatedPost.moment,
+                            isPublic: updatedPost.isPublic,
+                            likeCount: updatedPost.likeCount,
+                            commentCount: updatedPost.commentCount,
+                            createdAt: updatedPost.createdAt.toISOString(), // ISO 형식으로 변환
+                        };
+                        res.status(200).json(response);
+                    } catch (err) {
+                        console.error(err);
+                        res.status(500).json({ message: "서버 오류 발생" });
+                    }
+                } else {
+                    res.status(403).json({ message: "비밀번호가 틀렸습니다" });
+                }
+            } catch (err) {
+                res.status(400).json({ message: "잘못된 요청입니다" });
+            }
+        });
     })
+
     // 게시글 삭제
     .delete(async (req, res) => {
         const post = await Post.findOne({ id: req.params.id });
-        
+
         if (!post) {
             return res.status(404).json({ success: false, message: "존재하지 않는 게시글입니다." });
         }
@@ -94,14 +117,18 @@ router.route('/:id')
             try {
                 const salt = rows[0].salt;
                 const hashPw = sha(req.body.postPassword + salt);
-                
+
                 if (post.postPassword === hashPw) {
-                    // 이미지 파일 삭제
-                    fs.unlink('./public' + post.imageUrl, (err) => {
-                        if (err) {
-                            console.error("이미지 삭제 오류:", err);
-                        }
-                    });
+                    // S3에서 이미지 삭제
+                    if (post.imageUrl) {
+                        const s3 = new AWS.S3();
+                        const imageKey = post.imageUrl.split('/').pop(); // S3 키 추출
+                        const deleteParams = {
+                            Bucket: 'your-s3-bucket-name', // S3 버킷 이름
+                            Key: imageKey,
+                        };
+                        await s3.deleteObject(deleteParams).promise();
+                    }
 
                     // 게시글 삭제
                     await Post.deleteOne({ id: req.params.id });
@@ -134,6 +161,7 @@ router.route('/:id')
             }
         });
     })
+
 
     //게시글 상세 정보 조회
     .get(async (req,res)=>{
