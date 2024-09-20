@@ -38,7 +38,7 @@ function PrivateGroup() {
           fetchedGroups.map(async (group) => {
             try {
               const isPublicResponse = await axios.get(
-                `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+                `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
                 { withCredentials: true }
               );
               return { ...group, isPublic: isPublicResponse.data.isPublic };
