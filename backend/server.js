@@ -39,8 +39,6 @@ app.use(
     cookie: { maxAge: 1000 * 60 * 15 } // 세션 유효 기간 (15분)
   })
 );
-// 정적 파일 제공 설정
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
 // 모든 요청에 대해 index.html 제공
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));

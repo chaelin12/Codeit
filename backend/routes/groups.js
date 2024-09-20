@@ -5,6 +5,7 @@ const Group = require('../schemas/group');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const path = require('path');
+const AWS = require('aws-sdk');
 const checkSevenDayStreak = (posts) => {
     if (!posts || !Array.isArray(posts)) return false;
 

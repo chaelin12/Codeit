@@ -4,8 +4,7 @@ const sha = require("sha256");
 const Group = require('../schemas/group');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
-const fs = require('fs');
-const path = require('path');
+const AWS = require('aws-sdk');
 router.route('/:id')
     //게시글 수정
     .put(async (req, res) => {
