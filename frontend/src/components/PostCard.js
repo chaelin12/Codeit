@@ -1,4 +1,4 @@
-import axios from "axios"; // Axios to fetch the isPublic value
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bubble from "../assets/pictures/bubble.png";
@@ -6,7 +6,7 @@ import flower from "../assets/pictures/flower.png";
 import "./PostCard.css";
 
 function PostCard({
-  id,
+  id: postId, // Renaming id to postId
   nickname,
   title,
   imageUrl,
@@ -26,7 +26,7 @@ function PostCard({
     const fetchIsPublic = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_USER}/posts/${id}/is-public`,
+          `${process.env.REACT_APP_USER}/api/posts/${postId}/is-public`, // Updated API endpoint
           {
             withCredentials: true,
           }
@@ -38,13 +38,13 @@ function PostCard({
       }
     };
     fetchIsPublic();
-  }, [id]);
+  }, [postId]);
 
   const handleTitleClick = () => {
     if (isPublic) {
-      navigate(`/PostDetail/${id}`);
+      navigate(`/PostDetail/${postId}`);
     } else {
-      navigate(`/accessPrivatepost/${id}`); // Redirect to AccessPrivate page for private posts
+      navigate(`/accessPrivatepost/${postId}`); // Redirect to AccessPrivate page for private posts
     }
   };
 
