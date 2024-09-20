@@ -51,10 +51,6 @@ function PublicGroup() {
                 `${process.env.REACT_APP_USER}/groups/${groupId}/is-public`,
                 { withCredentials: true }
               );
-              console.log(
-                `Group ${groupId} isPublic status: `,
-                isPublicResponse.data.isPublic
-              ); // 로그 추가: isPublic 응답
               return { ...group, isPublic: isPublicResponse.data.isPublic };
             } catch (error) {
               console.error(
