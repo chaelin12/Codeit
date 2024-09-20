@@ -314,8 +314,6 @@ router.route('/:id')
                             region: process.env.AWS_REGION // S3 버킷이 위치한 리전
                         });
                         const imageKey = group.imageUrl.split('/').pop(); // S3의 Key 추출
-                        console.log(imageKey);
-                        console.log('Bucket Name:', process.env.AWS_S3_BUCKET_NAME);
 
                         // 그룹 이미지 삭제
                         const deleteParams = {

@@ -127,7 +127,7 @@ router.route('/:id')
                         const s3 = new AWS.S3();
                         const imageKey = post.imageUrl.split('/').pop(); // S3 키 추출
                         const deleteParams = {
-                            Bucket: 'your-s3-bucket-name', // S3 버킷 이름
+                            Bucket:process.env.AWS_S3_BUCKET_NAME, // S3 버킷 이름
                             Key: imageKey,
                         };
                         await s3.deleteObject(deleteParams).promise();
