@@ -25,8 +25,9 @@ function AccessPrivate() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    console.log("Submitting password:", password);
+
     try {
+      console.log("Submitting password:", password);
       const response = await axios.post(
         `${process.env.REACT_APP_USER}/groups/${groupId}/verify-password`,
         { password },
