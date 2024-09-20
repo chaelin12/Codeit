@@ -27,7 +27,7 @@ function PublicGroup() {
         console.log(`Fetching groups for page ${pageNum}...`); // 로그 추가: 페이지 번호 출력
 
         const response = await axios.get(
-          `${process.env.REACT_APP_USER}/api/groups?page=${pageNum}`,
+          `${process.env.REACT_APP_USER}/groups?page=${pageNum}`,
           { withCredentials: true }
         );
         console.log("API Base URL: ", process.env.REACT_APP_USER);
@@ -48,7 +48,7 @@ function PublicGroup() {
 
             try {
               const isPublicResponse = await axios.get(
-                `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
+                `${process.env.REACT_APP_USER}/groups/${groupId}/is-public`,
                 { withCredentials: true }
               );
               console.log(

@@ -64,9 +64,6 @@ function CreateGroup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 제출된 모든 값을 콘솔에 출력
-    console.log("Submitting form with data:", input);
-
     try {
       // 1. 이미지를 먼저 업로드하고 서버로부터 이미지 URL을 반환받음
       let imageUrl = "";
@@ -75,7 +72,7 @@ function CreateGroup() {
         imageFormData.append("image", image);
 
         const imageUploadResponse = await axios.post(
-          `${process.env.REACT_APP_USER}/api/image`,
+          `${process.env.REACT_APP_USER}/image`,
           imageFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -97,13 +94,12 @@ function CreateGroup() {
       };
 
       const response = await axios.post(
-        `${process.env.REACT_USER}/api/groups`,
+        `${process.env.REACT_USER}/groups`,
         formData,
         {
           withCredentials: true,
         }
       );
-
       if (response.status === 201) {
         setModalInfo({
           title: "그룹 만들기 성공",

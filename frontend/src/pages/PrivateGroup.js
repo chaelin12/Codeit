@@ -25,7 +25,7 @@ function PrivateGroup() {
     const fetchGroups = async (pageNum) => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_USER}/api/groups?page=${pageNum}`,
+          `${process.env.REACT_APP_USER}/groups?page=${pageNum}`,
           { withCredentials: true }
         );
 
@@ -36,7 +36,7 @@ function PrivateGroup() {
             console.log("Groups Data : ", response.data.data);
             try {
               const isPublicResponse = await axios.get(
-                `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
+                `${process.env.REACT_APP_USER}/groups/${groupId}/is-public`,
                 { withCredentials: true }
               );
               return { ...group, isPublic: isPublicResponse.data.isPublic };

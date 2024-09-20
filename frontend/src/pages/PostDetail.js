@@ -35,7 +35,7 @@ const PostDetail = () => {
   const fetchPostData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_USER}/api/posts/${postId}`,
+        `${process.env.REACT_APP_USER}/posts/${postId}`,
         { withCredentials: true }
       );
       if (!response.ok) {
@@ -58,7 +58,7 @@ const PostDetail = () => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_USER}/api/posts/${postId}/comments`,
+        `${process.env.REACT_APP_USER}/posts/${postId}/comments`,
         { withCredentials: true }
       );
       if (!response.ok) {
@@ -145,7 +145,7 @@ const PostDetail = () => {
   const loadMoreComments = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_USER}/api/posts/${postId}/comments`,
+        `${process.env.REACT_APP_USER}/posts/${postId}/comments`,
         {
           params: { page: currentPage + 1 },
           withCredentials: true,

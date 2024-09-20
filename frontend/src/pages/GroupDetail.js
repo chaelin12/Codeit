@@ -32,14 +32,14 @@ function GroupDetail() {
   const fetchGroups = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        `${process.env.REACT_APP_USER}/groups/${groupId}`,
         { withCredentials: true }
       );
       console.log("Group Detail Response:", response.data);
       setGroupDetail(response.data);
 
       const postsResponse = await axios.get(
-        `${process.env.REACT_APP_USER}/api/groups/${groupId}/posts`,
+        `${process.env.REACT_APP_USER}/groups/${groupId}/posts`,
         { withCredentials: true }
       );
       console.log("Posts Response:", postsResponse.data);
@@ -69,13 +69,10 @@ function GroupDetail() {
 
   const handleDelete = async (password) => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
-        {
-          data: { password },
-          withCredentials: true,
-        }
-      );
+      await axios.delete(`${process.env.REACT_APP_USER}/groups/${groupId}`, {
+        data: { password },
+        withCredentials: true,
+      });
       console.log("Group deleted successfully");
       navigate("/groups");
     } catch (error) {
@@ -136,7 +133,7 @@ function GroupDetail() {
     try {
       const nextPage = page + 1; // Increment the page
       const postsResponse = await axios.get(
-        `${process.env.REACT_APP_USER}/api/groups/${groupId}/posts?page=${nextPage}`,
+        `${process.env.REACT_APP_USER}/groups/${groupId}/posts?page=${nextPage}`,
         { withCredentials: true } // Include credentials if needed
       );
 
