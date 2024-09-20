@@ -31,25 +31,20 @@ const PostDetail = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
 
-  // Move this function outside of useEffect so it can be reused
   const fetchPostData = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_USER}/posts/${postId}`,
         { withCredentials: true }
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch post data");
-      }
-      const data = await response.json();
-      setPost(data);
+      setPost(response.data);
     } catch (error) {
-      setError(error.message);
+      setError("Failed to fetch post data");
+      console.error("Error fetching post data:", error);
     } finally {
       setLoading(false);
     }
   };
-
   // useEffect to fetch post data on component mount
   useEffect(() => {
     fetchPostData();
