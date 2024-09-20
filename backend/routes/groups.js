@@ -232,8 +232,6 @@ router.route('/:id')
 
                         await s3.deleteObject(deleteParams).promise(); // 기존 이미지 삭제
 
-                        if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
-
                         // 그룹 정보 업데이트
                         await Group.updateOne({ id: groupId }, {
                             name: req.body.name,
