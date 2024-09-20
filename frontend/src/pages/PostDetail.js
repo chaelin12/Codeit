@@ -61,14 +61,23 @@ const PostDetail = () => {
         `${process.env.REACT_APP_USER}/posts/${postId}/comments`,
         { withCredentials: true }
       );
-      setComments(response.data.data || []); // Assuming 'data' contains the comments
-      setTotalPages(response.data.totalPages || 1); // Assuming 'totalPages' is provided
-      setPost((prevPost) => ({
-        ...prevPost,
-        totalCommentCount: response.data.data.length || 0,
-      }));
+      // 응답 데이터가 배열 형태인지 확인
+      if (Array.isArray(response.data.data)) {
+        setComments(response.data.data); // 'data'가 댓글 배열
+        setTotalPages(response.data.totalPages || 1); // 'totalPages' 설정
+        setPost((prevPost) => ({
+          ...prevPost,
+          totalCommentCount: response.data.data.length || 0, // 'totalCommentCount' 업데이트
+        }));
+      } else {
+        console.error("Unexpected response data format:", response.data);
+      }
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      console.error(
+        "Error fetching comments:",
+        error.response ? error.response.data : error.message
+      );
+      setError("Failed to fetch comments");
     }
   };
 
