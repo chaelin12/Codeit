@@ -3,6 +3,7 @@ const multer = require('multer');
 const crypto = require('crypto');
 const router = express.Router();
 const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
 
 // AWS S3 설정
 const s3 = new AWS.S3({
