@@ -24,6 +24,7 @@ router.route('/:id')
     })
     //댓글 수정
     .put(async (req,res)=>{
+        console.log("댓글 수정")
         const comment = await Comment.findOne({id: req.params.id});
         if (!comment) {
             return res.status(404).json({ success: false, message: "존재하지 않습니다" });
