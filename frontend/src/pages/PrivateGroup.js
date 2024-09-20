@@ -24,20 +24,35 @@ function PrivateGroup() {
   useEffect(() => {
     const fetchGroups = async (pageNum) => {
       try {
+        // API 요청 시작 로그
+        console.log(`Fetching groups for page ${pageNum}...`);
+
         const response = await axios.get(
           `${process.env.REACT_APP_USER}/api/groups?page=${pageNum}`,
           { withCredentials: true }
         );
 
+        // 응답 데이터 전체를 확인하기 위한 로그
+        console.log("Full Response: ", response);
+
+        // 그룹 데이터를 확인하기 위한 로그
+        const groupData = response.data.data;
+        console.log("Groups Data: ", groupData);
+
         const fetchedGroups = await Promise.all(
-          (response.data.data || []).map(async (group) => {
+          (groupData || []).map(async (group) => {
             // groupId로 저장
             const groupId = group.id;
-            console.log("Groups Data : ", response.data.data);
+            console.log(`Fetching isPublic for group ${groupId}`);
+
             try {
               const isPublicResponse = await axios.get(
                 `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
                 { withCredentials: true }
+              );
+              console.log(
+                `Group ${groupId} isPublic status: `,
+                isPublicResponse.data.isPublic
               );
               return { ...group, isPublic: isPublicResponse.data.isPublic };
             } catch (error) {
@@ -45,10 +60,13 @@ function PrivateGroup() {
                 `Error fetching isPublic for group ${groupId}:`,
                 error.message
               );
-              return { ...group, isPublic: false };
+              return { ...group, isPublic: false }; // 오류가 있을 경우 기본값으로 처리
             }
           })
         );
+
+        // 가져온 그룹 데이터를 확인하기 위한 로그
+        console.log("Fetched Groups: ", fetchedGroups);
 
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
@@ -62,8 +80,10 @@ function PrivateGroup() {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
-        setGroups([]);
+        // 오류에 대한 상세 로그 추가
+        console.error("Error fetching group data:", error.message);
+        console.error("Full Error:", error); // 전체 오류 객체 확인
+        setGroups([]); // 오류 발생 시 빈 그룹 설정
       }
     };
 
