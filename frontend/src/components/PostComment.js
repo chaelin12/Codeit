@@ -62,8 +62,8 @@ const PostComment = ({ isOpen, onClose, onSubmit, commentId, postId, onSave }) =
         }
       );
 
-      if (!response.ok) {
-        navigate(-1);
+      if (response.status !== 200) {
+        navigate(0);
         onClose();
         if (response.status === 400) {
           setErrorMessage("잘못된 요청입니다");
