@@ -74,12 +74,13 @@ const PostComment = ({ isOpen, onClose, onSubmit, commentId, postId, onSave }) =
         throw new Error("Failed to submit comment");
       }
 
-      const result = await response.json();
+      const result = response.data; // Axios는 자동으로 JSON을 파싱합니다.
 
       // Call the callback to add the comment to the list
-      onSubmit(result); // Changed to onSubmit
+      onSubmit(result);
       fetchCommentData();
       onClose(); // Close the modal after successful submission
+
     } catch (error) {
       console.error("Error submitting comment:", error.message);
     }
