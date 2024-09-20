@@ -26,7 +26,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
     const fetchPostData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_USER}/api/posts/${postId}`,
+          `${process.env.REACT_APP_USER}/posts/${postId}`,
           {
             withCredentials: true,
           }
@@ -115,7 +115,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
         imageFormData.append("image", image);
 
         const imageUploadResponse = await axios.post(
-          `${process.env.REACT_APP_USER}/api/image`,
+          `${process.env.REACT_APP_USER}/image`,
           imageFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -140,7 +140,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
       };
 
       const response = await axios.put(
-        `${process.env.REACT_USER}/api/posts/${postId}`,
+        `${process.env.REACT_USER}/posts/${postId}`,
         updatedPost,
         {
           withCredentials: true,

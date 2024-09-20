@@ -16,7 +16,7 @@ const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_USER}/api/posts/${postId}`,
+        `${process.env.REACT_APP_USER}/posts/${postId}`,
         {
           data: {
             postPassword: password, // 비밀번호를 서버로 전송

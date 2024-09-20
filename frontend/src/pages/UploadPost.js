@@ -79,7 +79,7 @@ function UploadPost() {
         const imageFormData = new FormData();
         imageFormData.append("image", image);
         const imageUploadResponse = await axios.post(
-          `${process.env.REACT_APP_USER}/api/image`,
+          `${process.env.REACT_APP_USER}/image`,
           imageFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },

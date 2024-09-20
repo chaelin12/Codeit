@@ -22,7 +22,7 @@ const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_USER}/api/posts/${postId}/comments`,
+        `${process.env.REACT_APP_USER}/posts/${postId}/comments`,
         commentData,
         {
           withCredentials: true,

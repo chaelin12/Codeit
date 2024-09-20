@@ -17,7 +17,7 @@ const DeleteGroup = ({ onClose, groupId }) => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        `${process.env.REACT_APP_USER}/groups/${groupId}`,
         {
           data: {
             password, // 비밀번호를 서버로 전송

@@ -27,7 +27,7 @@ function AccessPrivatePost() {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_USER}/api/posts/${postId}/verify-password`,
+        `${process.env.REACT_APP_USER}/posts/${postId}/verify-password`,
         { password },
         {
           withCredentials: true, // 자격 증명을 포함
