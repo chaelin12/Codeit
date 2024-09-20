@@ -25,7 +25,7 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
         imageFormData.append("image", newImageFile);
 
         const imageUploadResponse = await axios.post(
-          `${process.env.REACT_APP_USER}/api/image`,
+          `${process.env.REACT_APP_USER}/image`,
           imageFormData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -46,7 +46,7 @@ const EditGroup = ({ isOpen, closeModal, groupDetail, onSave, groupId }) => {
       };
 
       const updateResponse = await axios.put(
-        `${process.env.REACT_APP_USER}/api/groups/${groupId}`,
+        `${process.env.REACT_APP_USER}/groups/${groupId}`,
         updatedGroup,
         {
           headers: {

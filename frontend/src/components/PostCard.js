@@ -26,7 +26,7 @@ function PostCard({
     const fetchIsPublic = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_USER}/api/posts/${postId}/is-public`, // Updated API endpoint
+          `${process.env.REACT_APP_USER}/posts/${postId}/is-public`, // Updated API endpoint
           {
             withCredentials: true,
           }

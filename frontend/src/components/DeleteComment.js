@@ -17,7 +17,7 @@ const DeleteComment = ({ isOpen, onClose, commentId, postId, onDelete }) => {
       const token = localStorage.getItem("authToken"); // 인증 토큰이 필요할 경우 추가
 
       const response = await axios.delete(
-        `${process.env.REACT_APP_USER}/api/comments/${commentId}`,
+        `${process.env.REACT_APP_USER}/comments/${commentId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가

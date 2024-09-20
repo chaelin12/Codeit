@@ -17,7 +17,7 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
     const fetchCommentData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_USER}/api/comments/${commentId}`,
+          `${process.env.REACT_APP_USER}/comments/${commentId}`,
           {
             withCredentials: true, // 자격 증명이 필요할 경우 추가
           }
@@ -54,7 +54,7 @@ const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
 
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_USER}/api/comments/${commentId}`,
+        `${process.env.REACT_APP_USER}/comments/${commentId}`,
         updatedComment,
         {
           withCredentials: true, // 자격 증명이 필요할 경우 추가
