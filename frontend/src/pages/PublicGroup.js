@@ -24,44 +24,70 @@ function PublicGroup() {
   useEffect(() => {
     const fetchGroups = async (pageNum) => {
       try {
+        console.log(`Fetching groups for page ${pageNum}...`); // 로그 추가: 페이지 번호 출력
+
         const response = await axios.get(
           `${process.env.REACT_APP_USER}/api/groups?page=${pageNum}`,
           { withCredentials: true }
         );
 
-        const fetchedGroups = await Promise.all(
-          (response.data.data || []).map(async (group) => {
-            // groupId로 저장
-            const groupId = group.id;
+        console.log("API Response: ", response); // 로그 추가: API 응답 확인
 
-            // groupId를 이용해 public 여부 확인하는 요청
-            const isPublicResponse = await axios.get(
-              `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`, // groupId를 사용하여 경로 설정
-              { withCredentials: true }
-            );
-            return { ...group, isPublic: isPublicResponse.data.isPublic };
+        const groupData = response.data.data;
+        if (!groupData) {
+          console.error("No group data received"); // 로그 추가: 그룹 데이터가 없을 때
+          return;
+        }
+
+        console.log("Fetched Groups Data: ", groupData); // 로그 추가: 가져온 그룹 데이터 확인
+
+        const fetchedGroups = await Promise.all(
+          (groupData || []).map(async (group) => {
+            const groupId = group.id;
+            console.log(`Fetching isPublic status for group ${groupId}`); // 로그 추가: 각 그룹의 isPublic 상태 요청
+
+            try {
+              const isPublicResponse = await axios.get(
+                `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
+                { withCredentials: true }
+              );
+              console.log(
+                `Group ${groupId} isPublic status: `,
+                isPublicResponse.data.isPublic
+              ); // 로그 추가: isPublic 응답
+              return { ...group, isPublic: isPublicResponse.data.isPublic };
+            } catch (error) {
+              console.error(
+                `Error fetching isPublic for group ${groupId}:`,
+                error.message
+              ); // 로그 추가: isPublic 요청 실패 시
+              return { ...group, isPublic: false }; // 실패하면 기본값을 false로 설정
+            }
           })
         );
 
-        console.log("Group : ", response);
+        console.log("Final Fetched Groups with isPublic: ", fetchedGroups); // 로그 추가: isPublic 상태를 포함한 최종 그룹 데이터
+
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
           const newGroups = fetchedGroups.filter(
             (group) => !existingGroupIds.has(group.id)
           );
+          console.log("New Groups to Add: ", newGroups); // 로그 추가: 새로 추가될 그룹들
           return [...prevGroups, ...newGroups];
         });
 
         if (fetchedGroups.length === 0) {
+          console.log("No more groups to fetch"); // 로그 추가: 더 이상 가져올 그룹이 없을 때
           setHasMore(false);
         }
       } catch (error) {
-        console.error("그룹 데이터를 불러오는 데 실패했습니다:", error.message);
+        console.error("Failed to fetch group data:", error.message); // 로그 추가: 전체 fetch 오류 처리
       }
     };
 
-    fetchGroups(page);
-  }, [page]);
+    fetchGroups(page); // page 값을 이용해 그룹 가져오기
+  }, [page]); // page가 변경될 때마다 실행
 
   useEffect(() => {
     const lowercasedQuery = searchQuery.toLowerCase();
