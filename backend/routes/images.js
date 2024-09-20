@@ -44,7 +44,7 @@ router.post('/', upload.single('image'), (req, res) => {
       }
 
       // 업로드된 파일의 URL을 응답으로 반환
-      const imageUrl = fileName; // S3에 업로드된 파일의 URL
+      const imageUrl = data.Location; // S3에 업로드된 파일의 URL
       res.status(200).json({ imageUrl });
     });
   } catch (err) {
