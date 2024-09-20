@@ -1,45 +1,45 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 import "./PostComment.css"; // Updated CSS file
 
-const PostComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
+const PostComment = ({ isOpen, onClose, onSubmit, commentId, postId, onSave }) => {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // To display error messages
   const navigate = useNavigate();
-// fetchCommentData 함수 정의 (컴포넌트 내부 상태 접근)
-const fetchCommentData = async () => {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_USER}/comments/${commentId}`,
-      {
-        withCredentials: true, // 자격 증명이 필요할 경우 추가
+  // fetchCommentData 함수 정의 (컴포넌트 내부 상태 접근)
+  const fetchCommentData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_USER}/comments/${commentId}`,
+        {
+          withCredentials: true, // 자격 증명이 필요할 경우 추가
+        }
+      );
+
+      const data = response.data;
+
+      // 상태 설정
+      setNickname(data.nickname || "");
+      setContent(data.content || "");
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setErrorMessage("해당 댓글을 찾을 수 없습니다.");
+      } else {
+        console.error("Error fetching comment data:", error);
+        setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
       }
-    );
-
-    const data = response.data;
-
-    // 상태 설정
-    setNickname(data.nickname || "");
-    setContent(data.content || "");
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      setErrorMessage("해당 댓글을 찾을 수 없습니다.");
-    } else {
-      console.error("Error fetching comment data:", error);
-      setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
     }
-  }
-};
-// useEffect 내부에서 fetchCommentData 호출
-useEffect(() => {
-  if (commentId && isOpen) {
-    fetchCommentData(); // 상태는 내부에서 처리하므로 간단히 호출
-  }
-}, [commentId, isOpen]);
+  };
+  // useEffect 내부에서 fetchCommentData 호출
+  useEffect(() => {
+    if (commentId && isOpen) {
+      fetchCommentData(); // 상태는 내부에서 처리하므로 간단히 호출
+    }
+  }, [commentId, isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
