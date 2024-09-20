@@ -29,13 +29,10 @@ function PrivateGroup() {
           { withCredentials: true }
         );
 
-        const fetchedGroups = Array.isArray(response.data.data)
-          ? response.data.data
-          : [];
-        console.log("Fetched groups:", fetchedGroups);
+        const fetchedGroups = await Promise.all(
+          response.data.data.map(async (group) => {
+            const groupId = group.id;
 
-        const groupsWithPublicStatus = await Promise.all(
-          fetchedGroups.map(async (group) => {
             try {
               const isPublicResponse = await axios.get(
                 `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
@@ -44,7 +41,7 @@ function PrivateGroup() {
               return { ...group, isPublic: isPublicResponse.data.isPublic };
             } catch (error) {
               console.error(
-                `Error fetching isPublic for group ${group.id}:`,
+                `Error fetching isPublic for group ${groupId}:`,
                 error.message
               );
               return { ...group, isPublic: false };
@@ -54,7 +51,7 @@ function PrivateGroup() {
 
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
-          const newGroups = groupsWithPublicStatus.filter(
+          const newGroups = fetchedGroups.filter(
             (group) => !existingGroupIds.has(group.id)
           );
           return [...prevGroups, ...newGroups];

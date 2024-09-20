@@ -31,13 +31,18 @@ function PublicGroup() {
 
         const fetchedGroups = await Promise.all(
           response.data.data.map(async (group) => {
+            // groupId로 저장
+            const groupId = group.id;
+
+            // groupId를 이용해 public 여부 확인하는 요청
             const isPublicResponse = await axios.get(
-              `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
+              `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`, // groupId를 사용하여 경로 설정
               { withCredentials: true }
             );
             return { ...group, isPublic: isPublicResponse.data.isPublic };
           })
         );
+
         console.log("Group : ", response);
         setGroups((prevGroups) => {
           const existingGroupIds = new Set(prevGroups.map((group) => group.id));
