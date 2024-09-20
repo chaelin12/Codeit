@@ -172,7 +172,7 @@ function GroupDetail() {
   const handleLikeClick = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_USER}/groups/${groupId}/like`,
+        `${process.env.REACT_APP_USER}/groups/${groupId}/like`,
         {},
         {
           headers: {
