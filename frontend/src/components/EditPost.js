@@ -140,7 +140,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
       };
 
       const response = await axios.put(
-        `${process.env.REACT_USER}/posts/${postId}`,
+        `${process.env.REACT_APP_USER}/posts/${postId}`,
         updatedPost,
         {
           withCredentials: true,

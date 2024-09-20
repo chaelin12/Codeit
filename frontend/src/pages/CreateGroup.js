@@ -94,7 +94,7 @@ function CreateGroup() {
       };
 
       const response = await axios.post(
-        `${process.env.REACT_USER}/groups`,
+        `${process.env.REACT_APP_USER}/groups`,
         formData,
         {
           withCredentials: true,
