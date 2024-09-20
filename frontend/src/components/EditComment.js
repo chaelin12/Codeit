@@ -3,12 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 
-const EditComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
+const EditComment = ({ isOpen, onClose, commentId, onSave }) => {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
 // fetchCommentData 함수 정의 (컴포넌트 내부 상태 접근)
 const fetchCommentData = async () => {

@@ -3,6 +3,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 import "./PostComment.css"; // Updated CSS file
+
+const PostComment = ({ isOpen, onClose, commentId, postId, onSave }) => {
+  const [nickname, setNickname] = useState("");
+  const [content, setContent] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // To display error messages
+  const navigate = useNavigate();
 // fetchCommentData 함수 정의 (컴포넌트 내부 상태 접근)
 const fetchCommentData = async () => {
   try {
@@ -27,12 +34,12 @@ const fetchCommentData = async () => {
     }
   }
 };
-const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
-  const [nickname, setNickname] = useState("");
-  const [content, setContent] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // To display error messages
-  const navigate = useNavigate();
+// useEffect 내부에서 fetchCommentData 호출
+useEffect(() => {
+  if (commentId && isOpen) {
+    fetchCommentData(); // 상태는 내부에서 처리하므로 간단히 호출
+  }
+}, [commentId, isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
