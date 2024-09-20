@@ -33,7 +33,7 @@ function PrivateGroup() {
           (response.data.data || []).map(async (group) => {
             // groupId로 저장
             const groupId = group.id;
-
+            console.log("Groups Data : ", response.data.data);
             try {
               const isPublicResponse = await axios.get(
                 `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
