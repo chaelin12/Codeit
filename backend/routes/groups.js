@@ -232,44 +232,30 @@ router.route('/:id')
 
                         await s3.deleteObject(deleteParams).promise(); // 기존 이미지 삭제
 
-                        // 새로운 고유한 파일명 생성
-                        const uniqueSuffix = crypto.randomBytes(16).toString('hex');
-                        const extension = req.file.originalname.split('.').pop(); // 파일 확장자
-                        const fileName = `${uniqueSuffix}.${extension}`; // 고유한 파일명 생성
+                        if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
 
-                        // 새로운 이미지 업로드
-                        const uploadParams = {
-                            Bucket: process.env.AWS_S3_BUCKET_NAME,
-                            Key: fileName, // 고유한 파일명으로 Key 설정
-                            Body: req.file.buffer, // req.file.buffer에서 이미지 데이터 가져오기
-                            ContentType: req.file.mimetype || 'image/jpeg', // 파일 MIME 타입
-                        };
-
-                        s3.upload(uploadParams, async (err, data) => {
-                            if (err) return res.status(500).json({ message: "이미지 업로드 오류" });
-
-                            // 그룹 정보 업데이트
-                            await Group.updateOne({ id: groupId }, {
-                                name: req.body.name,
-                                imageUrl: data.Location, // 새로운 URL로 교체
-                                isPublic: req.body.isPublic,
-                                introduction: req.body.introduction,
-                            });
-
-                            const updatedGroup = await Group.findOne({ id: groupId });
-
-                            res.status(200).json({
-                                id: updatedGroup.id,
-                                name: updatedGroup.name,
-                                imageUrl: updatedGroup.imageUrl,
-                                isPublic: updatedGroup.isPublic,
-                                likeCount: updatedGroup.likeCount,
-                                badges: updatedGroup.badges,
-                                postCount: updatedGroup.postCount,
-                                createdAt: updatedGroup.createdAt.toISOString(),
-                                introduction: updatedGroup.introduction
-                            });
+                        // 그룹 정보 업데이트
+                        await Group.updateOne({ id: groupId }, {
+                            name: req.body.name,
+                            imageUrl: req.body.imageUrl, // 새로운 URL로 교체
+                            isPublic: req.body.isPublic,
+                            introduction: req.body.introduction,
                         });
+
+                        const updatedGroup = await Group.findOne({ id: groupId });
+
+                        res.status(200).json({
+                            id: updatedGroup.id,
+                            name: updatedGroup.name,
+                            imageUrl: updatedGroup.imageUrl,
+                            isPublic: updatedGroup.isPublic,
+                            likeCount: updatedGroup.likeCount,
+                            badges: updatedGroup.badges,
+                            postCount: updatedGroup.postCount,
+                            createdAt: updatedGroup.createdAt.toISOString(),
+                            introduction: updatedGroup.introduction
+                        });
+                        
                     } else {
                         res.status(403).json({ message: "비밀번호가 틀렸습니다" });
                     }
