@@ -300,6 +300,8 @@ router.route('/:id')
                         });
                         const imageKey = group.imageUrl.split('/').pop(); // S3의 Key 추출
                         console.log(imageKey);
+                        console.log('Bucket Name:', process.env.AWS_BUCKET_NAME);
+
                         // 그룹 이미지 삭제
                         const deleteParams = {
                             Bucket: process.env.AWS_BUCKET_NAME,
