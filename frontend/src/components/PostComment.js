@@ -3,7 +3,30 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 import "./PostComment.css"; // Updated CSS file
+// fetchCommentData 함수 정의 (컴포넌트 내부 상태 접근)
+const fetchCommentData = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_USER}/comments/${commentId}`,
+      {
+        withCredentials: true, // 자격 증명이 필요할 경우 추가
+      }
+    );
 
+    const data = response.data;
+
+    // 상태 설정
+    setNickname(data.nickname || "");
+    setContent(data.content || "");
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      setErrorMessage("해당 댓글을 찾을 수 없습니다.");
+    } else {
+      console.error("Error fetching comment data:", error);
+      setErrorMessage("댓글 정보를 불러오는 중 오류가 발생했습니다.");
+    }
+  }
+};
 const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
@@ -33,7 +56,7 @@ const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
       );
 
       if (!response.ok) {
-        navigate(`/postdetail/${postId}`);
+        navigate(-1);
         onClose();
         if (response.status === 400) {
           setErrorMessage("잘못된 요청입니다");
@@ -48,7 +71,7 @@ const PostComment = ({ isOpen, onClose, postId, onSubmit }) => {
 
       // Call the callback to add the comment to the list
       onSubmit(result); // Changed to onSubmit
-      navigate(`/postdetail/${postId}`);
+      fetchCommentData();
       onClose(); // Close the modal after successful submission
     } catch (error) {
       console.error("Error submitting comment:", error.message);
