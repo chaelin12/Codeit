@@ -217,7 +217,12 @@ router.route('/:id')
                 const salt = rows[0].salt;
                 const hashPw = sha(req.body.password + salt);
                 if (group.password === hashPw) {
-                    const s3 = new AWS.S3();
+                    // AWS S3 설정
+                    const s3 = new AWS.S3({
+                        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                        region: process.env.AWS_REGION // S3 버킷이 위치한 리전
+                    });
                     const imageKey = group.imageUrl.split('/').pop(); // 기존 이미지 키 가져오기
                     const params = {
                         Bucket: process.env.AWS_BUCKET_NAME,
@@ -287,7 +292,12 @@ router.route('/:id')
                     const salt = rows[0].salt;
                     const hashPw = sha(req.body.password + salt);
                     if (group.password === hashPw) {
-                        const s3 = new AWS.S3();
+                        // AWS S3 설정
+                        const s3 = new AWS.S3({
+                            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                            region: process.env.AWS_REGION // S3 버킷이 위치한 리전
+                        });
                         const imageKey = group.imageUrl.split('/').pop(); // S3의 Key 추출
                         console.log(imageKey);
                         // 그룹 이미지 삭제
@@ -296,7 +306,7 @@ router.route('/:id')
                             Key: imageKey
                         };
                         
-                        await s3.DeleteObject(deleteParams).promise(); // 비동기 삭제
+                        await s3.deleteObject(deleteParams).promise(); // 비동기 삭제
 
                         // 그룹에 관련된 게시글 조회 및 삭제
                         const posts = await Post.find({ groupId: req.params.id });
@@ -307,7 +317,7 @@ router.route('/:id')
                                     Bucket: process.env.AWS_BUCKET_NAME,
                                     Key: postImageKey
                                 };
-                                await s3.DeleteObject(postDeleteParams).promise(); // 비동기 삭제
+                                await s3.deleteObject(postDeleteParams).promise(); // 비동기 삭제
                             }
                         }
 
