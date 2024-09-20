@@ -4,7 +4,7 @@ import flower from "../assets/pictures/flower.png";
 import "./GroupCard.css";
 
 function GroupCard({
-  id,
+  id: groupId,
   name,
   imageUrl,
   likeCount,
@@ -41,9 +41,9 @@ function GroupCard({
 
   const handleGroupCardClick = () => {
     if (isPublic) {
-      navigate(`/GroupDetail/${id}`);
+      navigate(`/GroupDetail/${groupId}`);
     } else {
-      navigate(`/AccessPrivate/${id}`);
+      navigate(`/AccessPrivate/${groupId}`);
     }
   };
 
