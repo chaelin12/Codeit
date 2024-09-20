@@ -30,7 +30,7 @@ function PublicGroup() {
         );
 
         const fetchedGroups = await Promise.all(
-          response.data.data.map(async (group) => {
+          (response.data.data || []).map(async (group) => {
             // groupId로 저장
             const groupId = group.id;
 
