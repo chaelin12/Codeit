@@ -32,7 +32,7 @@ function PublicGroup() {
         const fetchedGroups = await Promise.all(
           response.data.data.map(async (group) => {
             const isPublicResponse = await axios.get(
-              `${process.env.REACT_APP_USER}/api/groups/${group.id}/is-public`,
+              `${process.env.REACT_APP_USER}/api/groups/${groupId}/is-public`,
               { withCredentials: true }
             );
             return { ...group, isPublic: isPublicResponse.data.isPublic };
