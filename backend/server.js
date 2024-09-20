@@ -4,9 +4,20 @@ const path = require('path');
 const express = require("express");
 const app = express();
 
-const cors = require('cors');
-app.use(cors());
-
+const cors = require("cors");
+app.use(
+  cors({
+    origin: [
+      "https://port-0-codeit-backend-m17jqg0915c4a4f2.sel4.cloudtype.app",
+      "https://web-codeit-m197srmje0e2a98e.sel4.cloudtype.app",
+      "http://localhost:8080",
+    ],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true,
+  })
+);
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
 app.use(express.json());
