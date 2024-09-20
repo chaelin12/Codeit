@@ -225,7 +225,7 @@ router.route('/:id')
                     });
                     const imageKey = group.imageUrl.split('/').pop(); // 기존 이미지 키 가져오기
                     const params = {
-                        Bucket: process.env.AWS_BUCKET_NAME,
+                        Bucket: process.env.AWS_S3_BUCKET_NAME,
                         Key: imageKey, // 동일한 Key로 업로드
                         Body: req.file.buffer, // req.file.buffer에서 이미지 데이터 가져오기
                         ContentType: req.file.mimetype || 'image/jpeg', // 파일 MIME 타입
@@ -300,11 +300,11 @@ router.route('/:id')
                         });
                         const imageKey = group.imageUrl.split('/').pop(); // S3의 Key 추출
                         console.log(imageKey);
-                        console.log('Bucket Name:', process.env.AWS_BUCKET_NAME);
+                        console.log('Bucket Name:', process.env.AWS_S3_BUCKET_NAME);
 
                         // 그룹 이미지 삭제
                         const deleteParams = {
-                            Bucket: process.env.AWS_BUCKET_NAME,
+                            Bucket: process.env.AWS_S3_BUCKET_NAME,
                             Key: imageKey
                         };
                         
@@ -316,7 +316,7 @@ router.route('/:id')
                             if (post.imageUrl) {
                                 const postImageKey = post.imageUrl.split('/').pop(); // S3의 Key 추출
                                 const postDeleteParams = {
-                                    Bucket: process.env.AWS_BUCKET_NAME,
+                                    Bucket: process.env.AWS_S3_BUCKET_NAME,
                                     Key: postImageKey
                                 };
                                 await s3.deleteObject(postDeleteParams).promise(); // 비동기 삭제

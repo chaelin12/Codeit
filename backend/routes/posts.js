@@ -41,7 +41,7 @@ router.route('/:id')
                         let newImageUrl = post.imageUrl;
                         if (req.file) { // 새 이미지가 업로드되었을 경우
                             const uploadParams = {
-                                Bucket: 'your-s3-bucket-name', // S3 버킷 이름
+                                Bucket: AWS_S3_BUCKET_NAME, // S3 버킷 이름
                                 Key: `${Date.now()}_${req.file.originalname}`, // 고유한 파일명 생성
                                 Body: req.file.buffer,
                                 ContentType: req.file.mimetype,
