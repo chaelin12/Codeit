@@ -25,7 +25,7 @@ function AccessPrivate() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+    console.log("Submitting password:", password);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_USER}/groups/${groupId}/verify-password`,
@@ -36,7 +36,8 @@ function AccessPrivate() {
       );
 
       console.log("API Base URL: ", process.env.REACT_APP_USER);
-      console.log("API Response: ", response);
+      console.log("Response Status:", response.status);
+      console.log("Response Data:", response.data);
 
       if (response.status === 200) {
         navigate(`/GroupDetail/${groupId}`);
