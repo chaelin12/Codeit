@@ -18,14 +18,16 @@ const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
       const response = await axios.delete(
         `${process.env.REACT_APP_USER}/posts/${postId}`,
         {
+          headers: {
+            Authorization: `Bearer ${token}`, // 인증 토큰을 헤더에 추가
+          },
           data: {
-            postPassword: password, // 비밀번호를 서버로 전송
+            password, // 비밀번호를 data에 추가
           },
           withCredentials: true, // 자격 증명을 포함
         }
       );
-
-      const data = response.data; // 서버에서 반환한 데이터
+      const data = response.data; // 서버에서 반환한 데이터를 받아옵니다.
 
       if (response.ok) {
         navigate(`/groupdetail/${groupId}`); // 삭제 성공 시 PublicGroup 페이지로 이동
