@@ -30,7 +30,7 @@ router.route('/:id')
         }
         //비밀번호 검증
         const { mysqldb } = await setup();
-        const sql = `SELECT salt FROM commentsalt WHERE id=?`;
+        const sql = `SELECT salt FROM CommentSalt WHERE id=?`;
         mysqldb.query(sql, [comment.id], async (err, rows) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });

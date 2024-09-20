@@ -164,7 +164,7 @@ router.route('/')
                     isPublic: req.body.isPublic, 
                     introduction: req.body.introduction,
                 })
-                const sql = `INSERT INTO groupsalt(id, salt) VALUES (?, ?)`;
+                const sql = `INSERT INTO GroupSalt(id, salt) VALUES (?, ?)`;
                 //id는 자동생성 값이므로 group.id로 사용해야함 req.body X
                 mysqldb.query(sql, [group.id, salt], (err, rows, fields) => {
                   if (err) {
@@ -209,7 +209,7 @@ router.route('/:id')
         const { mysqldb } = await setup();
     
         // 비밀번호 검증
-        const sql = `SELECT salt FROM groupsalt WHERE id=?`;
+        const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
         mysqldb.query(sql, [group.id], async (err, rows) => {
             if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -345,7 +345,7 @@ router.post('/:id/verify-password', async(req,res)=>{
     const group = await Group.findOne({ id: req.params.id });
          //비밀번호 검증
          const { mysqldb } = await setup();
-         const sql = `SELECT salt FROM groupsalt WHERE id=?`;
+         const sql = `SELECT salt FROM GroupSalt WHERE id=?`;
          mysqldb.query(sql, [group.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -414,7 +414,7 @@ router.route('/:id/posts')
                     isPublic: req.body.isPublic
                 });
                 
-                const sql = `INSERT INTO postsalt(id, salt, group_id) VALUES (?, ?, ?)`;
+                const sql = `INSERT INTO PostSalt(id, salt, group_id) VALUES (?, ?, ?)`;
                 //id는 자동생성 값이므로 post.id로 사용해야함 req.body X
                 mysqldb.query(sql, [post.id, salt, post.groupId], (err, rows, fields) => {
                   if (err) {

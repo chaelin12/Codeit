@@ -15,7 +15,7 @@ router.route('/:id')
         }
         //비밀번호 검증
         const { mysqldb } = await setup();
-        const sql = `SELECT salt FROM postsalt WHERE id=?`;
+        const sql = `SELECT salt FROM PostSalt WHERE id=?`;
         mysqldb.query(sql, [post.id], async (err, rows) => {
         if (err || rows.length === 0) {
             return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -164,7 +164,7 @@ router.post('/:id/verify-password',async(req,res)=>{
     const post = await Post.findOne({id:req.params.id});
          //비밀번호 검증
          const { mysqldb } = await setup();
-         const sql = `SELECT salt FROM postsalt WHERE id=?`;
+         const sql = `SELECT salt FROM PostSalt WHERE id=?`;
          mysqldb.query(sql, [post.id], async (err, rows, fields) => {
          if (err || rows.length === 0) {
              return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
