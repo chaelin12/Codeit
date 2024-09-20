@@ -150,7 +150,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
       if (response.status === 200) {
         // Redirect to group detail page after successful update
         onSave(updatedPost);
-        navigate(`/postdetail/${postId}`);
+        fetchPostData();
         onClose(); // Close modal
       }
     } catch (error) {
