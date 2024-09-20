@@ -25,33 +25,28 @@ function AccessPrivate() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const onSubmit = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setError("");
-
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_USER}/groups/${groupId}/verify-password`,
-          { password },
-          {
-            withCredentials: true, // 자격 증명을 포함
-          }
-        );
-
-        if (response.status === 200) {
-          navigate(`/GroupDetail/${groupId}`);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_USER}/groups/${groupId}/verify-password`,
+        { password },
+        {
+          withCredentials: true, // 자격 증명을 포함
         }
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          setError("비밀번호가 틀렸습니다");
-        } else {
-          setError("오류가 발생했습니다. 다시 시도해 주세요.");
-        }
-      } finally {
-        setLoading(false);
+      );
+      console.log("Server response:", response); // Debug log
+      if (response.status === 200) {
+        navigate(`/GroupDetail/${groupId}`);
       }
-    };
+    } catch (error) {
+      console.error("Error during password verification:", error); // Debug log
+      if (error.response && error.response.status === 401) {
+        setError("비밀번호가 틀렸습니다");
+      } else {
+        setError("오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
