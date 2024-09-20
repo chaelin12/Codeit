@@ -27,7 +27,7 @@ const DeleteGroup = ({ onClose, groupId }) => {
       );
       const data = response.data; // 서버에서 반환한 데이터
 
-      if (updateResponse.status === 200) {
+      if (response.ok) {
         navigate("/"); // 삭제 성공 시 PublicGroup 페이지로 이동
       } else if (response.status === 400) {
         setError(data.message || "잘못된 요청입니다."); // 서버에서의 오류 메시지를 표시

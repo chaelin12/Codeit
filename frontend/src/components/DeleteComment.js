@@ -30,7 +30,7 @@ const DeleteComment = ({ isOpen, onClose, commentId, postId, onDelete }) => {
       );
       const data = response.data; // 서버에서 반환한 데이터를 받아옵니다.
 
-      if (updateResponse.status === 200) {
+      if (response.ok) {
         onDelete(commentId); // 삭제 성공 시 전달받은 commentId를 삭제 처리
         onClose(); // 모달 닫기
       } else if (response.status === 400) {
