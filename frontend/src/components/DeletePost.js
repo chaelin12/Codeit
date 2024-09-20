@@ -27,7 +27,7 @@ const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
 
       const data = response.data; // 서버에서 반환한 데이터
 
-      if (response.ok) {
+      if (updateResponse.status === 200) {
         navigate(`/groupdetail/${groupId}`); // 삭제 성공 시 PublicGroup 페이지로 이동
         onClose();
       } else if (response.status === 400) {
