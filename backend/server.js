@@ -3,7 +3,13 @@ const setup = require("./db_setup");
 const path = require('path');
 const express = require("express");
 const app = express();
-
+const AWS = require('aws-sdk');
+// AWS S3 설정
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION // S3 버킷이 위치한 리전
+});
 const cors = require("cors");
 app.use(
   cors({
@@ -18,6 +24,7 @@ app.use(
     credentials: true,
   })
 );
+
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
 app.use(express.json());
