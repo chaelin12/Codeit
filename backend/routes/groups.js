@@ -352,7 +352,7 @@ router.route('/:id')
                                 console.error("MySQL salt 삭제 오류:", err);
                             }
                         });
-
+                        console.log("성공");
                         res.status(200).json({ message: "그룹 삭제 성공" });
                     } else {
                         res.status(403).json({ message: "비밀번호가 틀렸습니다" });
