@@ -30,7 +30,7 @@ function PublicGroup() {
           `${process.env.REACT_APP_USER}/api/groups?page=${pageNum}`,
           { withCredentials: true }
         );
-
+        console.log("API Base URL: ", process.env.REACT_APP_USER);
         console.log("API Response: ", response); // 로그 추가: API 응답 확인
 
         const groupData = response.data.data;
