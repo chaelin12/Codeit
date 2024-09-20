@@ -30,15 +30,13 @@ function AccessPrivate() {
       console.log("Submitting password:", password);
       const response = await axios.post(
         `${process.env.REACT_APP_USER}/groups/${groupId}/verify-password`,
-        { password },
+        password,
         {
           withCredentials: true, // 자격 증명을 포함
         }
       );
 
       console.log("API Base URL: ", process.env.REACT_APP_USER);
-      console.log("Response Status:", response.status);
-      console.log("Response Data:", response.data);
 
       if (response.status === 200) {
         navigate(`/GroupDetail/${groupId}`);

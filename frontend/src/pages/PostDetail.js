@@ -61,15 +61,11 @@ const PostDetail = () => {
         `${process.env.REACT_APP_USER}/posts/${postId}/comments`,
         { withCredentials: true }
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch comments");
-      }
-      const data = await response.json();
-      setComments(data.data || []); // 'data'가 실제 댓글 배열
-      setTotalPages(data.totalPages || 1); // 'totalPages' 설정
+      setComments(response.data.data || []); // Assuming 'data' contains the comments
+      setTotalPages(response.data.totalPages || 1); // Assuming 'totalPages' is provided
       setPost((prevPost) => ({
         ...prevPost,
-        totalCommentCount: data.data.length || 0, // 'totalCommentCount' 업데이트 (댓글 배열의 길이로 계산)
+        totalCommentCount: response.data.data.length || 0,
       }));
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -151,17 +147,13 @@ const PostDetail = () => {
           withCredentials: true,
         }
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch more comments");
-      }
-      const data = await response.json();
-      if (Array.isArray(data.data)) {
-        setComments((prevComments) => [...prevComments, ...data.data]); // 'data.data'가 댓글 배열
+      if (Array.isArray(response.data.data)) {
+        setComments((prevComments) => [...prevComments, ...response.data.data]);
+        setCurrentPage((prevPage) => prevPage + 1);
+        setTotalPages(response.data.totalPages || 1);
       } else {
         console.error("Error: Comments data is not an array");
       }
-      setCurrentPage((prevPage) => prevPage + 1);
-      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error("Error loading more comments:", error);
     }
@@ -179,21 +171,13 @@ const PostDetail = () => {
           withCredentials: true,
         }
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        setMessage("게시글 공감하기 성공");
-        setPost((prevPost) => ({
-          ...prevPost,
-          likeCount: data.likeCount, // 서버에서 받은 최신 likeCount 반영
-        }));
-      } else if (response.status === 404) {
-        console.error("Post not found");
-      } else {
-        console.error("Error sending like:", response.statusText);
-      }
+      setMessage("게시글 공감하기 성공");
+      setPost((prevPost) => ({
+        ...prevPost,
+        likeCount: response.data.likeCount, // 서버에서 받은 최신 likeCount 반영
+      }));
     } catch (error) {
-      console.error("Error sending like:", error.message);
+      console.error("Error sending like:", error);
     }
     fetchPostData();
     fetchComments();
