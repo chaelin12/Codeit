@@ -143,6 +143,9 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
         `${process.env.REACT_APP_USER}/posts/${postId}`,
         updatedPost,
         {
+          headers: {
+            "Content-Type": "application/json",
+          },
           withCredentials: true,
         }
       );
@@ -154,6 +157,7 @@ const EditPost = ({ isOpen, onClose, postId, groupId, onSave }) => {
         onClose(); // Close modal
       }
     } catch (error) {
+      console.error("An error occurred while updating the post:", error);
       if (error.response) {
         if (error.response.status === 400) {
           setErrorMessage("잘못된 요청입니다.");
