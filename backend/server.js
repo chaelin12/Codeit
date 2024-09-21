@@ -21,11 +21,7 @@ app.use(
 );
 // Preflight 요청에 대한 응답을 처리
 app.options('*', cors());
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
 
 
 ////////////// body-parser 라이브러리 추가
