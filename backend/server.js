@@ -15,7 +15,7 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     preflightContinue: false,
     optionsSuccessStatus: 204,
-    credentials: true,
+    credentials: true, // 이 옵션을 통해 자격 증명을 허용합니다.
   })
 );
 // Preflight 요청에 대한 응답을 처리
