@@ -13,7 +13,6 @@ app.use(
       "http://localhost:8080",
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
     credentials: true,
   })
 );
