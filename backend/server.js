@@ -21,7 +21,7 @@ app.use(
 );
 // Preflight 요청에 대한 응답을 처리
 app.options('*', cors());
-app.options('/api/posts/:id', cors());
+
 
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
