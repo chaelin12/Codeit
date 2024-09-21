@@ -5,6 +5,7 @@ const Group = require('../schemas/group');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const AWS = require('aws-sdk');
+const app = express();
 const cors = require("cors");
 app.use(
   cors({
