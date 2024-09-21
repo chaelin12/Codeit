@@ -20,6 +20,9 @@ app.use(
 );
 // Preflight 요청에 대한 응답을 처리
 app.options('*', cors());
+res.header('Access-Control-Allow-Origin', '*'); // 또는 특정 도메인
+res.header('Access-Control-Allow-Credentials', 'true');
+
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
 app.use(express.json());
