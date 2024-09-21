@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/FormButton";
 
-const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
+const DeletePost = ({onClose, postId}) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
 
       if (response.status === 200) {
         // Changed from response.ok to status 200
-        navigate(`/groupdetail/${groupId}`);
+        navigate(0);
         onClose();
       } else if (response.status === 400) {
         setError(data.message || "잘못된 요청입니다.");
