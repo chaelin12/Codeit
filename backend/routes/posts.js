@@ -5,25 +5,6 @@ const Group = require('../schemas/group');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
 const AWS = require('aws-sdk');
-const express = require("express");
-const app = express();
-const cors = require("cors");
-app.use(
-  cors({
-    origin: [
-      "https://port-0-codeit-backend-m17jqg0915c4a4f2.sel4.cloudtype.app",
-      "https://web-codeit-m197srmje0e2a98e.sel4.cloudtype.app",
-      "http://localhost:8080",
-    ],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: true, // 이 옵션을 통해 자격 증명을 허용합니다.
-  })
-);
-// Preflight 요청에 대한 응답을 처리
-app.options('*', cors());
-
 router.route('/:id')
     //게시글 수정
     .put(async (req, res) => {
@@ -109,7 +90,7 @@ router.route('/:id')
     })
 
     // 게시글 삭제
-    .delete(cors(),async (req, res) => {
+    .delete(async (req, res) => {
         const post = await Post.findOne({ id: req.params.id });
 
         if (!post) {

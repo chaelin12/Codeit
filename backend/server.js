@@ -15,6 +15,7 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     preflightContinue: false,
     optionsSuccessStatus: 204,
+    allowedHeaders: "*", // 모든 헤더를 허용
     credentials: true, // 이 옵션을 통해 자격 증명을 허용합니다.
   })
 );

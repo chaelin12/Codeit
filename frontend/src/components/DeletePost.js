@@ -16,10 +16,7 @@ const DeletePost = ({onClose, postId}) => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(`${process.env.REACT_APP_USER}/posts/${postId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          // 필요한 다른 헤더 추가
-        },
+        
         data: { password },
         withCredentials: true,
       });
