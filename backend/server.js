@@ -12,7 +12,9 @@ app.use(
       "https://web-codeit-m197srmje0e2a98e.sel4.cloudtype.app",
       "http://localhost:8080",
     ],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
     credentials: true,
   })
 );
