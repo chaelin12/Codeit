@@ -15,12 +15,13 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     preflightContinue: false,
     optionsSuccessStatus: 204,
-    allowedHeaders: "*", // 모든 헤더를 허용
-    credentials: true, // 이 옵션을 통해 자격 증명을 허용합니다.
+    credentials: true,
+    allowedHeaders: ["Content-Type", "X-Requested-With", "Authorization"], // 여기 추가
   })
 );
 // Preflight 요청에 대한 응답을 처리
 app.options('*', cors());
+app.options('/api/posts/:id', cors());
 
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
