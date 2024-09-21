@@ -18,8 +18,10 @@ const DeletePost = ({ isOpen, onClose, groupId, postId, onDelete }) => {
       const response = await axios.delete(
         `${process.env.REACT_APP_USER}/posts/${postId}`,
         {
-          data: { password }, // Sending password in data
-          withCredentials: true, // To send cookies if needed
+          data: {
+            password, // 비밀번호를 서버로 전송
+          },
+          withCredentials: true, // 자격 증명을 포함
         }
       );
 
