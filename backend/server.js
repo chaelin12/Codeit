@@ -18,7 +18,8 @@ app.use(
     credentials: true,
   })
 );
-
+// Preflight 요청에 대한 응답을 처리
+app.options('*', cors());
 ////////////// body-parser 라이브러리 추가
 const bodyParser = require("body-parser");
 app.use(express.json());
