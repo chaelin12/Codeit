@@ -110,17 +110,20 @@ router.route('/:id')
                 const hashPw = sha(req.body.postPassword + salt);
 
                 if (post.postPassword === hashPw) {
-                    // S3에서 이미지 삭제
-                    if (post.imageUrl) {
-                        const s3 = new AWS.S3();
-                        const imageKey = post.imageUrl.split('/').pop(); // S3 키 추출
-                        const deleteParams = {
-                            Bucket:process.env.AWS_S3_BUCKET_NAME, // S3 버킷 이름
-                            Key: imageKey,
-                        };
-                        await s3.deleteObject(deleteParams).promise();
-                    }
+                    // AWS S3 설정
+                    const s3 = new AWS.S3({
+                        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                        region: process.env.AWS_REGION // S3 버킷이 위치한 리전
+                    });
+                    const imageKey = post.imageUrl.split('/').pop(); // S3의 Key 추출
 
+                    // 이미지 삭제
+                    const deleteParams = {
+                        Bucket: process.env.AWS_S3_BUCKET_NAME,
+                        Key: imageKey
+                    };
+                    await s3.deleteObject(deleteParams).promise(); // 비동기 삭제
                     // 게시글 삭제
                     await Post.deleteOne({ id: req.params.id });
 
