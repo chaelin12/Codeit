@@ -91,6 +91,7 @@ router.route('/:id')
 
     // 게시글 삭제
     .delete(async (req, res) => {
+        console.log(req.params.id);
         const post = await Post.findOne({ id: req.params.id });
 
         if (!post) {
