@@ -149,6 +149,9 @@ router.route('/:id')
                     // CORS 헤더 추가
                     res.header("Access-Control-Allow-Origin", "*"); // 출처 설정 (필요에 따라 조정)
                     res.header("Access-Control-Allow-Credentials", "true");
+                    res.header("Access-Control-Allow-Headers", "*");
+
+
                     res.status(200).json({ message: "게시글 삭제 성공" });
                 } else {
                     res.status(403).json({ message: "비밀번호가 틀렸습니다." });
